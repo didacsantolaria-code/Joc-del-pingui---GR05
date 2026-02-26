@@ -1,6 +1,6 @@
 package JocDelPingui;
 
-public class main {
+public class mainPingui {
 
 	public static void main(String[] args) {
 		//Prueba
