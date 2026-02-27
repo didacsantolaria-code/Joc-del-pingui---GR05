@@ -1,43 +1,72 @@
 package JocDelPingui;
 
 public class pingui {
-	private String nombre;
-    private String color;
-    private int posicion;
-    private int dadosExtra;
-    private int peces;
-    private int bolasNieve;
-    
-    public pingui(String nombre, String color) {
-        this.nombre = nombre;
-        this.color = color;
-        this.posicion = 0;
-        this.dadosExtra = 0;
-        this.peces = 0;
-        this.bolasNieve = 0;
-    }
-    
-    public String getNombre() {
-        return nombre;
-    }
-    
-    public String getColor() {
-        return color;
-    }
-    
-    public int getPosicion() {
-        return posicion;
-    }
-    
-    public int getDadosExtra() {
-        return dadosExtra;
-    }
-    
-    public int getPeces() {
-        return peces;
-    }
-    
-    public int getBolasNieve() {
-        return bolasNieve;
-    }
+	/**
+	 * Clase principal del juego
+	 */
+	public class JocPingui {
+	    
+	    private String titol;
+	    private String versio;
+	    private int numJugadors;
+	    private boolean partidaIniciada;
+	    private boolean partidaFinalitzada;
+	    
+	    public JocPingui() {
+	        this.titol = "El Joc d'en Pingüí";
+	        this.versio = "1.0";
+	        this.numJugadors = 0;
+	        this.partidaIniciada = false;
+	        this.partidaFinalitzada = false;
+	    }
+	    
+	    public JocPingui(String titol, String versio, int numJugadors) {
+	        this.titol = titol;
+	        this.versio = versio;
+	        this.numJugadors = numJugadors;
+	        this.partidaIniciada = false;
+	        this.partidaFinalitzada = false;
+	    }
+	    
+	    // Getters y Setters
+	    public String getTitol() {
+	        return titol;
+	    }
+	    
+	    public void setTitol(String titol) {
+	        this.titol = titol;
+	    }
+	    
+	    public String getVersio() {
+	        return versio;
+	    }
+	    
+	    public void setVersio(String versio) {
+	        this.versio = versio;
+	    }
+	    
+	    public int getNumJugadors() {
+	        return numJugadors;
+	    }
+	    
+	    public void setNumJugadors(int numJugadors) {
+	        this.numJugadors = numJugadors;
+	    }
+	    
+	    public boolean isPartidaIniciada() {
+	        return partidaIniciada;
+	    }
+	    
+	    public void setPartidaIniciada(boolean partidaIniciada) {
+	        this.partidaIniciada = partidaIniciada;
+	    }
+	    
+	    public boolean isPartidaFinalitzada() {
+	        return partidaFinalitzada;
+	    }
+	    
+	    public void setPartidaFinalitzada(boolean partidaFinalitzada) {
+	        this.partidaFinalitzada = partidaFinalitzada;
+	    }
+	}
 }
