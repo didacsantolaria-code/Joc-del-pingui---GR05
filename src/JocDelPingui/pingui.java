@@ -1,9 +1,6 @@
 package JocDelPingui;
 
 public class pingui {
-	/**
-	 * Clase principal del juego
-	 */
 	public class JocPingui {
 	    
 	    private String titol;
