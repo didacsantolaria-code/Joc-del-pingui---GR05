@@ -29,10 +29,12 @@ public class dado {
     public int getTiradasRealizadas() {
         return tiradasRealizadas;
     }
-    public String getTipo() { return tipo; 
+    public String getTipo() { 
+    	return tipo; 
     }
     
-    public void setTipo(String tipo) { this.tipo = tipo; 
+    public void setTipo(String tipo) { 
+    	this.tipo = tipo; 
     }
 
     
