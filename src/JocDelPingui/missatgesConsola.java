@@ -18,7 +18,7 @@ public class missatgesConsola {
     
     public static void mostrarDespedida() {
         System.out.println("\n👋  ¡Juego finalizado!  👋");
-    }
+    } 
     
     public static void mostrarInstrucciones() {
         System.out.println("\n    INSTRUCCIONES    ");
