@@ -7,7 +7,7 @@ public class mainPingui {
         Scanner scanner = new Scanner(System.in);
         missatgesConsola.mostrarBienvenida();
         
-        
+   //MENU INICIAL     
         boolean salir = false;
         while (!salir) {
             missatgesConsola.mostrarMenuPrincipal();

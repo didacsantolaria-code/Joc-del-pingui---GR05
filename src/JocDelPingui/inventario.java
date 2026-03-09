@@ -5,6 +5,7 @@ public class inventario {
     private int peces;
     private int bolasNieve;
     
+    //CONSTRUCTORS
     public inventario() {
         this.daus = 0;
         this.peces = 0;
@@ -16,7 +17,7 @@ public class inventario {
         this.peces = 0;
         this.bolasNieve = 0;
     }
-    
+    //METODES
     public void agregarPez() {
         if (peces < 2) peces++;
     }
