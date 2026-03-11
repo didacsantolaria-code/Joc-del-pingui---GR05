@@ -13,6 +13,7 @@ public class gestionJugador {
     public void jugadorFinalizarTurno(jugador j) {
         System.out.println("Turno de " + j.getNombre() + " finalizado");
     }
+<<<<<<< Updated upstream
     
     public void jugadorEvent(pingino p) {
         // Para manejar eventos específicos del pingüino
@@ -21,4 +22,6 @@ public class gestionJugador {
     public void eventoGenerado(int p1, pingino p2) {
         // Para eventos generados
     }
+=======
+>>>>>>> Stashed changes
 }
