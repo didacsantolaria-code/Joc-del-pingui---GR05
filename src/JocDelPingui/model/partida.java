@@ -1,4 +1,4 @@
-package JocDelPingui;
+package JocDelPingui.model;
 
 import java.util.ArrayList;
 import java.util.List;

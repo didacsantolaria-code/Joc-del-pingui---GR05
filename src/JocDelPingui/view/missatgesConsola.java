@@ -1,4 +1,4 @@
-package JocDelPingui;
+package JocDelPingui.view;
 
 public class missatgesConsola {
     public static void mostrarBienvenida() {

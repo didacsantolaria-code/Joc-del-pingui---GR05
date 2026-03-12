@@ -2,6 +2,12 @@ package JocDelPingui;
 
 import java.util.Scanner;
 
+import JocDelPingui.controller.gestionJugador;
+import JocDelPingui.controller.guardarCargar;
+import JocDelPingui.view.missatgesConsola;
+import model1.jugador;
+import model1.partida;
+
 public class mainPingui {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);

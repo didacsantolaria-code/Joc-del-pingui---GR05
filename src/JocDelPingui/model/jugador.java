@@ -1,4 +1,4 @@
-package JocDelPingui;
+package JocDelPingui.model;
 
 public class jugador {
 	 // Getters y Setters
