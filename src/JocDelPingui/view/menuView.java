@@ -5,9 +5,9 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import JocDelPingui.MainApp;
 
-public class MenuView extends VBox {
+public class menuView extends VBox {
     
-    public MenuView(MainApp mainApp) {
+    public menuView(MainApp mainApp) {
         // Espacio entre elementos
         this.setSpacing(10);
         

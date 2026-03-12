@@ -2,20 +2,18 @@ package JocDelPingui;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import JocDelPingui.view.MenuView;
 
 public class MainApp extends Application {
     
     @Override
     public void start(Stage primaryStage) {
-        // Crear el menú
-        MenuView menu = new MenuView(this);
+        Label label = new Label("🐧 JavaFX funciona! 🐧");
+        StackPane root = new StackPane(label);
+        Scene scene = new Scene(root, 400, 300);
         
-        // Crear la escena
-        Scene scene = new Scene(menu, 400, 300);
-        
-        // Configurar ventana
         primaryStage.setTitle("Juego del Pingüino");
         primaryStage.setScene(scene);
         primaryStage.show();
