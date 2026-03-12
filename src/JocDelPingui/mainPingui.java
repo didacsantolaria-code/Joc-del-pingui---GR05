@@ -31,12 +31,6 @@ public class mainPingui {
                     salir = true;
                     missatgesConsola.mostrarDespedida();
                     break;
-                case 4: // Guardar y salir
-                    guardarCargar gc = new guardarCargar("", "", "");
-                    String nombreArchivo = "partida_" + System.currentTimeMillis() + ".txt";
-                    gc.guardarPartida(partida, nombreArchivo);
-                    System.out.println("Partida guardada. ¡Hasta pronto!");
-                    return;
                 default:
                     System.out.println("Opción no válida");
             }
