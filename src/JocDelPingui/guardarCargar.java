@@ -1,5 +1,7 @@
 package JocDelPingui;
 
+import java.io.*;
+
 public class guardarCargar {
     private String urlBBDD;
     private String username;
@@ -15,35 +17,22 @@ public class guardarCargar {
     
     public boolean guardarPartida(partida partida, String rutaArchivo) {
         try {
-            String datos = serializarPartida(partida);
-           // String datosEncriptados = encriptador.encriptar(datos);
-            // Escribir a archivo
-            System.out.println("Partida guardada en: " + rutaArchivo);
+            FileWriter writer = new FileWriter(rutaArchivo);
+            writer.write("Partida guardada: " + partida.getIdPartida() + "\n");
+            writer.write("Turnos: " + partida.getTurnos() + "\n");
+            writer.write("Jugador actual: " + partida.getJugadorActual() + "\n");
+            writer.close();
+            
+            System.out.println("✅ Partida guardada en: " + rutaArchivo);
             return true;
         } catch (Exception e) {
-            System.out.println("Error al guardar: " + e.getMessage());
+            System.out.println("❌ Error al guardar: " + e.getMessage());
             return false;
         }
     }
     
-   /* public partida cargarPartida(String rutaArchivo) {
-        try {
-            // Leer de archivo
-            String datosEncriptados = ""; // Leer archivo
-            String datos = encriptador.desencriptar(datosEncriptados);
-            return deserializarPartida(datos);
-        } catch (Exception e) {
-            System.out.println("Error al cargar: " + e.getMessage());
-            return null;
-        }
-    }*/
-    
-    private String serializarPartida(partida p) {
-        // Similar a GestionBDD
-        return "";
-    }
-    
-    private partida deserializarPartida(String datos) {
-        return new partida();
+    public partida cargarPartida(String rutaArchivo) {
+        System.out.println("Función de carga desactivada");
+        return null;
     }
 }
