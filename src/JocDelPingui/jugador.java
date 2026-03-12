@@ -50,6 +50,10 @@ public class jugador {
     	this.pierdeTurno = pierdeTurno; 
     }
     
+    public String mostrarInventario() {
+        return inventario.mostrar(); 
+    }
+    
     private int posicion;
     private String nombre;
     private String color;
@@ -83,5 +87,6 @@ public class jugador {
             inventario.usarBolaNieve();
             objetivo.setPosicion(Math.max(0, objetivo.getPosicion() - 3));
         }
+        
     }
 }

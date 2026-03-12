@@ -7,7 +7,7 @@ public class mainPingui {
         Scanner scanner = new Scanner(System.in);
         missatgesConsola.mostrarBienvenida();
         
-        
+   //MENU INICIAL     
         boolean salir = false;
         while (!salir) {
             missatgesConsola.mostrarMenuPrincipal();
@@ -19,7 +19,7 @@ public class mainPingui {
                     iniciarNuevaPartida(scanner);
                     break;
                 case 2:
-
+                	cargarPartida(scanner);
                     break;
                 case 3:
                     salir = true;
@@ -51,7 +51,7 @@ public class mainPingui {
             jugador jugadorActual = partida.getJugadores().get(partida.getJugadorActual());
             System.out.println("\n--- Turno de " + jugadorActual.getNombre() + " ---");
             System.out.println("Posición: " + jugadorActual.getPosicion());
-            System.out.println("Inventario: " + jugadorActual.getInventario());
+            System.out.println("Inventario: " + jugadorActual.getInventario().mostrar());
             
             System.out.println("\nOpciones:");
             System.out.println("1. Tirar dado");
@@ -102,9 +102,24 @@ public class mainPingui {
         System.out.println("\n--- ESTADO DE LA PARTIDA ---");
         for (jugador j : partida.getJugadores()) {
             System.out.println(j.getNombre() + " (" + j.getColor() + "): Posición " + j.getPosicion() + 
-                             " | Inventario: " + j.getInventario());
+                             " | Inventario: " + j.getInventario().mostrar());
         }
         System.out.println("Turno actual: " + partida.getTurnos());
         System.out.println("----------------------------\n");
+    }
+    
+    private static void cargarPartida(Scanner scanner) {
+        System.out.print("Introduce el nombre del archivo de partida: ");
+        String archivo = scanner.nextLine();
+        
+        guardarCargar gc = new guardarCargar("", "", "");
+        partida partida = gc.cargarPartida(archivo);
+        
+        if (partida != null) {
+            System.out.println("Partida cargada correctamente");
+            jugarPartida(partida, scanner);
+        } else {
+            System.out.println("No se pudo cargar la partida");
+        }
     }
 }
