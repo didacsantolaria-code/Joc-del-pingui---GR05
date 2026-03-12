@@ -1,6 +1,6 @@
 package JocDelPingui.controller;
 
-import model1.partida;
+import JocDelPingui.model.partida;
 
 public class gestionBBD {
     

@@ -1,7 +1,7 @@
 package JocDelPingui.controller;
 
-import model1.jugador;
-import model1.tablero;
+import JocDelPingui.model.jugador;
+import JocDelPingui.model.tablero;
 
 public class gestionJugador {
     public void jugadorUsuario(String nombre) {
