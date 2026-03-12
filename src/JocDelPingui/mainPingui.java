@@ -19,7 +19,7 @@ public class mainPingui {
                     iniciarNuevaPartida(scanner);
                     break;
                 case 2:
-
+                	cargarPartida(scanner);
                     break;
                 case 3:
                     salir = true;
@@ -106,5 +106,20 @@ public class mainPingui {
         }
         System.out.println("Turno actual: " + partida.getTurnos());
         System.out.println("----------------------------\n");
+    }
+    
+    private static void cargarPartida(Scanner scanner) {
+        System.out.print("Introduce el nombre del archivo de partida: ");
+        String archivo = scanner.nextLine();
+        
+        guardarCargar gc = new guardarCargar("", "", "");
+        partida partida = gc.cargarPartida(archivo);
+        
+        if (partida != null) {
+            System.out.println("Partida cargada correctamente");
+            jugarPartida(partida, scanner);
+        } else {
+            System.out.println("No se pudo cargar la partida");
+        }
     }
 }
