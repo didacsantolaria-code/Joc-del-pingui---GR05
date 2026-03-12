@@ -16,7 +16,7 @@ public class guardarCargar {
     public boolean guardarPartida(partida partida, String rutaArchivo) {
         try {
             String datos = serializarPartida(partida);
-            String datosEncriptados = encriptador.encriptar(datos);
+           // String datosEncriptados = encriptador.encriptar(datos);
             // Escribir a archivo
             System.out.println("Partida guardada en: " + rutaArchivo);
             return true;
@@ -26,7 +26,7 @@ public class guardarCargar {
         }
     }
     
-    public partida cargarPartida(String rutaArchivo) {
+   /* public partida cargarPartida(String rutaArchivo) {
         try {
             // Leer de archivo
             String datosEncriptados = ""; // Leer archivo
@@ -36,7 +36,7 @@ public class guardarCargar {
             System.out.println("Error al cargar: " + e.getMessage());
             return null;
         }
-    }
+    }*/
     
     private String serializarPartida(partida p) {
         // Similar a GestionBDD
