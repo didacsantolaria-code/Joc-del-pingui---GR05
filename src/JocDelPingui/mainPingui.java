@@ -5,8 +5,8 @@ import java.util.Scanner;
 import JocDelPingui.controller.gestionJugador;
 import JocDelPingui.controller.guardarCargar;
 import JocDelPingui.view.missatgesConsola;
-import model1.jugador;
-import model1.partida;
+import JocDelPingui.model.jugador;
+import JocDelPingui.model.partida;
 
 public class mainPingui {
     public static void main(String[] args) {
@@ -31,6 +31,12 @@ public class mainPingui {
                     salir = true;
                     missatgesConsola.mostrarDespedida();
                     break;
+                case 4: // Guardar y salir
+                    guardarCargar gc = new guardarCargar("", "", "");
+                    String nombreArchivo = "partida_" + System.currentTimeMillis() + ".txt";
+                    gc.guardarPartida(partida, nombreArchivo);
+                    System.out.println("Partida guardada. ¡Hasta pronto!");
+                    return;
                 default:
                     System.out.println("Opción no válida");
             }
