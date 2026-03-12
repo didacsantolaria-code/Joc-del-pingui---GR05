@@ -1,6 +1,8 @@
-package JocDelPingui;
+package JocDelPingui.controller;
 
 import java.io.*;
+
+import model1.partida;
 
 public class guardarCargar {
     private String urlBBDD;

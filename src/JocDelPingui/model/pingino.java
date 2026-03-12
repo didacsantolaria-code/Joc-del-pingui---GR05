@@ -1,4 +1,4 @@
-package JocDelPingui;
+package JocDelPingui.model;
 
 public class pingino {
     private String nombre;

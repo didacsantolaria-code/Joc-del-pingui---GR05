@@ -1,4 +1,4 @@
-package JocDelPingui;
+package JocDelPingui.model;
 
 public class inventario {
     private int daus; 
