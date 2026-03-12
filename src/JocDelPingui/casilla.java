@@ -114,7 +114,7 @@ public class casilla {
             System.out.println("¡Llevas demasiados objetos! La tierra se rompe y caes al inicio.");
             jugador.setPosicion(0);
         } else if (totalObjetos > 0) {
-            System.out.println("La tiembla bajo tus pies... ¡Pierdes un turno!");
+            System.out.println("La tierra tiembla bajo tus pies... ¡Pierdes un turno!");
             // El efecto de perder turno se maneja en GestionJugador
             jugador.setPierdeTurno(true);
         } else {
