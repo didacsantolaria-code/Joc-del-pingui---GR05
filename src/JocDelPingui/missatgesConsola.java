@@ -2,9 +2,9 @@ package JocDelPingui;
 
 public class missatgesConsola {
     public static void mostrarBienvenida() {
-        System.out.println("\n╔════════════════════════════════════════╗");
-        System.out.println("║     BIENVENIDO AL JUEGO DEL PINGÜI     ║");
-        System.out.println("╚════════════════════════════════════════╝");
+        System.out.println("\n╔════════════════════════════════════════════╗");
+        System.out.println("║     BIENVENIDO AL JUEGO DEL PINGÜINO     ║");
+        System.out.println("╚════════════════════════════════════════════╝");
         System.out.println();
     }
     
@@ -17,7 +17,7 @@ public class missatgesConsola {
     }
     
     public static void mostrarDespedida() {
-        System.out.println("\n👋  ¡Juego finalizado!  👋");
+        System.out.println("\n¡Juego finalizado!");
     } 
     
     public static void mostrarInstrucciones() {
