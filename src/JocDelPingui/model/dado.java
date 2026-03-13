@@ -6,7 +6,7 @@ public class dado {
     private Random random;
     private int ultimoResultado;
     private int tiradasRealizadas;
-    private String tipo; // "normal", "rapido", "lento"
+    private String tipo;
     
     public dado() {
         this.random = new Random();
@@ -25,20 +25,19 @@ public class dado {
         
         switch (tipo) {
             case "rapido":
-                ultimoResultado = 5 + random.nextInt(6); // 5-10
+                ultimoResultado = 5 + random.nextInt(6);
                 break;
             case "lento":
-                ultimoResultado = 1 + random.nextInt(3); // 1-3
+                ultimoResultado = 1 + random.nextInt(3);
                 break;
             default:
-                ultimoResultado = 1 + random.nextInt(6); // 1-6
+                ultimoResultado = 1 + random.nextInt(6);
                 break;
         }
         
         return ultimoResultado;
     }
     
-    // Getters y Setters
     public int getUltimoResultado() { return ultimoResultado; }
     public int getTiradasRealizadas() { return tiradasRealizadas; }
     public String getTipo() { return tipo; }

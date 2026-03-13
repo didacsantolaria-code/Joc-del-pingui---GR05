@@ -5,9 +5,9 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
-import javafx.scene.shape.Circle;
 import JocDelPingui.model.partida;
 import JocDelPingui.model.pingino;
+import JocDelPingui.model.dado;
 
 public class partidaView {
     
@@ -21,7 +21,6 @@ public class partidaView {
     private partida partida;
     private static final int COLUMNS = 5;
     
-    // Constructor vacío para FXML
     public partidaView() {
     }
     
@@ -65,10 +64,8 @@ public class partidaView {
         pingino p = (pingino) partida.getJugadores().get(idxActual);
         
         if (p.getInventario().getDausRapidos() > 0) {
-            p.setDadoActual(new JocDelPingui.model.dado("rapido"));
+            p.setDadoActual(new dado("rapido"));
             agregarMensaje("⚡ Activado dado rápido (5-10 casillas)");
-            // Usar un dado rápido del inventario
-            // Nota: Necesitarías llevar la cuenta de dados rápidos disponibles
         } else {
             agregarMensaje("❌ No tienes dados rápidos");
         }
@@ -81,9 +78,8 @@ public class partidaView {
         pingino p = (pingino) partida.getJugadores().get(idxActual);
         
         if (p.getInventario().getDausLentos() > 0) {
-            p.setDadoActual(new JocDelPingui.model.dado("lento"));
+            p.setDadoActual(new dado("lento"));
             agregarMensaje("🐢 Activado dado lento (1-3 casillas)");
-            // Usar un dado lento del inventario
         } else {
             agregarMensaje("❌ No tienes dados lentos");
         }
@@ -97,7 +93,6 @@ public class partidaView {
         
         if (p.getInventario().getPeces() > 0) {
             agregarMensaje("🐟 Tienes " + p.getInventario().getPeces() + " peces");
-            // Aquí puedes implementar qué hacen los peces además de sobornar
         } else {
             agregarMensaje("❌ No tienes peces");
         }
@@ -109,7 +104,6 @@ public class partidaView {
         pingino p = (pingino) partida.getJugadores().get(idxActual);
         
         if (p.getInventario().getBolasNieve() > 0) {
-            // Por ahora ataca al siguiente jugador
             int objetivo = (idxActual + 1) % partida.getJugadores().size();
             p.usarBolaNieve(partida.getJugadores().get(objetivo));
             agregarMensaje("❄️ " + p.getNombre() + " usó una bola de nieve");
@@ -122,25 +116,20 @@ public class partidaView {
     
     @FXML
     private void handleNewGame() {
-        System.out.println("New Game");
-        // Volver al menú o reiniciar
     }
     
     @FXML
     private void handleSaveGame() {
-        System.out.println("Save Game");
         agregarMensaje("💾 Partida guardada");
     }
     
     @FXML
     private void handleLoadGame() {
-        System.out.println("Load Game");
         agregarMensaje("📂 Cargar partida - Pendiente");
     }
     
     @FXML
     private void handleQuitGame() {
-        System.out.println("Quit Game");
         System.exit(0);
     }
 

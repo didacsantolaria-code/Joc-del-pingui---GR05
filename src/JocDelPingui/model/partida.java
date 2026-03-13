@@ -64,12 +64,7 @@ public class partida {
         System.out.println(mensaje);
     }
     
-
-    
-    // Getters y Setters
-    public tablero getTablero() {
-    	return tablero;
-    }
+    public tablero getTablero() { return tablero; }
     public void setTablero(tablero tablero) { this.tablero = tablero; }
     public ArrayList<jugador> getJugadores() { return jugadores; }
     public void setJugadores(ArrayList<jugador> jugadores) { this.jugadores = jugadores; }
