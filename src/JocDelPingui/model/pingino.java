@@ -13,7 +13,6 @@ public class pingino extends jugador {
     
     @Override
     public void realizarAccion(partida partida) {
-        // Acción específica del pingüino
     }
     
     public boolean tieneSoborno() {
@@ -31,7 +30,6 @@ public class pingino extends jugador {
         }
     }
     
-    // Getters y Setters
     public inventario getInventario() { return inventario; }
     public void setInventario(inventario inventario) { this.inventario = inventario; }
     public dado getDadoActual() { return dadoActual; }

@@ -1,7 +1,6 @@
 package JocDelPingui;
 
 import java.util.Scanner;
-
 import JocDelPingui.controller.gestionJugador;
 import JocDelPingui.controller.guardarCargar;
 import JocDelPingui.view.missatgesConsola;
@@ -56,7 +55,6 @@ public class mainPingui {
             System.out.println("\n--- Turno de " + jugadorActual.getNombre() + " ---");
             System.out.println("Posición: " + jugadorActual.getPosicion());
             
-            // 🔴 CAMBIADO: Hacer cast a pingino para acceder al inventario y dado
             pingino p = (pingino) jugadorActual;
             System.out.println("Inventario: " + p.getInventario().mostrar());
             
@@ -72,7 +70,6 @@ public class mainPingui {
             switch (opcion) {
                 case 1:
                     gestionJugador.jugadorSeleccion(jugadorActual, 1, 0, partida.getTablero());
-                    // 🔴 CAMBIADO: Usar getDadoActual() en lugar de getDado()
                     int pasos = p.getDadoActual().tirar();
                     System.out.println("Has sacado un " + pasos);
                     partida.moverJugador(jugadorActual, pasos);
@@ -109,7 +106,7 @@ public class mainPingui {
     private static void mostrarEstadoPartida(partida partida) {
         System.out.println("\n--- ESTADO DE LA PARTIDA ---");
         for (jugador j : partida.getJugadores()) {
-            pingino p = (pingino) j; // Cast a pingino
+            pingino p = (pingino) j;
             System.out.println(j.getNombre() + " (" + j.getColor() + "): Posición " + j.getPosicion() + 
                              " | Inventario: " + p.getInventario().mostrar());
         }

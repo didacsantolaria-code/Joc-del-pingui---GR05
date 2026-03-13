@@ -23,44 +23,14 @@ public class jocPingui {
         this.partidaFinalitzada = false;
     }
     
-    // Getters y Setters
-    public String getTitol() {
-    	return titol;
-    }
-    
-    public void setTitol(String titol) {
-    	this.titol = titol;
-    }
-    
-    public String getVersio() {
-    	return versio;
-    }
-    
-    public void setVersio(String versio) {
-    	this.versio = versio;
-    }
-    
-    public int getNumJugadors() {
-    	return numJugadors;
-    }
-    
-    public void setNumJugadors(int numJugadors) {
-    	this.numJugadors = numJugadors;
-    }
-    
-    public boolean isPartidaIniciada() {
-    	return partidaIniciada;
-    }
-    
-    public void setPartidaIniciada(boolean partidaIniciada) {
-    	this.partidaIniciada = partidaIniciada;
-    }
-    
-    public boolean isPartidaFinalitzada() {
-    	return partidaFinalitzada;
-    }
-    
-    public void setPartidaFinalitzada(boolean partidaFinalitzada) {
-    	this.partidaFinalitzada = partidaFinalitzada;
-    }
+    public String getTitol() { return titol; }
+    public void setTitol(String titol) { this.titol = titol; }
+    public String getVersio() { return versio; }
+    public void setVersio(String versio) { this.versio = versio; }
+    public int getNumJugadors() { return numJugadors; }
+    public void setNumJugadors(int numJugadors) { this.numJugadors = numJugadors; }
+    public boolean isPartidaIniciada() { return partidaIniciada; }
+    public void setPartidaIniciada(boolean partidaIniciada) { this.partidaIniciada = partidaIniciada; }
+    public boolean isPartidaFinalitzada() { return partidaFinalitzada; }
+    public void setPartidaFinalitzada(boolean partidaFinalitzada) { this.partidaFinalitzada = partidaFinalitzada; }
 }

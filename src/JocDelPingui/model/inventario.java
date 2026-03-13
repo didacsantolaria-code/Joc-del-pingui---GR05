@@ -14,7 +14,7 @@ public class inventario {
     }
     
     public void inicializarInventario() {
-        this.dausRapidos = 1; // Un dado normal (lo tratamos como rápido para simplificar)
+        this.dausRapidos = 1;
         this.dausLentos = 0;
         this.peces = 0;
         this.bolasNieve = 0;
@@ -67,12 +67,10 @@ public class inventario {
         return dausRapidos + dausLentos + peces + bolasNieve;
     }
     
-    // Getters y Setters
     public int getDaus() { return dausRapidos + dausLentos; }
     public int getDausRapidos() { return dausRapidos; }
     public int getDausLentos() { return dausLentos; }
     public void setDaus(int daus) { 
-        // Simplificación: asignamos todos como rápidos
         this.dausRapidos = Math.min(daus, 3); 
         this.dausLentos = 0;
     }
