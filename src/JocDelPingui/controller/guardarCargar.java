@@ -3,6 +3,7 @@ package JocDelPingui.controller;
 import java.io.*;
 import JocDelPingui.model.partida;
 import JocDelPingui.model.jugador;
+import JocDelPingui.model.pingino; // IMPORTANTE: Añadir import
 
 public class guardarCargar {
     
@@ -32,9 +33,9 @@ public class guardarCargar {
                 writer.write(j.getPosicion() + "\n");
                 writer.write(j.isPierdeTurno() + "\n");
                 // Inventario
-                writer.write(j.getInventario().getDaus() + "\n");
-                writer.write(j.getInventario().getPeces() + "\n");
-                writer.write(j.getInventario().getBolasNieve() + "\n");
+                writer.write(((pingino)j).getInventario().getDaus() + "\n");
+                writer.write(((pingino)j).getInventario().getPeces() + "\n");
+                writer.write(((pingino)j).getInventario().getBolasNieve() + "\n");
             }
             
             writer.close();
@@ -78,8 +79,8 @@ public class guardarCargar {
                 int peces = Integer.parseInt(reader.readLine());
                 int bolas = Integer.parseInt(reader.readLine());
                 
-                // Crear jugador y asignar valores
-                jugador j = new jugador(nombre, color);
+                // 🔴 CAMBIADO: crear pingino en lugar de jugador
+                pingino j = new pingino(nombre, color);
                 j.setPosicion(posicion);
                 j.setPierdeTurno(pierdeTurno);
                 j.getInventario().setDaus(dados);

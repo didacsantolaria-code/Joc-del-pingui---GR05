@@ -1,23 +1,25 @@
 package JocDelPingui.model;
 
 public class inventario {
-    private int daus; 
+    private int dausRapidos;
+    private int dausLentos;
     private int peces;
     private int bolasNieve;
     
-    //CONSTRUCTORS
     public inventario() {
-        this.daus = 0;
+        this.dausRapidos = 0;
+        this.dausLentos = 0;
         this.peces = 0;
         this.bolasNieve = 0;
     }
     
     public void inicializarInventario() {
-        this.daus = 1; 
+        this.dausRapidos = 1; // Un dado normal (lo tratamos como rápido para simplificar)
+        this.dausLentos = 0;
         this.peces = 0;
         this.bolasNieve = 0;
     }
-    //METODES
+    
     public void agregarPez() {
         if (peces < 2) peces++;
     }
@@ -34,8 +36,16 @@ public class inventario {
         if (bolasNieve > 0) bolasNieve--;
     }
     
-    public void agregarDado() {
-        if (daus < 3) daus++;
+    public void agregarDado(String tipo) {
+        if (tipo.equals("rapido") || tipo.equals("normal")) {
+            if (dausRapidos + dausLentos < 3) {
+                dausRapidos++;
+            }
+        } else if (tipo.equals("lento")) {
+            if (dausRapidos + dausLentos < 3) {
+                dausLentos++;
+            }
+        }
     }
     
     public void perderObjetoAleatorio() {
@@ -44,42 +54,36 @@ public class inventario {
             peces--;
         } else if (random < 0.66 && bolasNieve > 0) {
             bolasNieve--;
-        } else if (daus > 1) {
-            daus--;
+        } else if (dausRapidos + dausLentos > 1) {
+            if (dausRapidos > 0) {
+                dausRapidos--;
+            } else {
+                dausLentos--;
+            }
         }
     }
     
     public int totalObjetos() {
-        return daus + peces + bolasNieve;
+        return dausRapidos + dausLentos + peces + bolasNieve;
     }
     
     // Getters y Setters
-    public int getDaus() { 
-    	return daus; 
-    }
-    
+    public int getDaus() { return dausRapidos + dausLentos; }
+    public int getDausRapidos() { return dausRapidos; }
+    public int getDausLentos() { return dausLentos; }
     public void setDaus(int daus) { 
-    	this.daus = Math.min(daus, 3); 
+        // Simplificación: asignamos todos como rápidos
+        this.dausRapidos = Math.min(daus, 3); 
+        this.dausLentos = 0;
     }
     
-    public int getPeces() { 
-    	return peces; 
-    }
-    public void setPeces(int peces) { 
-    	this.peces = Math.min(peces, 2); 
-    }
+    public int getPeces() { return peces; }
+    public void setPeces(int peces) { this.peces = Math.min(peces, 2); }
     
-    public int getBolasNieve() { 
-    	return bolasNieve; 
-    }
+    public int getBolasNieve() { return bolasNieve; }
+    public void setBolasNieve(int bolasNieve) { this.bolasNieve = Math.min(bolasNieve, 6); }
     
-    public void setBolasNieve(int bolasNieve) { 
-    	this.bolasNieve = Math.min(bolasNieve, 6); 
-    }
-    
-
     public String mostrar() {
-    	return "Dados=" + daus + " Peces=" + peces + " Bolas de nieve=" + bolasNieve;
+        return "🎲=" + (dausRapidos + dausLentos) + " 🐟=" + peces + " ❄️=" + bolasNieve;
     }
-
 }

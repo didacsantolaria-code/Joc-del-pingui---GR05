@@ -6,6 +6,7 @@ import JocDelPingui.controller.gestionJugador;
 import JocDelPingui.controller.guardarCargar;
 import JocDelPingui.view.missatgesConsola;
 import JocDelPingui.model.jugador;
+import JocDelPingui.model.pingino;
 import JocDelPingui.model.partida;
 
 public class mainPingui {
@@ -13,7 +14,6 @@ public class mainPingui {
         Scanner scanner = new Scanner(System.in);
         missatgesConsola.mostrarBienvenida();
         
-   //MENU INICIAL     
         boolean salir = false;
         while (!salir) {
             missatgesConsola.mostrarMenuPrincipal();
@@ -25,18 +25,12 @@ public class mainPingui {
                     iniciarNuevaPartida(scanner);
                     break;
                 case 2:
-                	cargarPartida(scanner);
+                    cargarPartida(scanner);
                     break;
                 case 3:
                     salir = true;
                     missatgesConsola.mostrarDespedida();
                     break;
-                case 4: // Guardar y salir
-                    guardarCargar gc = new guardarCargar("", "", "");
-                    String nombreArchivo = "partida_" + System.currentTimeMillis() + ".txt";
-                    gc.guardarPartida(partida, nombreArchivo);
-                    System.out.println("Partida guardada. ¡Hasta pronto!");
-                    return;
                 default:
                     System.out.println("Opción no válida");
             }
@@ -54,8 +48,6 @@ public class mainPingui {
         jugarPartida(partida, scanner);
     }
     
-
-    
     private static void jugarPartida(partida partida, Scanner scanner) {
         gestionJugador gestionJugador = new gestionJugador();
         
@@ -63,7 +55,10 @@ public class mainPingui {
             jugador jugadorActual = partida.getJugadores().get(partida.getJugadorActual());
             System.out.println("\n--- Turno de " + jugadorActual.getNombre() + " ---");
             System.out.println("Posición: " + jugadorActual.getPosicion());
-            System.out.println("Inventario: " + jugadorActual.getInventario().mostrar());
+            
+            // 🔴 CAMBIADO: Hacer cast a pingino para acceder al inventario y dado
+            pingino p = (pingino) jugadorActual;
+            System.out.println("Inventario: " + p.getInventario().mostrar());
             
             System.out.println("\nOpciones:");
             System.out.println("1. Tirar dado");
@@ -77,19 +72,20 @@ public class mainPingui {
             switch (opcion) {
                 case 1:
                     gestionJugador.jugadorSeleccion(jugadorActual, 1, 0, partida.getTablero());
-                    int pasos = jugadorActual.getDado().tirar();
+                    // 🔴 CAMBIADO: Usar getDadoActual() en lugar de getDado()
+                    int pasos = p.getDadoActual().tirar();
                     System.out.println("Has sacado un " + pasos);
                     partida.moverJugador(jugadorActual, pasos);
                     gestionJugador.jugadorFinalizarTurno(jugadorActual);
                     partida.siguienteTurno();
                     break;
                 case 2:
-                    if (jugadorActual.getInventario().getBolasNieve() > 0) {
+                    if (p.getInventario().getBolasNieve() > 0) {
                         System.out.print("¿A qué jugador quieres atacar? (0-" + (partida.getJugadores().size()-1) + "): ");
                         int idxObjetivo = scanner.nextInt();
                         if (idxObjetivo >= 0 && idxObjetivo < partida.getJugadores().size() && idxObjetivo != partida.getJugadorActual()) {
                             jugador objetivo = partida.getJugadores().get(idxObjetivo);
-                            jugadorActual.usarBolaNieve(objetivo);
+                            p.usarBolaNieve(objetivo);
                             System.out.println("¡Has hecho retroceder a " + objetivo.getNombre() + "!");
                         } else {
                             System.out.println("Objetivo no válido");
@@ -113,8 +109,9 @@ public class mainPingui {
     private static void mostrarEstadoPartida(partida partida) {
         System.out.println("\n--- ESTADO DE LA PARTIDA ---");
         for (jugador j : partida.getJugadores()) {
+            pingino p = (pingino) j; // Cast a pingino
             System.out.println(j.getNombre() + " (" + j.getColor() + "): Posición " + j.getPosicion() + 
-                             " | Inventario: " + j.getInventario().mostrar());
+                             " | Inventario: " + p.getInventario().mostrar());
         }
         System.out.println("Turno actual: " + partida.getTurnos());
         System.out.println("----------------------------\n");
