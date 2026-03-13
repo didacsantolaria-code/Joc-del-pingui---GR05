@@ -3,7 +3,7 @@ package JocDelPingui.model;
 public class casillaTierraQuebradiza extends casilla {
     
     public casillaTierraQuebradiza(int posicion) {
-        super(posicion, "⚠️ ¡Tierra quebradiza!");
+        super(posicion, "⚠️ ¡Tierra quebradiza!", "/JocDelPingui/images/tierra.png");
     }
     
     @Override

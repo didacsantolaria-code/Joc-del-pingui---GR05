@@ -4,16 +4,13 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import JocDelPingui.model.tablero;
-import JocDelPingui.model.casilla;
 import JocDelPingui.model.partida;
 import JocDelPingui.model.jugador;
+import JocDelPingui.model.casilla; 
 import java.util.ArrayList;
 
 public class tableroCanvas extends Canvas {
     
-    private tablero tablero;
     private partida partida;
     private double anchoCasilla;
     private double altoCasilla;
@@ -21,7 +18,6 @@ public class tableroCanvas extends Canvas {
     public tableroCanvas(partida partida) {
         super(800, 400);
         this.partida = partida;
-        this.tablero = partida.getTablero();
         
         widthProperty().addListener(e -> dibujar());
         heightProperty().addListener(e -> dibujar());
@@ -39,9 +35,11 @@ public class tableroCanvas extends Canvas {
         GraphicsContext gc = getGraphicsContext2D();
         gc.clearRect(0, 0, ancho, alto);
         
+        // Dibujar fondo del tablero
         gc.setFill(Color.web("#e0f2f1"));
         gc.fillRect(0, 0, ancho, alto);
         
+        // Dibujar líneas de la cuadrícula
         gc.setStroke(Color.web("#b0bec5"));
         gc.setLineWidth(1);
         for (int i = 0; i <= 10; i++) {
@@ -51,6 +49,7 @@ public class tableroCanvas extends Canvas {
             gc.strokeLine(0, i * altoCasilla, ancho, i * altoCasilla);
         }
         
+        // Dibujar cada casilla con su imagen
         for (int i = 0; i < 50; i++) {
             int fila = i / 10;
             int columna = i % 10;
@@ -58,43 +57,21 @@ public class tableroCanvas extends Canvas {
             double x = columna * anchoCasilla;
             double y = fila * altoCasilla;
             
-            casilla c = tablero.getCasilla(i);
-            dibujarCasilla(gc, c, x, y, anchoCasilla, altoCasilla, i);
+            casilla c = partida.getTablero().getCasilla(i);
+            
+            // Dibujar la imagen si existe
+            if (c.getImagen() != null) {
+                gc.drawImage(c.getImagen(), x + 5, y + 5, anchoCasilla - 10, altoCasilla - 10);
+            }
+            
+            // Número de casilla
+            gc.setFill(Color.web("#546e7a"));
+            gc.setFont(Font.font("Segoe UI", 10));
+            gc.fillText(String.valueOf(i), x + 5, y + 15);
         }
         
+        // Dibujar fichas de los jugadores
         dibujarFichas(gc);
-    }
-    
-    private void dibujarCasilla(GraphicsContext gc, casilla c, double x, double y, double w, double h, int posicion) {
-        switch (c.getTipo()) {
-            case "OSO": gc.setFill(Color.web("#ffcdd2")); break;
-            case "AGUJERO": gc.setFill(Color.web("#d1c4e9")); break;
-            case "TRINEO": gc.setFill(Color.web("#fff9c4")); break;
-            case "INTERROGANTE": gc.setFill(Color.web("#e1bee7")); break;
-            case "TIERRA_QUEBRADIZA": gc.setFill(Color.web("#ffe0b2")); break;
-            default: gc.setFill(Color.web("#ffffff"));
-        }
-        
-        gc.fillRect(x + 1, y + 1, w - 2, h - 2);
-        
-        gc.setFill(Color.web("#546e7a"));
-        gc.setFont(Font.font("Segoe UI", 10));
-        gc.fillText(String.valueOf(posicion), x + 5, y + 15);
-        
-        gc.setFont(Font.font("Segoe UI", FontWeight.BOLD, 20));
-        gc.setFill(Color.web("#37474f"));
-        
-        String simbolo = "";
-        switch (c.getTipo()) {
-            case "OSO": simbolo = "🐻"; break;
-            case "AGUJERO": simbolo = "⭕"; break;
-            case "TRINEO": simbolo = "⛷️"; break;
-            case "INTERROGANTE": simbolo = "?"; gc.setFont(Font.font("Segoe UI", FontWeight.BOLD, 28)); break;
-            case "TIERRA_QUEBRADIZA": simbolo = "⚠️"; break;
-            default: simbolo = "·";
-        }
-        
-        gc.fillText(simbolo, x + w/2 - 10, y + h/2 + 8);
     }
     
     private void dibujarFichas(GraphicsContext gc) {
@@ -126,13 +103,11 @@ public class tableroCanvas extends Canvas {
             }
             
             gc.fillOval(x - 15 + offsetX, y - 15 + offsetY, 30, 30);
-            
             gc.setStroke(Color.WHITE);
             gc.setLineWidth(2);
             gc.strokeOval(x - 15 + offsetX, y - 15 + offsetY, 30, 30);
-            
             gc.setFill(Color.WHITE);
-            gc.setFont(Font.font("Segoe UI", FontWeight.BOLD, 16));
+            gc.setFont(javafx.scene.text.Font.font("Segoe UI", javafx.scene.text.FontWeight.BOLD, 16));
             gc.fillText(j.getNombre().substring(0, 1), x - 6 + offsetX, y + 6 + offsetY);
         }
     }

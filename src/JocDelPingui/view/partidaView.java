@@ -2,7 +2,7 @@ package JocDelPingui.view;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import JocDelPingui.model.partida;
@@ -11,7 +11,7 @@ import JocDelPingui.model.dado;
 
 public class partidaView {
     
-    @FXML private GridPane tablero;
+    @FXML private StackPane contenedorTablero;  // Nuevo contenedor
     @FXML private Circle P1, P2, P3, P4;
     @FXML private Text dadoResultText;
     @FXML private Text rapido_t, lento_t, peces_t, nieve_t;
@@ -19,7 +19,7 @@ public class partidaView {
     @FXML private Button dado, rapido, lento, peces, nieve;
     
     private partida partida;
-    private static final int COLUMNS = 5;
+    private tableroCanvas tableroCanvas;  // Referencia al canvas
     
     public partidaView() {
     }
@@ -32,6 +32,13 @@ public class partidaView {
     public void setPartida(partida partida) {
         this.partida = partida;
         partida.setVistaActual(this);
+        
+        // Crear y añadir el tableroCanvas al contenedor
+        tableroCanvas = new tableroCanvas(partida);
+        tableroCanvas.setWidth(780);
+        tableroCanvas.setHeight(480);
+        contenedorTablero.getChildren().add(tableroCanvas);
+        
         actualizarInventarios();
         actualizarPosicionesFichas();
     }
@@ -134,15 +141,8 @@ public class partidaView {
     }
 
     private void actualizarPosicionesFichas() {
-        Circle[] fichas = {P1, P2, P3, P4};
-        for (int i = 0; i < partida.getJugadores().size() && i < fichas.length; i++) {
-            if (fichas[i] != null) {
-                int pos = partida.getJugadores().get(i).getPosicion();
-                int fila = pos / 10;
-                int columna = pos % 10;
-                GridPane.setRowIndex(fichas[i], fila);
-                GridPane.setColumnIndex(fichas[i], columna);
-            }
+        if (tableroCanvas != null) {
+            tableroCanvas.actualizar();
         }
     }
 

@@ -3,7 +3,7 @@ package JocDelPingui.model;
 public class casillaAgujero extends casilla {
     
     public casillaAgujero(int posicion) {
-        super(posicion, "🕳️ ¡Caes por un agujero!");
+        super(posicion, "🕳️ ¡Caes por un agujero!", "/JocDelPingui/images/agujero.png");
     }
     
     @Override
