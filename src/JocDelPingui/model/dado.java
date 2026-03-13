@@ -8,7 +8,6 @@ public class dado {
     private int tiradasRealizadas;
     private String tipo; // "normal", "rapido", "lento"
     
-    // Constructor
     public dado() {
         this.random = new Random();
         this.ultimoResultado = 0;
@@ -21,25 +20,6 @@ public class dado {
         this.tipo = tipo;
     }
     
-    // GETTERS
-    public int getUltimoResultado() {
-        return ultimoResultado;
-    }
-    
-    public int getTiradasRealizadas() {
-        return tiradasRealizadas;
-    }
-    public String getTipo() { 
-    	return tipo; 
-    }
-    
-    public void setTipo(String tipo) { 
-    	this.tipo = tipo; 
-    }
-
-    
-    
-    //METODE 
     public int tirar() {
         tiradasRealizadas++;
         
@@ -50,12 +30,17 @@ public class dado {
             case "lento":
                 ultimoResultado = 1 + random.nextInt(3); // 1-3
                 break;
-            default: // normal
+            default:
                 ultimoResultado = 1 + random.nextInt(6); // 1-6
                 break;
         }
         
         return ultimoResultado;
     }
-     
+    
+    // Getters y Setters
+    public int getUltimoResultado() { return ultimoResultado; }
+    public int getTiradasRealizadas() { return tiradasRealizadas; }
+    public String getTipo() { return tipo; }
+    public void setTipo(String tipo) { this.tipo = tipo; }
 }
