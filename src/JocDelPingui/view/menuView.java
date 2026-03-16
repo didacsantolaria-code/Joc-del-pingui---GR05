@@ -7,6 +7,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.geometry.Insets;
 import JocDelPingui.mainApp;
@@ -17,6 +20,7 @@ public class menuView extends VBox {
     @FXML private PasswordField passField;
     @FXML private Button loginButton;
     @FXML private Button registerButton;
+    @FXML private StackPane stackPane;  // Añade esta línea
     
     private mainApp mainApp;
     
@@ -29,6 +33,22 @@ public class menuView extends VBox {
         setSpacing(25);
         setPadding(new Insets(50));
         getStyleClass().add("menu-container");
+        
+        // 🔴 Cargar la imagen desde código Java
+        try {
+            Image imagenFondo = new Image(getClass().getResourceAsStream("/JocDelPingui/view/fondo_login.png"));
+            ImageView imageView = new ImageView(imagenFondo);
+            imageView.setPreserveRatio(false);
+            imageView.fitWidthProperty().bind(stackPane.widthProperty());
+            imageView.fitHeightProperty().bind(stackPane.heightProperty());
+            
+            // Añadir la imagen al fondo del StackPane
+            stackPane.getChildren().add(0, imageView);
+            
+        } catch (Exception e) {
+            System.out.println("No se pudo cargar la imagen de fondo: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
     
     public void setMainApp(mainApp mainApp) {
