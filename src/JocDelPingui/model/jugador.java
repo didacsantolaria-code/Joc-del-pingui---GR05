@@ -19,7 +19,6 @@ public abstract class jugador {
         this.posicion = p;
     }
     
-    // Getters y Setters
     public int getPosicion() { return posicion; }
     public void setPosicion(int posicion) { this.posicion = posicion; }
     public String getNombre() { return nombre; }

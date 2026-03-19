@@ -40,35 +40,20 @@ public class mainApp extends Application {
     }
     
     public void nuevaPartida() {
-        System.out.println("5. ENTRANDO A nuevaPartida()");
         try {
-            System.out.println("6. Creando partida...");
             partida partida = new partida();
             partida.inicializarPartida("Jugador 1");
-            System.out.println("7. Partida creada con " + partida.getJugadores().size() + " jugadores");
             
-            System.out.println("8. Cargando FXML...");
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/JocDelPingui/view/PantallaJuego.fxml"));
             Parent root = loader.load();
-            System.out.println("9. FXML cargado correctamente");
             
-            System.out.println("10. Obteniendo controller...");
             partidaView controller = loader.getController();
-            System.out.println("11. Controller obtenido: " + (controller != null ? "OK" : "NULL"));
-            
-            System.out.println("12. Asignando partida al controller...");
             controller.setPartida(partida);
-            System.out.println("13. Partida asignada");
             
-            System.out.println("14. Creando escena...");
             Scene scene = new Scene(root, 1000, 700);
-            
-            System.out.println("15. Cambiando escena...");
             primaryStage.setScene(scene);
-            System.out.println("16. Escena cambiada - DEBERÍAS VER LA PANTALLA DE JUEGO");
             
         } catch (Exception e) {
-            System.out.println("ERROR: " + e.getMessage());
             e.printStackTrace();
         }
     }

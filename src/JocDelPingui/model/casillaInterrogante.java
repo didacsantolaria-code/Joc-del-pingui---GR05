@@ -4,7 +4,7 @@ public class casillaInterrogante extends casilla {
     private evento evento;
     
     public casillaInterrogante(int posicion) {
-        super(posicion, "❓ Casilla misteriosa");
+        super(posicion, "❓ Casilla misteriosa", "/JocDelPingui/images/interrogante.png");
         this.evento = new evento();
     }
     

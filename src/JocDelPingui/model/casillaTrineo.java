@@ -3,7 +3,7 @@ package JocDelPingui.model;
 public class casillaTrineo extends casilla {
     
     public casillaTrineo(int posicion) {
-        super(posicion, "🛷 ¡Trineo! Avanzas.");
+        super(posicion, "🛷 ¡Trineo! Avanzas.", "/JocDelPingui/images/trineo.png");
     }
     
     @Override
