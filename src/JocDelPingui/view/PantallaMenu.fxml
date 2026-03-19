@@ -19,6 +19,7 @@
     xmlns="http://javafx.com/javafx/21.0.10"
     xmlns:fx="http://javafx.com/fxml/1"
     fx:controller="JocDelPingui.view.menuView"
+    minWidth="600" minHeight="400" prefWidth="1000" prefHeight="700"
     stylesheets="@PantallaMenu.css"
     styleClass="root">
 
