@@ -6,7 +6,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import JocDelPingui.model.partida;
 import JocDelPingui.model.jugador;
-import JocDelPingui.model.casilla; 
+import JocDelPingui.model.casilla;
 import java.util.ArrayList;
 
 public class tableroCanvas extends Canvas {
@@ -16,7 +16,7 @@ public class tableroCanvas extends Canvas {
     private double altoCasilla;
     
     public tableroCanvas(partida partida) {
-        super(800, 400);
+        super(760, 360);
         this.partida = partida;
         
         widthProperty().addListener(e -> dibujar());
@@ -35,13 +35,13 @@ public class tableroCanvas extends Canvas {
         GraphicsContext gc = getGraphicsContext2D();
         gc.clearRect(0, 0, ancho, alto);
         
-        // Dibujar fondo del tablero
+        // Fondo del tablero (hielo)
         gc.setFill(Color.web("#e0f2f1"));
         gc.fillRect(0, 0, ancho, alto);
         
-        // Dibujar líneas de la cuadrícula
-        gc.setStroke(Color.web("#b0bec5"));
-        gc.setLineWidth(1);
+        // Dibujar cuadrícula
+        gc.setStroke(Color.web("#b0e0e6"));
+        gc.setLineWidth(2);
         for (int i = 0; i <= 10; i++) {
             gc.strokeLine(i * anchoCasilla, 0, i * anchoCasilla, alto);
         }
@@ -49,66 +49,90 @@ public class tableroCanvas extends Canvas {
             gc.strokeLine(0, i * altoCasilla, ancho, i * altoCasilla);
         }
         
-        // Dibujar cada casilla con su imagen
+        // Dibujar casillas
         for (int i = 0; i < 50; i++) {
             int fila = i / 10;
             int columna = i % 10;
-            
             double x = columna * anchoCasilla;
             double y = fila * altoCasilla;
             
             casilla c = partida.getTablero().getCasilla(i);
+            String icono = getIconoCasilla(c.getTipo());
             
-            // Dibujar la imagen si existe
-            if (c.getImagen() != null) {
-                gc.drawImage(c.getImagen(), x + 5, y + 5, anchoCasilla - 10, altoCasilla - 10);
-            }
+            // Fondo de la casilla
+            gc.setFill(Color.WHITE);
+            gc.fillRect(x + 2, y + 2, anchoCasilla - 4, altoCasilla - 4);
             
-            // Número de casilla
-            gc.setFill(Color.web("#546e7a"));
-            gc.setFont(Font.font("Segoe UI", 10));
+            // Número
+            gc.setFill(Color.web("#7f8c8d"));
+            gc.setFont(Font.font(10));
             gc.fillText(String.valueOf(i), x + 5, y + 15);
+            
+            // Icono
+            gc.setFill(Color.web("#2c3e50"));
+            gc.setFont(Font.font(24));
+            gc.fillText(icono, x + anchoCasilla/2 - 12, y + altoCasilla/2 + 8);
         }
         
-        // Dibujar fichas de los jugadores
-        dibujarFichas(gc);
+        // Dibujar pingüinos
+        dibujarPinguinos(gc);
     }
     
-    private void dibujarFichas(GraphicsContext gc) {
+    private String getIconoCasilla(String tipo) {
+        return switch(tipo) {
+            case "casillaOso" -> "🐻";
+            case "casillaAgujero" -> "🕳️";
+            case "casillaTrineo" -> "⛷️";
+            case "casillaInterrogante" -> "❓";
+            case "casillaTierraQuebradiza" -> "⚠️";
+            default -> "❄️";
+        };
+    }
+    
+    private void dibujarPinguinos(GraphicsContext gc) {
         ArrayList<jugador> jugadores = partida.getJugadores();
         
         for (int i = 0; i < jugadores.size(); i++) {
             jugador j = jugadores.get(i);
             int pos = j.getPosicion();
-            
             int fila = pos / 10;
             int columna = pos % 10;
             
             double x = columna * anchoCasilla + anchoCasilla / 2;
             double y = fila * altoCasilla + altoCasilla / 2;
             
-            double offsetX = 0, offsetY = 0;
-            switch (i) {
-                case 0: offsetX = -12; offsetY = -12; break;
-                case 1: offsetX = 12; offsetY = -12; break;
-                case 2: offsetX = -12; offsetY = 12; break;
-                case 3: offsetX = 12; offsetY = 12; break;
-            }
+            // Offset para que no se superpongan
+            double offsetX = i == 0 ? -12 : i == 1 ? 12 : i == 2 ? -12 : 12;
+            double offsetY = i < 2 ? -12 : 12;
             
-            switch (j.getColor()) {
-                case "Rojo": gc.setFill(Color.web("#ef5350")); break;
-                case "Azul": gc.setFill(Color.web("#42a5f5")); break;
-                case "Verde": gc.setFill(Color.web("#66bb6a")); break;
-                default: gc.setFill(Color.web("#ffa726")); break;
-            }
+            // Color del pingüino según jugador
+            String color = switch(j.getColor()) {
+                case "Rojo" -> "#e74c3c";
+                case "Azul" -> "#3498db";
+                case "Verde" -> "#2ecc71";
+                default -> "#f1c40f";
+            };
             
+            // Dibujar pingüino (círculo con borde)
+            gc.setFill(Color.web(color));
             gc.fillOval(x - 15 + offsetX, y - 15 + offsetY, 30, 30);
             gc.setStroke(Color.WHITE);
-            gc.setLineWidth(2);
+            gc.setLineWidth(3);
             gc.strokeOval(x - 15 + offsetX, y - 15 + offsetY, 30, 30);
+            
+            // Ojos
             gc.setFill(Color.WHITE);
-            gc.setFont(javafx.scene.text.Font.font("Segoe UI", javafx.scene.text.FontWeight.BOLD, 16));
-            gc.fillText(j.getNombre().substring(0, 1), x - 6 + offsetX, y + 6 + offsetY);
+            gc.fillOval(x - 8 + offsetX, y - 8 + offsetY, 6, 6);
+            gc.fillOval(x + 2 + offsetX, y - 8 + offsetY, 6, 6);
+            gc.setFill(Color.BLACK);
+            gc.fillOval(x - 6 + offsetX, y - 6 + offsetY, 3, 3);
+            gc.fillOval(x + 4 + offsetX, y - 6 + offsetY, 3, 3);
+            
+            // Pico
+            gc.setFill(Color.ORANGE);
+            double[] xPoints = {x + offsetX, x + 5 + offsetX, x - 5 + offsetX};
+            double[] yPoints = {y + 2 + offsetY, y + 8 + offsetY, y + 8 + offsetY};
+            gc.fillPolygon(xPoints, yPoints, 3);
         }
     }
     

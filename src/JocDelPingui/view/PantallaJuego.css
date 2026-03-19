@@ -1,127 +1,213 @@
+/* ===== FUENTES ===== */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&family=Varela+Round&display=swap');
+
 .root {
-    -fx-font-family: "System";
-    -fx-background-color: #f6f7fb;
+    -fx-font-family: 'Nunito', 'Varela Round', sans-serif;
+    -fx-background-image: url('/JocDelPingui/images/fondo_juego.png');
+    -fx-background-size: cover;
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
 }
 
-/* MENU */
-.menu-bar {
+/* ===== FONDO CON AURORAS ===== */
+.aurora {
+    -fx-background-color: linear-gradient(to bottom, rgba(120,200,255,0.3), rgba(0,50,100,0.5));
+}
+
+.snowflake {
+    -fx-font-size: 18px;
+    -fx-opacity: 0.3;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, white, 5, 0, 0, 0);
+}
+
+/* ===== CONTENEDOR PRINCIPAL ===== */
+.main-container {
+    -fx-padding: 15px;
+    -fx-spacing: 15px;
+}
+
+/* ===== TABLERO ===== */
+.board-container {
+    -fx-background-color: #B0E0E6;
+    -fx-background-radius: 20px;
+    -fx-padding: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 20, 0, 0, 5);
+}
+
+.board-grid {
+    -fx-background-color: #E0F2F1;
+    -fx-background-radius: 15px;
+    -fx-padding: 8px;
+    -fx-hgap: 5px;
+    -fx-vgap: 5px;
+}
+
+.casilla {
     -fx-background-color: white;
-    -fx-border-color: #e6e7ee;
-    -fx-border-width: 0 0 1 0;
+    -fx-background-radius: 8px;
+    -fx-border-color: #ADD8E6;
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;
+    -fx-padding: 3px;
+    -fx-min-width: 50px;
+    -fx-min-height: 50px;
+    -fx-pref-width: 60px;
+    -fx-pref-height: 60px;
+    -fx-alignment: top-left;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0, 0, 1);
 }
 
-/* TABLERO */
-.board {
-    -fx-background-color: white;
-    -fx-background-radius: 14;
-    -fx-padding: 14;
-    -fx-border-color: #e6e7ee;
-    -fx-border-radius: 14;
-
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 14, 0.15, 0, 2);
-}
-
-/* TEXTOS DEL TABLERO */
-.cell-title {
-    -fx-font-size: 22px;
-    -fx-opacity: 0.65;
-}
-
-.cell-type {
-    -fx-font-size: 12px;
+.casilla-numero {
+    -fx-font-size: 10px;
+    -fx-text-fill: #2C3E50;
     -fx-font-weight: bold;
-    -fx-opacity: 0.85;
 }
 
-/* BARRA INFERIOR */
-.bottom-bar {
-    -fx-background-color: transparent;
+/* ===== PANEL LATERAL ===== */
+.side-panel {
+    -fx-background-color: rgba(255, 255, 255, 0.9);
+    -fx-background-radius: 20px;
+    -fx-padding: 15px;
+    -fx-spacing: 15px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 15, 0, 0, 5);
+    -fx-min-width: 220px;
+    -fx-pref-width: 250px;
+    -fx-max-width: 280px;
 }
 
-/* TARJETAS */
-.card {
-    -fx-background-color: white;
-    -fx-background-radius: 14;
-    -fx-padding: 14;
-    -fx-border-color: #e6e7ee;
-    -fx-border-radius: 14;
-
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 14, 0.15, 0, 2);
+.panel-titulo {
+    -fx-font-size: 20px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #1E3C72;
+    -fx-alignment: center;
 }
 
-.card-title {
+/* Dado */
+.dado-container {
+    -fx-alignment: center;
+    -fx-spacing: 10px;
+}
+
+.boton-primario {
+    -fx-background-color: #2196F3;
+    -fx-background-radius: 25px;
+    -fx-text-fill: white;
     -fx-font-size: 16px;
     -fx-font-weight: bold;
-    -fx-opacity: 0.75;
+    -fx-padding: 10px 15px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0, 0, 2);
+    -fx-cursor: hand;
 }
 
-.big-text {
-    -fx-font-size: 22px;
+.boton-primario:hover {
+    -fx-background-color: #1976D2;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 8, 0, 0, 3);
+}
+
+/* Objetos */
+.objetos-container {
+    -fx-spacing: 8px;
+}
+
+.objeto-item {
+    -fx-background-color: #F5F5F5;
+    -fx-background-radius: 12px;
+    -fx-padding: 8px;
+    -fx-alignment: center-left;
+}
+
+.objeto-icono {
+    -fx-font-size: 20px;
+}
+
+.objeto-cantidad {
+    -fx-font-size: 16px;
     -fx-font-weight: bold;
+    -fx-text-fill: #1E3C72;
 }
 
-.stat {
-    -fx-font-size: 15px;
-    -fx-opacity: 0.85;
+.boton-usar {
+    -fx-background-color: #FFA726;
+    -fx-background-radius: 15px;
+    -fx-text-fill: #1E3C72;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-padding: 5px 12px;
+    -fx-cursor: hand;
 }
 
-.events {
+/* Eventos */
+.eventos-container {
+    -fx-spacing: 8px;
+    -fx-max-height: 180px;
+}
+
+.evento-mensaje {
+    -fx-background-color: #E1F5FE;
+    -fx-background-radius: 10px;
+    -fx-padding: 6px 10px;
+    -fx-spacing: 8px;
+    -fx-alignment: center-left;
+}
+
+.evento-icono {
     -fx-font-size: 14px;
-    -fx-opacity: 0.85;
 }
 
-/* BOTONES */
-.button {
-    -fx-background-radius: 10;
-    -fx-padding: 8 14;
-    -fx-background-color: #eef0f6;
-    -fx-text-fill: #1f2330;
+.evento-texto {
+    -fx-font-size: 12px;
+    -fx-text-fill: #1E3C72;
+}
+
+/* ===== BARRA INFERIOR ===== */
+.footer {
+    -fx-background-color: #B3E5FC;
+    -fx-border-color: #81D4FA;
+    -fx-border-width: 2px 0 0 0;
+    -fx-padding: 8px 15px;
+    -fx-alignment: center-left;
+    -fx-spacing: 15px;
+}
+
+.footer-titulo {
+    -fx-font-size: 20px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #1E3C72;
+    -fx-alignment: center-left;
+}
+
+.footer-icono {
+    -fx-font-size: 30px;
+}
+
+/* Avatares */
+.avatar-container {
+    -fx-spacing: 12px;
+    -fx-alignment: center-right;
+}
+
+.avatar-badge {
+    -fx-background-radius: 15px;
+    -fx-padding: 2px 10px;
+    -fx-font-size: 10px;
     -fx-font-weight: bold;
-}
-
-.button:hover {
-    -fx-background-color: #e6e8f0;
-}
-
-.button.primary {
-    -fx-background-color: #2f6fed;
     -fx-text-fill: white;
 }
 
-.button.primary:hover {
-    -fx-background-color: #295fd0;
+.badge-rojo { -fx-background-color: #E53935; }
+.badge-azul { -fx-background-color: #1E88E5; }
+.badge-verde { -fx-background-color: #43A047; }
+.badge-amarillo { -fx-background-color: #FDD835; -fx-text-fill: #1E3C72; }
+
+/* ===== DECORACIÓN ===== */
+.mountain-left, .mountain-right {
+    -fx-font-size: 80px;
+    -fx-opacity: 0.3;
+    -fx-rotate: 0;
 }
 
-/* SCROLL */
-.objects-scroll {
-    -fx-background-color: transparent;
-}
-
-.objects-scroll > .viewport {
-    -fx-background-color: transparent;
-}
-
-/* ========================= */
-/*        JUGADORES          */
-/* ========================= */
-
-.player {
-    -fx-stroke: white;
-    -fx-stroke-width: 3;
-
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.45), 8, 0.35, 0, 2);
-
-    -fx-scale-x: 1.05;
-    -fx-scale-y: 1.05;
-}
-
-/* Colores por ID (robusto en JavaFX 21) */
-#P1 { -fx-fill: #2f6fed; }  /* azul */
-#P2 { -fx-fill: #ef4444; }  /* rojo */
-#P3 { -fx-fill: #22c55e; }  /* verde */
-#P4 { -fx-fill: #facc15; }  /* amarillo */
-
-/* Si quieres marcar el jugador activo, añade/quita esta clase desde Java */
-.current-player {
-    -fx-effect: dropshadow(gaussian, gold, 12, 0.6, 0, 0);
+.igloo-left, .igloo-right {
+    -fx-font-size: 40px;
+    -fx-opacity: 0.5;
 }

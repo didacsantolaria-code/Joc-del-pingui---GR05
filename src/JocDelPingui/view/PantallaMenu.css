@@ -7,29 +7,30 @@
 .menu-bar {
     -fx-background-color: white;
     -fx-border-color: #e6e7ee;
-    -fx-border-width: 0 0 1 0;
+    -fx-border-width: 0 0 1px 0;
 }
 
 /* CARD */
 .card {
-    -fx-background-color: white;
-    -fx-background-radius: 16;
+    -fx-background-color: rgba(255, 255, 255, 0.85);
+    -fx-background-radius: 16px;
     -fx-border-color: #e6e7ee;
-    -fx-border-radius: 16;
-
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 16, 0.15, 0, 2);
+    -fx-border-radius: 16px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 20, 0, 0, 5);
+    -fx-max-width: 400px;
+    -fx-min-width: 300px;
 }
 
 /* TITLES */
 .title {
-    -fx-font-size: 26px;
+    -fx-font-size: 24px;
     -fx-font-weight: 800;
     -fx-text-fill: #1f2330;
     -fx-alignment: center;
 }
 
 .subtitle {
-    -fx-font-size: 13px;
+    -fx-font-size: 14px;
     -fx-opacity: 0.65;
 }
 
@@ -41,24 +42,21 @@
 }
 
 .field {
-    -fx-background-radius: 10;
-    -fx-border-radius: 10;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
     -fx-border-color: #e6e7ee;
     -fx-background-color: #fbfbfe;
-    -fx-padding: 10 12;
+    -fx-padding: 8px 10px;
 }
 
 /* BUTTONS */
 .button {
-    -fx-background-radius: 10;
-    -fx-padding: 10 14;
+    -fx-background-radius: 8px;
+    -fx-padding: 8px 12px;
     -fx-background-color: #eef0f6;
     -fx-text-fill: #1f2330;
     -fx-font-weight: bold;
-}
-
-.button:hover {
-    -fx-background-color: #e6e8f0;
+    -fx-font-size: 14px;
 }
 
 .button.primary {
@@ -66,18 +64,8 @@
     -fx-text-fill: white;
 }
 
-.button.primary:hover {
-    -fx-background-color: #295fd0;
-}
-
 /* Hint */
 .hint {
-    -fx-font-size: 12px;
+    -fx-font-size: 11px;
     -fx-opacity: 0.6;
-}
-
-.card {
-    -fx-background-color: rgba(255, 255, 255, 0.85); /* blanco semitransparente */
-    -fx-background-radius: 20;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 20, 0, 0, 5);
 }
