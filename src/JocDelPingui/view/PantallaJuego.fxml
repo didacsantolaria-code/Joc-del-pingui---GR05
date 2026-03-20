@@ -37,10 +37,6 @@
                 
                 <!-- PANEL IZQUIERDO (TABLERO) -->
                 <VBox spacing="20" HBox.hgrow="ALWAYS">
-                    <!-- Montaña izquierda decorativa -->
-                    <StackPane alignment="TOP_LEFT">
-                        <Text text="🏔️" styleClass="mountain-left" />
-                    </StackPane>
                     
                     <!-- Contenedor del tablero -->
                     <StackPane styleClass="board-container" VBox.vgrow="ALWAYS">
@@ -67,12 +63,6 @@
                             </rowConstraints>
                         </GridPane>
                     </StackPane>
-                    
-                    <!-- Igloos decorativos -->
-                    <HBox alignment="CENTER" spacing="400">
-                        <Text text="🪹" styleClass="igloo-left" />
-                        <Text text="🪹" styleClass="igloo-right" />
-                    </HBox>
                 </VBox>
                 
                 <!-- PANEL LATERAL DERECHO -->
@@ -88,7 +78,7 @@
 				                   style="-fx-font-size: 30px; -fx-font-weight: bold; -fx-translate-y: -5;" />
 				        </StackPane>
 				        
-				        <Button fx:id="tirarDadoBtn" text="TIRAR DADO" styleClass="boton-primario" maxWidth="Infinity" />
+				        <Button fx:id="tirarDadoBtn" text="TIRAR DADO" onAction='#handleTirarDado' styleClass="boton-primario" maxWidth="Infinity" />
 				    </VBox>
                     
                     <!-- SECCIÓN OBJETOS -->
