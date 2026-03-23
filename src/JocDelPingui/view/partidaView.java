@@ -113,7 +113,7 @@ public class partidaView {
             StackPane.setAlignment(numero, Pos.TOP_LEFT);
             StackPane.setMargin(numero, new javafx.geometry.Insets(2, 0, 0, 2));
 
-            boolean esCasillaNormal = c instanceof JocDelPingui.model.casillaNormal && i != 0 && i != 49;
+            boolean esCasillaNormal = c.getTipo().equals("casillaNormal") && i != 0 && i != 49;
 
             if (esCasillaNormal) {
                 // Casillas normales: solo el número, sin imagen
@@ -123,11 +123,14 @@ public class partidaView {
                 try {
                     String rutaImagen = c.getRutaImagen();
                     System.out.println("Cargando: " + rutaImagen);
+
                     Image imagen = new Image(getClass().getResourceAsStream(rutaImagen));
                     ImageView imageView = new ImageView(imagen);
-                    imageView.setFitWidth(35);
-                    imageView.setFitHeight(35);
+                    imageView.setFitWidth(30); // se reduce un poco el tamaño para que quepa bien
+                    imageView.setFitHeight(30);
                     imageView.setPreserveRatio(true);
+
+                    // Alinear la foto arriba a la derecha
                     StackPane.setAlignment(imageView, Pos.TOP_RIGHT);
                     StackPane.setMargin(imageView, new javafx.geometry.Insets(2, 2, 0, 0));
 
@@ -136,7 +139,9 @@ public class partidaView {
                 } catch (Exception e) {
                     System.out.println("Error con: " + c.getRutaImagen());
                     Text icono = new Text("❄️");
-                    icono.setStyle("-fx-font-size: 30px;");
+                    icono.setStyle("-fx-font-size: 20px;");
+                    StackPane.setAlignment(icono, Pos.TOP_RIGHT);
+                    StackPane.setMargin(icono, new javafx.geometry.Insets(2, 2, 0, 0));
                     casillaPane.getChildren().addAll(numero, icono);
                 }
             }
