@@ -1,118 +1,187 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.layout.Region?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.image.ImageView?>
 
-<BorderPane
-    xmlns="http://javafx.com/javafx/21.0.10"
-    xmlns:fx="http://javafx.com/fxml/1"
-    fx:controller="JocDelPingui.view.partidaView"
-    stylesheets="@PantallaJuego.css"
-    styleClass="root">
+<BorderPane xmlns="http://javafx.com/javafx/21.0.10"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="JocDelPingui.view.partidaView"
+            minWidth="800" minHeight="600" prefWidth="1200" prefHeight="800"
+            stylesheets="@PantallaJuego.css"
+            styleClass="root">
 
-    <top>
-        <MenuBar>
-            <menus>
-                <Menu mnemonicParsing="false" text="File">
-                    <items>
-                        <MenuItem fx:id="newGame" mnemonicParsing="false" text="New" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem fx:id="saveGame" mnemonicParsing="false" text="Save" onAction="#handleSaveGame"/>
-                        <MenuItem fx:id="loadGame" mnemonicParsing="false" text="Load" onAction="#handleLoadGame"/>
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem fx:id="quitGame" mnemonicParsing="false" text="Quit" onAction="#handleQuitGame"/>
-                    </items>
-                </Menu>
-            </menus>
-        </MenuBar>
-    </top>
-
+    <!-- AURORAS BOREALES (fondo) -->
     <center>
         <StackPane>
-            <padding>
-                <Insets top="20" right="20" bottom="20" left="20"/>
-            </padding>
+            <!-- Copos de nieve animados (se añadirán por código) -->
             
-            <!-- Este StackPane contendrá el tableroCanvas que se añadirá desde el código -->
-            <StackPane fx:id="contenedorTablero" styleClass="board" prefHeight="520.0" prefWidth="800.0" />
-            
+            <!-- CONTENEDOR PRINCIPAL -->
+            <HBox styleClass="main-container" alignment="CENTER" spacing="20">
+                <padding>
+                    <Insets top="20" right="20" bottom="20" left="20" />
+                </padding>
+                
+                <!-- PANEL IZQUIERDO (TABLERO) -->
+                <VBox spacing="20" HBox.hgrow="ALWAYS">
+                    
+                    <!-- Contenedor del tablero -->
+                    <StackPane styleClass="board-container" VBox.vgrow="ALWAYS">
+                        <GridPane fx:id="tableroGrid" styleClass="board-grid" 
+                                  alignment="CENTER" hgap="8" vgap="8">
+                            <columnConstraints>
+                                <ColumnConstraints percentWidth="10" />
+                                <ColumnConstraints percentWidth="10" />
+                                <ColumnConstraints percentWidth="10" />
+                                <ColumnConstraints percentWidth="10" />
+                                <ColumnConstraints percentWidth="10" />
+                                <ColumnConstraints percentWidth="10" />
+                                <ColumnConstraints percentWidth="10" />
+                                <ColumnConstraints percentWidth="10" />
+                                <ColumnConstraints percentWidth="10" />
+                                <ColumnConstraints percentWidth="10" />
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints percentHeight="20" />
+                                <RowConstraints percentHeight="20" />
+                                <RowConstraints percentHeight="20" />
+                                <RowConstraints percentHeight="20" />
+                                <RowConstraints percentHeight="20" />
+                            </rowConstraints>
+                        </GridPane>
+                    </StackPane>
+                </VBox>
+                
+                <!-- PANEL LATERAL DERECHO -->
+				<VBox styleClass="side-panel" spacing="25" prefWidth="300">
+				    
+				    <!-- SECCIÓN DADO -->
+				    <VBox spacing="15" alignment="CENTER">
+				        <Label text="DADO" styleClass="panel-titulo" />
+				        
+				        <StackPane styleClass="dado-container">
+				            <ImageView fx:id="dadoImagen" fitWidth="80" fitHeight="80" preserveRatio="true" />
+				            <Label fx:id="dadoResultado" text="5" 
+				                   style="-fx-font-size: 30px; -fx-font-weight: bold; -fx-translate-y: -5;" />
+				        </StackPane>
+				        
+				        <Button fx:id="tirarDadoBtn" text="TIRAR DADO" onAction='#handleTirarDado' styleClass="boton-primario" maxWidth="Infinity" />
+				    </VBox>
+                    
+                    <!-- SECCIÓN OBJETOS -->
+                    <VBox spacing="15">
+                        <Label text="OBJETOS" styleClass="panel-titulo" />
+                        
+                        <VBox styleClass="objetos-container">
+                            <!-- Dado rápido -->
+                            <HBox styleClass="objeto-item" alignment="CENTER_LEFT">
+                                <Text text="⚡" styleClass="objeto-icono" />
+                                <Label text="Dado rápido" styleClass="objeto-cantidad" />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Label fx:id="rapidoCantidad" text="2" styleClass="objeto-cantidad" />
+                                <Button fx:id="usarRapidoBtn" text="USAR" styleClass="boton-usar" />
+                            </HBox>
+                            
+                            <!-- Dado lento -->
+                            <HBox styleClass="objeto-item" alignment="CENTER_LEFT">
+                                <Text text="🐢" styleClass="objeto-icono" />
+                                <Label text="Dado lento" styleClass="objeto-cantidad" />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Label fx:id="lentoCantidad" text="1" styleClass="objeto-cantidad" />
+                                <Button fx:id="usarLentoBtn" text="USAR" styleClass="boton-usar" />
+                            </HBox>
+                            
+                            <!-- Peces -->
+                            <HBox styleClass="objeto-item" alignment="CENTER_LEFT">
+                                <Text text="🐟" styleClass="objeto-icono" />
+                                <Label text="Peces" styleClass="objeto-cantidad" />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Label fx:id="pecesCantidad" text="1" styleClass="objeto-cantidad" />
+                                <Button fx:id="usarPezBtn" text="USAR" styleClass="boton-usar" />
+                            </HBox>
+                            
+                            <!-- Bolas de nieve -->
+                            <HBox styleClass="objeto-item" alignment="CENTER_LEFT">
+                                <Text text="⚪" styleClass="objeto-icono" />
+                                <Label text="Bolas nieve" styleClass="objeto-cantidad" />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Label fx:id="nieveCantidad" text="3" styleClass="objeto-cantidad" />
+                                <Button fx:id="usarNieveBtn" text="USAR" styleClass="boton-usar" />
+                            </HBox>
+                        </VBox>
+                    </VBox>
+                    
+                    <!-- SECCIÓN EVENTOS -->
+                    <VBox spacing="15" VBox.vgrow="ALWAYS">
+                        <Label text="EVENTOS" styleClass="panel-titulo" />
+                        
+                        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" 
+                                   style="-fx-background: transparent; -fx-background-color: transparent;">
+                            <VBox fx:id="eventosLista" spacing="8" styleClass="eventos-container">
+                                <padding>
+                                    <Insets top="5" right="5" bottom="5" left="5" />
+                                </padding>
+                            </VBox>
+                        </ScrollPane>
+                    </VBox>
+                </VBox>
+            </HBox>
         </StackPane>
     </center>
-
+    
+    <!-- BARRA INFERIOR -->
     <bottom>
-        <HBox spacing="16" styleClass="bottom-bar">
+        <HBox styleClass="footer" alignment="CENTER_LEFT">
             <padding>
-                <Insets top="16" right="16" bottom="16" left="16"/>
+                <Insets left="30" right="30" />
             </padding>
-
-            <!-- Tarjeta Dado -->
-            <VBox spacing="10" styleClass="card" prefWidth="280">
-                <Label text="Dado" styleClass="card-title" />
-                <Text fx:id="dadoResultText" text="Ha salido: -" styleClass="big-text" wrappingWidth="240" />
-                <Button fx:id="dado" text="Tirar dado" onAction="#handleDado"
-                        maxWidth="Infinity" styleClass="primary" />
-            </VBox>
-
-            <!-- Tarjeta Objetos -->
-            <VBox spacing="10" styleClass="card" HBox.hgrow="ALWAYS">
-                <Label text="Objetos" styleClass="card-title" />
-
-                <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="objects-scroll">
-                    <content>
-                        <VBox spacing="10">
-                            <padding>
-                                <Insets top="6" right="6" bottom="6" left="6"/>
-                            </padding>
-
-                            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="row">
-                                <Text fx:id="rapido_t" text="Dado rápido: 0" styleClass="stat" />
-                                <Region HBox.hgrow="ALWAYS" />
-                                <Button fx:id="rapido" text="Usar" onAction="#handleRapido"/>
-                            </HBox>
-
-                            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="row">
-                                <Text fx:id="lento_t" text="Dado lento: 0" styleClass="stat" />
-                                <Region HBox.hgrow="ALWAYS" />
-                                <Button fx:id="lento" text="Usar" onAction="#handleLento"/>
-                            </HBox>
-
-                            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="row">
-                                <Text fx:id="peces_t" text="Peces: 0" styleClass="stat" />
-                                <Region HBox.hgrow="ALWAYS" />
-                                <Button fx:id="peces" text="Usar" onAction="#handlePeces"/>
-                            </HBox>
-
-                            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="row">
-                                <Text fx:id="nieve_t" text="Bolas de nieve: 0" styleClass="stat" />
-                                <Region HBox.hgrow="ALWAYS" />
-                                <Button fx:id="nieve" text="Usar" onAction="#handleNieve"/>
-                            </HBox>
-
-                        </VBox>
-                    </content>
-                </ScrollPane>
-            </VBox>
-
-            <!-- Tarjeta Eventos -->
-            <VBox spacing="10" styleClass="card" prefWidth="320">
-                <Label text="Eventos" styleClass="card-title" />
-                <Text fx:id="eventos" text="Evento ocurrido" styleClass="events" wrappingWidth="280" />
-            </VBox>
-
+            
+            <!-- Título e icono -->
+            <Text text="🐧" styleClass="footer-icono" />
+            <Label text="PINGÜI JOC - AVENTURA EN EL HIELO" styleClass="footer-titulo" />
+            
+            <Region HBox.hgrow="ALWAYS" />
+            
+            <!-- Avatares de jugadores -->
+            <HBox styleClass="avatar-container" spacing="10">
+                <!-- Rojo -->
+                <VBox alignment="CENTER" spacing="2">
+                    <Text text="🐧" style="-fx-font-size: 40px;" />
+                    <Label text="PINGÜINO" styleClass="avatar-badge, badge-rojo" />
+                </VBox>
+                
+                <!-- Azul -->
+                <VBox alignment="CENTER" spacing="2">
+                    <Text text="🐧" style="-fx-font-size: 40px;" />
+                    <Label text="PINGÜINO" styleClass="avatar-badge, badge-azul" />
+                </VBox>
+                
+                <!-- Verde -->
+                <VBox alignment="CENTER" spacing="2">
+                    <Text text="🐧" style="-fx-font-size: 40px;" />
+                    <Label text="PINGÜINO" styleClass="avatar-badge, badge-verde" />
+                </VBox>
+                
+                <!-- Amarillo -->
+                <VBox alignment="CENTER" spacing="2">
+                    <Text text="🐧" style="-fx-font-size: 40px;" />
+                    <Label text="PINGÜINO" styleClass="avatar-badge, badge-amarillo" />
+                </VBox>
+            </HBox>
         </HBox>
     </bottom>
-
+    
 </BorderPane>

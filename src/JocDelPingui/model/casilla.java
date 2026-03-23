@@ -1,28 +1,31 @@
 package JocDelPingui.model;
 
-import javafx.scene.image.Image;
-
 public abstract class casilla {
     protected int posicion;
     protected String descripcion;
-    protected Image imagen;
     
-    public casilla(int posicion, String descripcion, String rutaImagen) {
+    public casilla(int posicion, String descripcion) {
         this.posicion = posicion;
         this.descripcion = descripcion;
-        
-
-        try {
-            this.imagen = new Image(getClass().getResourceAsStream(rutaImagen));
-        } catch (Exception e) {
-            System.out.println("No se pudo cargar la imagen: " + rutaImagen);
-            this.imagen = null;
-        }
     }
     
     public abstract void realizarAccion(partida partida, jugador jugador);
     
-    public Image getImagen() { return imagen; }
+    public String getRutaImagen() {
+        if (this instanceof casillaNormal) {
+            if (posicion == 0) return "/JocDelPingui/images/casilla_meta.png";  // O salida si tuvieras
+            if (posicion == 49) return "/JocDelPingui/images/casilla_meta.png";
+            return "/JocDelPingui/images/casilla_normal.png";
+        }
+        if (this instanceof casillaOso) return "/JocDelPingui/images/casilla_oso.png";
+        if (this instanceof casillaAgujero) return "/JocDelPingui/images/casilla_agujero.png";
+        if (this instanceof casillaTrineo) return "/JocDelPingui/images/casilla_trineo.png";
+        if (this instanceof casillaInterrogante) return "/JocDelPingui/images/casilla_interrogante.png";
+        if (this instanceof casillaTierraQuebradiza) return "/JocDelPingui/images/casilla_tierrarota.png";
+        
+        return "/JocDelPingui/images/casilla_normal.png";
+    }
+    
     public int getPosicion() { return posicion; }
     public String getDescripcion() { return descripcion; }
     public String getTipo() { return this.getClass().getSimpleName(); }
