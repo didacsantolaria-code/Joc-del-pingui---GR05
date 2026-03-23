@@ -113,22 +113,32 @@ public class partidaView {
             StackPane.setAlignment(numero, Pos.TOP_LEFT);
             StackPane.setMargin(numero, new javafx.geometry.Insets(2, 0, 0, 2));
 
-            try {
-                String rutaImagen = c.getRutaImagen();
-                System.out.println("Cargando: " + rutaImagen);
-                Image imagen = new Image(getClass().getResourceAsStream(rutaImagen));
-                ImageView imageView = new ImageView(imagen);
-                imageView.setFitWidth(50);
-                imageView.setFitHeight(50);
-                imageView.setPreserveRatio(true);
+            boolean esCasillaNormal = c instanceof JocDelPingui.model.casillaNormal && i != 0 && i != 49;
 
-                casillaPane.getChildren().addAll(numero, imageView);
+            if (esCasillaNormal) {
+                // Casillas normales: solo el número, sin imagen
+                casillaPane.getChildren().add(numero);
+            } else {
+                // Casillas especiales: imagen en la esquina superior derecha
+                try {
+                    String rutaImagen = c.getRutaImagen();
+                    System.out.println("Cargando: " + rutaImagen);
+                    Image imagen = new Image(getClass().getResourceAsStream(rutaImagen));
+                    ImageView imageView = new ImageView(imagen);
+                    imageView.setFitWidth(35);
+                    imageView.setFitHeight(35);
+                    imageView.setPreserveRatio(true);
+                    StackPane.setAlignment(imageView, Pos.TOP_RIGHT);
+                    StackPane.setMargin(imageView, new javafx.geometry.Insets(2, 2, 0, 0));
 
-            } catch (Exception e) {
-                System.out.println("Error con: " + c.getRutaImagen());
-                Text icono = new Text("❄️");
-                icono.setStyle("-fx-font-size: 30px;");
-                casillaPane.getChildren().addAll(numero, icono);
+                    casillaPane.getChildren().addAll(numero, imageView);
+
+                } catch (Exception e) {
+                    System.out.println("Error con: " + c.getRutaImagen());
+                    Text icono = new Text("❄️");
+                    icono.setStyle("-fx-font-size: 30px;");
+                    casillaPane.getChildren().addAll(numero, icono);
+                }
             }
 
             casillasGraficas.add(casillaPane);
