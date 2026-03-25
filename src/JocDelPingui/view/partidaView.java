@@ -6,7 +6,9 @@ import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -23,6 +25,7 @@ import JocDelPingui.model.casilla;
 import JocDelPingui.model.dado;
 
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.Random;
 
 public class partidaView {
@@ -273,7 +276,7 @@ public class partidaView {
 
     @FXML
     private void handleTirarDado() {
-        if (partida == null)
+        if (partida == null || partida.isFinalizada())
             return;
 
         int idxActual = partida.getJugadorActual();
@@ -292,10 +295,33 @@ public class partidaView {
         // Animar la ficha del jugador en la vista
         moverFicha(idxActual, jugadorActual.getPosicion());
 
+        // Comprobar si el jugador ha llegado a la meta
+        if (partida.isFinalizada()) {
+            agregarEvento("🏆 ¡" + jugadorActual.getNombre() + " ha llegado a la meta!");
+            mostrarVictoria(jugadorActual);
+            return;
+        }
+
         // Actualizar inventario, turno, etc.
         actualizarInventarios();
         partida.siguienteTurno();
         marcarJugadorActual();
+    }
+
+    private void mostrarVictoria(jugador ganador) {
+        // Desactivar todos los botones de juego
+        tirarDadoBtn.setDisable(true);
+        usarRapidoBtn.setDisable(true);
+        usarLentoBtn.setDisable(true);
+        usarPezBtn.setDisable(true);
+        usarNieveBtn.setDisable(true);
+
+        // Mostrar alerta de victoria
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("¡Fin de la partida!");
+        alert.setHeaderText("🏆 ¡" + ganador.getNombre() + " ha ganado!");
+        alert.setContentText("¡Felicidades! " + ganador.getNombre() + " ha sido el primero en llegar a la meta.");
+        alert.showAndWait();
     }
 
     private void animarDado(int resultado) {
@@ -313,6 +339,7 @@ public class partidaView {
 
     @FXML
     private void handleUsarRapido() {
+        if (partida == null || partida.isFinalizada()) return;
         int idxActual = partida.getJugadorActual();
         pingino p = (pingino) partida.getJugadores().get(idxActual);
 
@@ -325,6 +352,7 @@ public class partidaView {
 
     @FXML
     private void handleUsarLento() {
+        if (partida == null || partida.isFinalizada()) return;
         int idxActual = partida.getJugadorActual();
         pingino p = (pingino) partida.getJugadores().get(idxActual);
 
@@ -337,6 +365,7 @@ public class partidaView {
 
     @FXML
     private void handleUsarPez() {
+        if (partida == null || partida.isFinalizada()) return;
         int idxActual = partida.getJugadorActual();
         pingino p = (pingino) partida.getJugadores().get(idxActual);
 
@@ -349,6 +378,7 @@ public class partidaView {
 
     @FXML
     private void handleUsarNieve() {
+        if (partida == null || partida.isFinalizada()) return;
         int idxActual = partida.getJugadorActual();
         pingino p = (pingino) partida.getJugadores().get(idxActual);
 
