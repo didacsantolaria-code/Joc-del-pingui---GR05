@@ -41,18 +41,14 @@
     </top>
 
     <center>
-        <StackPane fx:id="stackPane">
-            
-            <VBox spacing="16" styleClass="card" maxWidth="420" StackPane.alignment="CENTER">
+        <StackPane fx:id="stackPane" alignment="CENTER">
+
+            <VBox spacing="16" styleClass="card" maxWidth="420" maxHeight="450" StackPane.alignment="CENTER">
                 <padding>
                     <Insets top="28" right="28" bottom="28" left="28"/>
                 </padding>
 
-                <VBox spacing="6" alignment="CENTER">
-                    <Label text="EL JUEGO DEL PINGÜINO" styleClass="title" wrapText="true"/>
-                </VBox>
 
-                <Region prefHeight="8"/>
 
                 <VBox spacing="10">
                     <Label text="Usuario" styleClass="field-label"/>
