@@ -6,7 +6,9 @@ import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -23,6 +25,7 @@ import JocDelPingui.model.casilla;
 import JocDelPingui.model.dado;
 
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.Random;
 
 public class partidaView {
@@ -113,22 +116,37 @@ public class partidaView {
             StackPane.setAlignment(numero, Pos.TOP_LEFT);
             StackPane.setMargin(numero, new javafx.geometry.Insets(2, 0, 0, 2));
 
-            try {
-                String rutaImagen = c.getRutaImagen();
-                System.out.println("Cargando: " + rutaImagen);
-                Image imagen = new Image(getClass().getResourceAsStream(rutaImagen));
-                ImageView imageView = new ImageView(imagen);
-                imageView.setFitWidth(50);
-                imageView.setFitHeight(50);
-                imageView.setPreserveRatio(true);
+            boolean esCasillaNormal = c.getTipo().equals("casillaNormal") && i != 0 && i != 49;
 
-                casillaPane.getChildren().addAll(numero, imageView);
+            if (esCasillaNormal) {
+                // Casillas normales: solo el número, sin imagen
+                casillaPane.getChildren().add(numero);
+            } else {
+                // Casillas especiales: imagen en la esquina superior derecha
+                try {
+                    String rutaImagen = c.getRutaImagen();
+                    System.out.println("Cargando: " + rutaImagen);
 
-            } catch (Exception e) {
-                System.out.println("Error con: " + c.getRutaImagen());
-                Text icono = new Text("❄️");
-                icono.setStyle("-fx-font-size: 30px;");
-                casillaPane.getChildren().addAll(numero, icono);
+                    Image imagen = new Image(getClass().getResourceAsStream(rutaImagen));
+                    ImageView imageView = new ImageView(imagen);
+                    imageView.setFitWidth(30); // se reduce un poco el tamaño para que quepa bien
+                    imageView.setFitHeight(30);
+                    imageView.setPreserveRatio(true);
+
+                    // Alinear la foto arriba a la derecha
+                    StackPane.setAlignment(imageView, Pos.TOP_RIGHT);
+                    StackPane.setMargin(imageView, new javafx.geometry.Insets(2, 2, 0, 0));
+
+                    casillaPane.getChildren().addAll(numero, imageView);
+
+                } catch (Exception e) {
+                    System.out.println("Error con: " + c.getRutaImagen());
+                    Text icono = new Text("❄️");
+                    icono.setStyle("-fx-font-size: 20px;");
+                    StackPane.setAlignment(icono, Pos.TOP_RIGHT);
+                    StackPane.setMargin(icono, new javafx.geometry.Insets(2, 2, 0, 0));
+                    casillaPane.getChildren().addAll(numero, icono);
+                }
             }
 
             casillasGraficas.add(casillaPane);
@@ -258,7 +276,7 @@ public class partidaView {
 
     @FXML
     private void handleTirarDado() {
-        if (partida == null)
+        if (partida == null || partida.isFinalizada())
             return;
 
         int idxActual = partida.getJugadorActual();
@@ -277,10 +295,33 @@ public class partidaView {
         // Animar la ficha del jugador en la vista
         moverFicha(idxActual, jugadorActual.getPosicion());
 
+        // Comprobar si el jugador ha llegado a la meta
+        if (partida.isFinalizada()) {
+            agregarEvento("🏆 ¡" + jugadorActual.getNombre() + " ha llegado a la meta!");
+            mostrarVictoria(jugadorActual);
+            return;
+        }
+
         // Actualizar inventario, turno, etc.
         actualizarInventarios();
         partida.siguienteTurno();
         marcarJugadorActual();
+    }
+
+    private void mostrarVictoria(jugador ganador) {
+        // Desactivar todos los botones de juego
+        tirarDadoBtn.setDisable(true);
+        usarRapidoBtn.setDisable(true);
+        usarLentoBtn.setDisable(true);
+        usarPezBtn.setDisable(true);
+        usarNieveBtn.setDisable(true);
+
+        // Mostrar alerta de victoria
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("¡Fin de la partida!");
+        alert.setHeaderText("🏆 ¡" + ganador.getNombre() + " ha ganado!");
+        alert.setContentText("¡Felicidades! " + ganador.getNombre() + " ha sido el primero en llegar a la meta.");
+        alert.showAndWait();
     }
 
     private void animarDado(int resultado) {
@@ -298,6 +339,7 @@ public class partidaView {
 
     @FXML
     private void handleUsarRapido() {
+        if (partida == null || partida.isFinalizada()) return;
         int idxActual = partida.getJugadorActual();
         pingino p = (pingino) partida.getJugadores().get(idxActual);
 
@@ -310,6 +352,7 @@ public class partidaView {
 
     @FXML
     private void handleUsarLento() {
+        if (partida == null || partida.isFinalizada()) return;
         int idxActual = partida.getJugadorActual();
         pingino p = (pingino) partida.getJugadores().get(idxActual);
 
@@ -322,6 +365,7 @@ public class partidaView {
 
     @FXML
     private void handleUsarPez() {
+        if (partida == null || partida.isFinalizada()) return;
         int idxActual = partida.getJugadorActual();
         pingino p = (pingino) partida.getJugadores().get(idxActual);
 
@@ -334,6 +378,7 @@ public class partidaView {
 
     @FXML
     private void handleUsarNieve() {
+        if (partida == null || partida.isFinalizada()) return;
         int idxActual = partida.getJugadorActual();
         pingino p = (pingino) partida.getJugadores().get(idxActual);
 
