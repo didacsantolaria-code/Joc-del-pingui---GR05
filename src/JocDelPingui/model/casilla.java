@@ -19,6 +19,9 @@ public abstract class casilla {
                 return "/JocDelPingui/images/casilla_meta.png";
             return "/JocDelPingui/images/casilla_normal.png";
         }
+        if (this instanceof casillaOso)
+            return "/JocDelPingui/images/casilla_oso.png";
+        if (this instanceof casillaAgujero)
             return "/JocDelPingui/images/casilla_agujero.png";
         if (this instanceof casillaTrineo)
             return "/JocDelPingui/images/casilla_trineo.png";
