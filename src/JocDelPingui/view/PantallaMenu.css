@@ -12,13 +12,15 @@
 
 /* CARD */
 .card {
-    -fx-background-color: rgba(255, 255, 255, 0.85);
+    -fx-background-color: rgba(255, 255, 255, 0.80);
     -fx-background-radius: 16px;
-    -fx-border-color: #e6e7ee;
+    -fx-border-color: rgba(255, 255, 255, 0.9);
     -fx-border-radius: 16px;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 20, 0, 0, 5);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 20, 0, 0, 5);
     -fx-max-width: 400px;
     -fx-min-width: 300px;
+    -fx-max-height: 420px;
+    -fx-alignment: center;
 }
 
 /* TITLES */
