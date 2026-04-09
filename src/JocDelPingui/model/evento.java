@@ -14,17 +14,17 @@ public class evento {
         
         if (tipo < 20) {
             ((pingino)jugador).getInventario().agregarPez();
-            partida.mostrarMensaje("¡Has encontrado un pez! 🐟");
+            partida.mostrarMensaje("¡Has encontrado un pez!");
             
         } else if (tipo < 45) {
             int cantidad = 1 + random.nextInt(3);
             ((pingino)jugador).getInventario().agregarBolaNieve(cantidad);
-            partida.mostrarMensaje("¡Has encontrado " + cantidad + " bola(s) de nieve! ❄️");
+            partida.mostrarMensaje("¡Has encontrado " + cantidad + " bola(s) de nieve!");
             
         } else if (tipo < 60) {
             if (random.nextInt(100) < 30) {
                 ((pingino)jugador).getInventario().agregarDado("rapido");
-                partida.mostrarMensaje("¡Has conseguido un DADO RÁPIDO! (5-10 casillas) ⚡");
+                partida.mostrarMensaje("¡Has conseguido un DADO RÁPIDO! (5-10 casillas)");
             }
         } else if (tipo < 75) {
             ((pingino)jugador).getInventario().agregarDado("lento");

@@ -3,12 +3,12 @@ package JocDelPingui.model;
 public class casillaAgujero extends casilla {
     
     public casillaAgujero(int posicion) {
-        super(posicion, "🕳️ ¡Caes por un agujero!");
+        super(posicion, "¡Caes por un agujero!");
     }
     
     @Override
     public void realizarAccion(partida partida, jugador jugador) {
-        partida.mostrarMensaje("🕳️ ¡Caes por un agujero! Retrocedes.");
+        partida.mostrarMensaje("¡Caes por un agujero! Retrocedes.");
         int nuevaPos = buscarAgujeroAnterior(posicion);
         jugador.setPosicion(nuevaPos);
     }

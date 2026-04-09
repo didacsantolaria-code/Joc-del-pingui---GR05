@@ -56,6 +56,15 @@ public class partidaView {
     private VBox eventosLista;
     @FXML
     private ImageView dadoImagen;
+    @FXML 
+    private ImageView iconoRapido;
+    @FXML 
+    private ImageView iconoLento;
+    @FXML 
+    private ImageView iconoPez;
+    @FXML 
+    private ImageView iconoNieve;
+    
 
     private partida partida;
     private Random random = new Random();
@@ -73,11 +82,48 @@ public class partidaView {
 
         // Inicializar con valores de ejemplo
         dadoResultado.setText("5");
-        agregarEvento("🎮 Turno de: Pingüino Rojo");
-        agregarEvento("❄️ ¡Has encontrado 3 bolas de nieve!");
-        agregarEvento("🐻 ¡Un oso te ataca!");
 
         dadoResultado.setVisible(false);
+        
+     // Cargar imágenes de objetos
+        cargarImagen(iconoRapido, "dado_rapido.png");
+        cargarImagen(iconoLento, "dado_lento.png");
+        cargarImagen(iconoPez, "pez.png");
+        cargarImagen(iconoNieve, "bola_nieve.png");
+        
+     // Cargar imágenes de los objetos del panel lateral
+        cargarImagenObjeto(iconoRapido, "dado_rapido.png");
+        cargarImagenObjeto(iconoLento, "dado_lento.png");
+        cargarImagenObjeto(iconoPez, "pez.png");
+        cargarImagenObjeto(iconoNieve, "bola_nieve.png");
+    }
+    
+    private void cargarImagen(ImageView imageView, String nombreArchivo) {
+        try {
+            String ruta = "/JocDelPingui/images/" + nombreArchivo;
+            Image imagen = new Image(getClass().getResourceAsStream(ruta));
+            imageView.setImage(imagen);
+        } catch (Exception e) {
+            System.out.println("No se pudo cargar la imagen: " + nombreArchivo);
+            // Opcional: mostrar un emoji como fallback
+            Text fallback = new Text("❓");
+            fallback.setStyle("-fx-font-size: 16px;");
+            // No es trivial reemplazar el ImageView por Text, así que mejor dejamos el ImageView vacío
+        }
+    }
+    
+    private void cargarImagenObjeto(ImageView imageView, String nombreArchivo) {
+        try {
+            String ruta = "/JocDelPingui/images/" + nombreArchivo;
+            Image img = new Image(getClass().getResourceAsStream(ruta));
+            imageView.setImage(img);
+        } catch (Exception e) {
+            System.out.println("No se pudo cargar imagen objeto: " + nombreArchivo);
+            // Opcional: poner un emoji de fallback
+            Text fallback = new Text("?");
+            fallback.setStyle("-fx-font-size: 16px;");
+            // No podemos añadir el Text al ImageView fácilmente, así que mejor dejar vacío
+        }
     }
 
     public void setPartida(partida partida) {
@@ -297,7 +343,7 @@ public class partidaView {
 
         // Comprobar si el jugador ha llegado a la meta
         if (partida.isFinalizada()) {
-            agregarEvento("🏆 ¡" + jugadorActual.getNombre() + " ha llegado a la meta!");
+            agregarEvento("¡" + jugadorActual.getNombre() + " ha llegado a la meta!");
             mostrarVictoria(jugadorActual);
             return;
         }
@@ -319,7 +365,7 @@ public class partidaView {
         // Mostrar alerta de victoria
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("¡Fin de la partida!");
-        alert.setHeaderText("🏆 ¡" + ganador.getNombre() + " ha ganado!");
+        alert.setHeaderText("¡" + ganador.getNombre() + " ha ganado!");
         alert.setContentText("¡Felicidades! " + ganador.getNombre() + " ha sido el primero en llegar a la meta.");
         alert.showAndWait();
     }
@@ -345,7 +391,7 @@ public class partidaView {
 
         if (p.getInventario().getDausRapidos() > 0) {
             p.setDadoActual(new dado("rapido"));
-            agregarEvento("⚡ ¡Dado rápido activado! (5-10 casillas)");
+            agregarEvento("¡Dado rápido activado! (5-10 casillas)");
             actualizarInventarios();
         }
     }
@@ -358,7 +404,7 @@ public class partidaView {
 
         if (p.getInventario().getDausLentos() > 0) {
             p.setDadoActual(new dado("lento"));
-            agregarEvento("🐢 ¡Dado lento activado! (1-3 casillas)");
+            agregarEvento("¡Dado lento activado! (1-3 casillas)");
             actualizarInventarios();
         }
     }
@@ -370,9 +416,9 @@ public class partidaView {
         pingino p = (pingino) partida.getJugadores().get(idxActual);
 
         if (p.getInventario().getPeces() > 0) {
-            agregarEvento("🐟 Usaste un pez (tienes " + p.getInventario().getPeces() + ")");
+            agregarEvento("Usaste un pez (tienes " + p.getInventario().getPeces() + ")");
         } else {
-            agregarEvento("❌ No tienes peces");
+            agregarEvento("No tienes peces");
         }
     }
 
@@ -388,7 +434,7 @@ public class partidaView {
             jugador objetivoJugador = partida.getJugadores().get(objetivo);
 
             p.usarBolaNieve(objetivoJugador);
-            agregarEvento("❄️ " + p.getNombre() + " lanzó una bola de nieve a " +
+            agregarEvento(p.getNombre() + " lanzó una bola de nieve a " +
                     objetivoJugador.getNombre());
 
             // Animar retroceso del objetivo
@@ -396,7 +442,7 @@ public class partidaView {
 
             actualizarInventarios();
         } else {
-            agregarEvento("❌ No tienes bolas de nieve");
+            agregarEvento("No tienes bolas de nieve");
         }
     }
 
@@ -415,36 +461,69 @@ public class partidaView {
         eventoBox.setAlignment(Pos.CENTER_LEFT);
         eventoBox.getStyleClass().add("evento-mensaje");
 
-        // Icono según el mensaje
-        String icono = "📢";
-        if (mensaje.contains("Turno"))
-            icono = "🎮";
-        else if (mensaje.contains("nieve") || mensaje.contains("❄️"))
-            icono = "❄️";
-        else if (mensaje.contains("oso") || mensaje.contains("🐻"))
-            icono = "🐻";
-        else if (mensaje.contains("pez") || mensaje.contains("🐟"))
-            icono = "🐟";
-        else if (mensaje.contains("rápido") || mensaje.contains("⚡"))
-            icono = "⚡";
-        else if (mensaje.contains("lento") || mensaje.contains("🐢"))
-            icono = "🐢";
-
-        Text iconoText = new Text(icono);
-        iconoText.getStyleClass().add("evento-icono");
+        // Cargar imagen según el mensaje
+        ImageView imagenEvento = new ImageView();
+        imagenEvento.setFitWidth(20);
+        imagenEvento.setFitHeight(20);
+        imagenEvento.setPreserveRatio(true);
+        cargarImagenEvento(imagenEvento, mensaje);
 
         Text mensajeText = new Text(mensaje);
         mensajeText.getStyleClass().add("evento-texto");
         mensajeText.setWrappingWidth(200);
 
-        eventoBox.getChildren().addAll(iconoText, mensajeText);
-
+        eventoBox.getChildren().addAll(imagenEvento, mensajeText);
         eventosLista.getChildren().add(0, eventoBox);
 
         // Limitar a 10 eventos
         if (eventosLista.getChildren().size() > 10) {
             eventosLista.getChildren().remove(10, eventosLista.getChildren().size());
         }
+    }
+    
+    private void cargarImagenEvento(ImageView imageView, String mensaje) {
+        String nombreArchivo = obtenerNombreImagenEvento(mensaje);
+        if (nombreArchivo == null) return;
+
+        try {
+            String ruta = "/JocDelPingui/images/" + nombreArchivo;
+            Image img = new Image(getClass().getResourceAsStream(ruta));
+            imageView.setImage(img);
+        } catch (Exception e) {
+            // Si no existe, no mostrar nada (o podrías mostrar un emoji de fallback)
+            System.out.println("No se pudo cargar imagen evento: " + nombreArchivo);
+        }
+    }
+    
+    private String obtenerNombreImagenEvento(String mensaje) {
+        if (mensaje.contains("Dado rápido activado") || mensaje.contains("DADO RÁPIDO"))
+            return "dado_rapido.png";
+        if (mensaje.contains("Dado lento activado") || mensaje.contains("dado lento"))
+            return "dado_lento.png";
+        if (mensaje.contains("lanzó una bola de nieve") || mensaje.contains("bola(s) de nieve"))
+            return "bola_nieve.png";
+        if (mensaje.contains("Usaste un pez") || mensaje.contains("pez"))
+            return "pez.png";
+
+        if (mensaje.contains("pez")) return "pez.png";
+        if (mensaje.contains("bola(s) de nieve")) return "bola_nieve.png";
+        if (mensaje.contains("DADO RÁPIDO")) return "dado_rapido.png";
+        if (mensaje.contains("dado lento")) return "dado_lento.png";
+        if (mensaje.contains("Pierdes un turno")) return "evento_perder_turno.png";
+        if (mensaje.contains("perdido un objeto")) return "evento_perder_objeto.png";
+
+        if (mensaje.contains("Casilla misteriosa") || mensaje.contains("❓"))
+            return "casilla_interrogante.png";
+        if (mensaje.contains("oso")) return "casilla_oso.png";
+        if (mensaje.contains("Trineo")) return "casilla_trineo.png";
+        if (mensaje.contains("agujero")) return "casilla_agujero.png";
+        if (mensaje.contains("tierra") || mensaje.contains("Tierra")) return "casilla_tierrarota.png";
+
+        if (mensaje.contains("Turno de")) return "evento_turno.png";
+        if (mensaje.contains("ha llegado a la meta") || mensaje.contains("GANA"))
+            return "casilla_meta.png";
+
+        return null;
     }
 
     public void agregarMensaje(String mensaje) {
