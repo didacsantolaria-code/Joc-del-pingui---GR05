@@ -182,7 +182,8 @@ public class seleccionView {
             String color = colores[i].getValue();
 
             if (nombre.isEmpty()) {
-                nombre = "Jugador " + (i + 1);
+                lblError.setText("¡Todos los jugadores deben tener un nombre!");
+                return;
             }
 
             if (color == null || color.isEmpty()) {

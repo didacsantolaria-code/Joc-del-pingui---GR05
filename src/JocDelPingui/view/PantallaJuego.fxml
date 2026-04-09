@@ -164,30 +164,7 @@
             <Region HBox.hgrow="ALWAYS" />
             
             <!-- Avatares de jugadores -->
-            <HBox styleClass="avatar-container" spacing="10">
-                <!-- Rojo -->
-                <VBox alignment="CENTER" spacing="2">
-                    <Text text="🐧" style="-fx-font-size: 40px;" />
-                    <Label text="PINGÜINO" styleClass="avatar-badge, badge-rojo" />
-                </VBox>
-                
-                <!-- Azul -->
-                <VBox alignment="CENTER" spacing="2">
-                    <Text text="🐧" style="-fx-font-size: 40px;" />
-                    <Label text="PINGÜINO" styleClass="avatar-badge, badge-azul" />
-                </VBox>
-                
-                <!-- Verde -->
-                <VBox alignment="CENTER" spacing="2">
-                    <Text text="🐧" style="-fx-font-size: 40px;" />
-                    <Label text="PINGÜINO" styleClass="avatar-badge, badge-verde" />
-                </VBox>
-                
-                <!-- Amarillo -->
-                <VBox alignment="CENTER" spacing="2">
-                    <Text text="🐧" style="-fx-font-size: 40px;" />
-                    <Label text="PINGÜINO" styleClass="avatar-badge, badge-amarillo" />
-                </VBox>
+            <HBox fx:id="avatarContainer" styleClass="avatar-container" spacing="10">
             </HBox>
         </HBox>
     </bottom>
