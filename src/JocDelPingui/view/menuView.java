@@ -56,13 +56,19 @@ public class menuView extends VBox {
     }
     
     @FXML
+    private void handleSalirPrograma(ActionEvent event) {
+        javafx.application.Platform.exit();
+        System.exit(0);
+    }
+    
+    @FXML
     private void handleLogin(ActionEvent event) {
         String username = userField.getText();
         String password = passField.getText();
         
         if (!username.isEmpty() && !password.isEmpty()) {
             if (mainApp != null) {
-                mainApp.nuevaPartida();
+                mainApp.mostrarSeleccion();
             }
         }
     }
@@ -74,7 +80,7 @@ public class menuView extends VBox {
     @FXML
     private void handleNewGame() {
         if (mainApp != null) {
-            mainApp.nuevaPartida();
+            mainApp.mostrarSeleccion();
         }
     }
     

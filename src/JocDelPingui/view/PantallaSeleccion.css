@@ -1,0 +1,207 @@
+.root {
+    -fx-font-family: "System";
+    -fx-background-color: #f6f7fb;
+    -fx-background-image: url("fondo_login.png");
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+}
+
+/* SCROLLPANE TRANSPARENTE PARA QUE SE VEA EL FONDO */
+.scroll-pane {
+    -fx-background: transparent;
+    -fx-background-color: transparent;
+}
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+/* CARDS */
+.card-seleccion {
+    -fx-background-color: rgba(255, 255, 255, 0.80);
+    -fx-background-radius: 16px;
+    -fx-border-color: rgba(255, 255, 255, 0.9);
+    -fx-border-radius: 16px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 20, 0, 0, 5);
+    -fx-alignment: center;
+}
+
+/* TÍTULOS */
+.titulo-seleccion {
+    -fx-font-size: 22px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #1f2330;
+    -fx-alignment: center;
+}
+
+.titulo-seccion {
+    -fx-font-size: 16px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #1f2330;
+}
+
+/* FIELDS */
+.field-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #1f2330;
+    -fx-font-weight: bold;
+    -fx-opacity: 0.75;
+}
+
+.field {
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: #e6e7ee;
+    -fx-background-color: #fbfbfe;
+    -fx-text-fill: #1f2330;
+    -fx-prompt-text-fill: #a0a0a0;
+    -fx-padding: 8px 10px;
+    -fx-font-size: 13px;
+}
+
+/* FILA JUGADOR */
+.fila-jugador {
+    -fx-padding: 8px 12px;
+    -fx-background-color: rgba(0, 0, 0, 0.03);
+    -fx-background-radius: 10px;
+    -fx-border-color: #e6e7ee;
+    -fx-border-radius: 10px;
+}
+
+.icono-jugador {
+    -fx-font-size: 20px;
+}
+
+/* COMBO COLOR */
+.combo-color {
+    -fx-background-color: #fbfbfe;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: #e6e7ee;
+    -fx-pref-width: 120px;
+    -fx-font-size: 13px;
+}
+
+/* BOTÓN CONTADOR +/- */
+.btn-counter {
+    -fx-background-color: #2f6fed;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+    -fx-background-radius: 50%;
+    -fx-min-width: 34px;
+    -fx-min-height: 34px;
+    -fx-max-width: 34px;
+    -fx-max-height: 34px;
+    -fx-cursor: hand;
+}
+
+.btn-counter:hover {
+    -fx-background-color: #1e5ed6;
+}
+
+/* NÚMERO DE JUGADORES */
+.num-jugadores {
+    -fx-font-size: 26px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #1f2330;
+    -fx-min-width: 36px;
+    -fx-alignment: center;
+}
+
+/* BOTÓN JUGAR */
+.btn-jugar {
+    -fx-background-color: #2f6fed;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+    -fx-background-radius: 10px;
+    -fx-padding: 10px 20px;
+    -fx-cursor: hand;
+}
+
+.btn-jugar:hover {
+    -fx-background-color: #1e5ed6;
+}
+
+/* BOTÓN CONTINUAR */
+.btn-continuar {
+    -fx-background-color: #43A047;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-background-radius: 10px;
+    -fx-padding: 8px 16px;
+    -fx-cursor: hand;
+}
+
+.btn-continuar:hover {
+    -fx-background-color: #388E3C;
+}
+
+.btn-continuar:disabled {
+    -fx-opacity: 0.5;
+}
+
+/* LISTAS */
+.lista-partidas, .lista-ranking {
+    -fx-background-color: #fbfbfe;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: #e6e7ee;
+}
+
+.lista-partidas .list-cell, .lista-ranking .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #1f2330;
+    -fx-font-size: 13px;
+    -fx-padding: 6px 8px;
+}
+
+.lista-partidas .list-cell:selected, .lista-ranking .list-cell:selected {
+    -fx-background-color: rgba(47, 111, 237, 0.15);
+    -fx-text-fill: #1f2330;
+}
+
+/* SEPARATOR */
+.separator .line {
+    -fx-border-color: #e6e7ee;
+    -fx-border-width: 1px 0 0 0;
+}
+
+/* BUTTONS base */
+.button {
+    -fx-background-radius: 8px;
+    -fx-padding: 8px 12px;
+    -fx-background-color: #eef0f6;
+    -fx-text-fill: #1f2330;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+.button.primary {
+    -fx-background-color: #2f6fed;
+    -fx-text-fill: white;
+}
+
+/* ERROR */
+.error-label {
+    -fx-text-fill: #e53935;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+}
+
+/* BOTÓN VOLVER */
+.btn-volver {
+    -fx-background-color: #E53935;
+    -fx-background-radius: 12px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 8px 15px;
+    -fx-cursor: hand;
+}
+
+.btn-volver:hover {
+    -fx-background-color: #C62828;
+}

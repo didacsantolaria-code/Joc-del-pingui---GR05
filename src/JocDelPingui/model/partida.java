@@ -22,11 +22,10 @@ public class partida {
         this.idPartida = "PARTIDA_" + System.currentTimeMillis();
     }
 
-    public void inicializarPartida(String nombreUsuario) {
-        jugadores.add(new pingino(nombreUsuario, "Azul"));
-        jugadores.add(new pingino("Jugador 2", "Rojo"));
-        jugadores.add(new pingino("Jugador 3", "Verde"));
-        jugadores.add(new pingino("Jugador 4", "Amarillo"));
+    public void inicializarPartida(ArrayList<String[]> jugadoresInfo) {
+        for (String[] info : jugadoresInfo) {
+            jugadores.add(new pingino(info[0], info[1]));
+        }
     }
 
     public void moverJugador(jugador jugador, int pasos) {

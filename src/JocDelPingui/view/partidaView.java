@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
@@ -18,6 +19,7 @@ import javafx.scene.text.Text;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
+import JocDelPingui.mainApp;
 import JocDelPingui.model.partida;
 import JocDelPingui.model.pingino;
 import JocDelPingui.model.jugador;
@@ -64,9 +66,14 @@ public class partidaView {
     private ImageView iconoPez;
     @FXML 
     private ImageView iconoNieve;
+    @FXML
+    private Button guardarBtn;
+    @FXML
+    private Button salirBtn;
     
 
     private partida partida;
+    private mainApp mainApp;
     private Random random = new Random();
     private ArrayList<StackPane> casillasGraficas = new ArrayList<>();
     private ArrayList<StackPane> fichasJugadores = new ArrayList<>();
@@ -141,6 +148,60 @@ public class partidaView {
 
         // Marcar jugador actual
         marcarJugadorActual();
+    }
+
+    public void setMainApp(mainApp mainApp) {
+        this.mainApp = mainApp;
+    }
+
+    @FXML
+    private void handleGuardarPartida() {
+        // TODO: En el futuro, guardar en base de datos
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.initOwner(tableroGrid.getScene().getWindow());
+        alert.setTitle("Guardar Partida");
+        alert.setHeaderText("Partida guardada");
+        alert.setContentText("La partida se ha guardado correctamente.\n(Funcionalidad pendiente de conexión a BBDD)");
+        alert.showAndWait();
+        agregarEvento("💾 Partida guardada");
+    }
+
+    @FXML
+    private void handleSalir() {
+        ButtonType btnGuardar = new ButtonType("Guardar y Salir", ButtonBar.ButtonData.YES);
+        ButtonType btnSalir = new ButtonType("Salir sin guardar", ButtonBar.ButtonData.NO);
+        ButtonType btnCancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.initOwner(tableroGrid.getScene().getWindow());
+        alert.setTitle("Salir de la partida");
+        alert.setHeaderText("¿Quieres guardar la partida antes de salir?");
+        alert.setContentText("Si sales sin guardar, perderás el progreso actual.");
+        alert.getButtonTypes().setAll(btnGuardar, btnSalir, btnCancelar);
+
+        Optional<ButtonType> resultado = alert.showAndWait();
+        if (resultado.isPresent()) {
+            if (resultado.get() == btnGuardar) {
+                // Guardar y salir
+                handleGuardarPartida();
+                volverAlMenu();
+            } else if (resultado.get() == btnSalir) {
+                // Salir sin guardar
+                volverAlMenu();
+            }
+            // Si es Cancelar, no hacer nada
+        }
+    }
+
+    private void volverAlMenu() {
+        if (mainApp != null) {
+            mainApp.mostrarSeleccion();
+        } else {
+            // Intentar cerrar la ventana si no hay mainApp
+            if (tableroGrid.getScene() != null) {
+                tableroGrid.getScene().getWindow().hide();
+            }
+        }
     }
 
     private void crearTablero() {
@@ -246,29 +307,31 @@ public class partidaView {
     }
 
     private void crearFichasJugadores() {
-        // Colores de los pingüinos
-        String[] colores = { "Rojo", "Azul", "Verde", "Amarillo" };
-        String[] estilos = { "badge-rojo", "badge-azul", "badge-verde", "badge-amarillo" };
+        int numJugadores = partida.getJugadores().size();
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < numJugadores; i++) {
+            jugador j = partida.getJugadores().get(i);
             StackPane ficha = new StackPane();
             ficha.setPrefSize(40, 40);
             ficha.setMaxSize(40, 40);
 
-            // Círculo de fondo
+            // Círculo de fondo según el color del jugador
             javafx.scene.shape.Circle circulo = new javafx.scene.shape.Circle(20);
-            switch (i) {
-                case 0:
+            switch (j.getColor()) {
+                case "Rojo":
                     circulo.setFill(javafx.scene.paint.Color.web("#E53935"));
                     break;
-                case 1:
+                case "Azul":
                     circulo.setFill(javafx.scene.paint.Color.web("#1E88E5"));
                     break;
-                case 2:
+                case "Verde":
                     circulo.setFill(javafx.scene.paint.Color.web("#43A047"));
                     break;
-                case 3:
+                case "Amarillo":
                     circulo.setFill(javafx.scene.paint.Color.web("#FDD835"));
+                    break;
+                default:
+                    circulo.setFill(javafx.scene.paint.Color.web("#9E9E9E"));
                     break;
             }
 
@@ -364,6 +427,9 @@ public class partidaView {
 
         // Mostrar alerta de victoria
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        if (tableroGrid != null && tableroGrid.getScene() != null) {
+            alert.initOwner(tableroGrid.getScene().getWindow());
+        }
         alert.setTitle("¡Fin de la partida!");
         alert.setHeaderText("¡" + ganador.getNombre() + " ha ganado!");
         alert.setContentText("¡Felicidades! " + ganador.getNombre() + " ha sido el primero en llegar a la meta.");

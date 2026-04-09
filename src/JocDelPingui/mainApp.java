@@ -3,11 +3,14 @@ package JocDelPingui;
 import JocDelPingui.model.partida;
 import JocDelPingui.view.menuView;
 import JocDelPingui.view.partidaView;
+import JocDelPingui.view.seleccionView;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import java.util.ArrayList;
 
 public class mainApp extends Application {
     
@@ -19,6 +22,8 @@ public class mainApp extends Application {
         this.primaryStage.setTitle("El Joc del Pingüí");
         this.primaryStage.setMinWidth(1000);
         this.primaryStage.setMinHeight(700);
+        this.primaryStage.setFullScreenExitHint("");
+        this.primaryStage.setFullScreen(true);
         
         mostrarMenu();
     }
@@ -31,28 +36,61 @@ public class mainApp extends Application {
             menuView controller = loader.getController();
             controller.setMainApp(this);
             
-            Scene scene = new Scene(root, 1000, 700);
-            primaryStage.setScene(scene);
+            if (primaryStage.getScene() == null) {
+                Scene scene = new Scene(root, 1000, 700);
+                primaryStage.setScene(scene);
+                primaryStage.setFullScreenExitHint("");
+                primaryStage.setFullScreen(true);
+            } else {
+                primaryStage.getScene().setRoot(root);
+            }
             primaryStage.show();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
     
-    public void nuevaPartida() {
+    public void mostrarSeleccion() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/JocDelPingui/view/PantallaSeleccion.fxml"));
+            Parent root = loader.load();
+            
+            seleccionView controller = loader.getController();
+            controller.setMainApp(this);
+            
+            if (primaryStage.getScene() == null) {
+                Scene scene = new Scene(root, 1000, 700);
+                primaryStage.setScene(scene);
+                primaryStage.setFullScreenExitHint("");
+                primaryStage.setFullScreen(true);
+            } else {
+                primaryStage.getScene().setRoot(root);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void nuevaPartida(ArrayList<String[]> jugadoresInfo) {
         try {
             partida partida = new partida();
-            partida.inicializarPartida("Jugador 1");
+            partida.inicializarPartida(jugadoresInfo);
             
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/JocDelPingui/view/PantallaJuego.fxml"));
             Parent root = loader.load();
             
             partidaView controller = loader.getController();
             controller.setPartida(partida);
+            controller.setMainApp(this);
             
-            Scene scene = new Scene(root, 1000, 700);
-            primaryStage.setScene(scene);
-            
+            if (primaryStage.getScene() == null) {
+                Scene scene = new Scene(root, 1000, 700);
+                primaryStage.setScene(scene);
+                primaryStage.setFullScreenExitHint("");
+                primaryStage.setFullScreen(true);
+            } else {
+                primaryStage.getScene().setRoot(root);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

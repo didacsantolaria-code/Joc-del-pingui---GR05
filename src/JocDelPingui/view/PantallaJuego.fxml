@@ -137,6 +137,14 @@
                             </VBox>
                         </ScrollPane>
                     </VBox>
+                    
+                    <!-- BOTONES GUARDAR Y SALIR -->
+                    <VBox spacing="8">
+                        <Button fx:id="guardarBtn" text="💾  Guardar Partida" onAction="#handleGuardarPartida" 
+                                maxWidth="Infinity" styleClass="boton-guardar" />
+                        <Button fx:id="salirBtn" text="🚪  Salir" onAction="#handleSalir" 
+                                maxWidth="Infinity" styleClass="boton-salir" />
+                    </VBox>
                 </VBox>
             </HBox>
         </StackPane>
