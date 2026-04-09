@@ -211,3 +211,32 @@
     -fx-font-size: 40px;
     -fx-opacity: 0.5;
 }
+
+/* ===== BOTONES GUARDAR / SALIR ===== */
+.boton-guardar {
+    -fx-background-color: #43A047;
+    -fx-background-radius: 12px;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 15px;
+    -fx-cursor: hand;
+}
+
+.boton-guardar:hover {
+    -fx-background-color: #388E3C;
+}
+
+.boton-salir {
+    -fx-background-color: #E53935;
+    -fx-background-radius: 12px;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 15px;
+    -fx-cursor: hand;
+}
+
+.boton-salir:hover {
+    -fx-background-color: #C62828;
+}

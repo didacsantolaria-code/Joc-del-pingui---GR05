@@ -41,8 +41,14 @@ public class mainPingui {
         System.out.print("Introduce tu nombre de usuario: ");
         String username = scanner.nextLine();
         
+        java.util.ArrayList<String[]> jugadoresInfo = new java.util.ArrayList<>();
+        jugadoresInfo.add(new String[]{username, "Azul"});
+        jugadoresInfo.add(new String[]{"Jugador 2", "Rojo"});
+        jugadoresInfo.add(new String[]{"Jugador 3", "Verde"});
+        jugadoresInfo.add(new String[]{"Jugador 4", "Amarillo"});
+        
         partida partida = new partida();
-        partida.inicializarPartida(username);
+        partida.inicializarPartida(jugadoresInfo);
         
         jugarPartida(partida, scanner);
     }

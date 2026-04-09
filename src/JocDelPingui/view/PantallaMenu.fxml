@@ -23,22 +23,7 @@
     stylesheets="@PantallaMenu.css"
     styleClass="root">
 
-    <top>
-        <MenuBar>
-            <menus>
-                <Menu mnemonicParsing="false" text="File">
-                    <items>
-                        <MenuItem fx:id="newGame" mnemonicParsing="false" text="New" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem fx:id="saveGame" mnemonicParsing="false" text="Save" />
-                        <MenuItem fx:id="loadGame" mnemonicParsing="false" text="Load" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem fx:id="quitGame" mnemonicParsing="false" text="Quit" />
-                    </items>
-                </Menu>
-            </menus>
-        </MenuBar>
-    </top>
+
 
     <center>
         <StackPane fx:id="stackPane" alignment="CENTER">
@@ -63,6 +48,8 @@
                     <Button fx:id="loginButton" text="Login" onAction="#handleLogin" maxWidth="Infinity" styleClass="primary"/>
                     <Button fx:id="registerButton" text="Registro" onAction="#handleRegister" maxWidth="Infinity"/>
                 </HBox>
+                
+                <Button fx:id="exitButton" text="Salir del Juego" onAction="#handleSalirPrograma" maxWidth="Infinity" style="-fx-background-color: #ff4d4d; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8px; -fx-background-radius: 5px;"/>
 
                 <Label text="Tip: para la demo, puedes entrar con cualquier usuario si aún no hay validación."
                        styleClass="hint" wrapText="true"/>

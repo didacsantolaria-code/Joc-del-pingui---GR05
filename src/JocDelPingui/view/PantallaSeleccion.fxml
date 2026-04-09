@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.ScrollPane?>
+
+<StackPane
+    xmlns="http://javafx.com/javafx/21.0.10"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="JocDelPingui.view.seleccionView"
+    minWidth="500" minHeight="400" prefWidth="1000" prefHeight="700"
+    stylesheets="@PantallaSeleccion.css"
+    styleClass="root"
+    alignment="TOP_CENTER">
+
+    <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER"
+                style="-fx-background: transparent; -fx-background-color: transparent;">
+
+        <StackPane alignment="TOP_CENTER">
+            <VBox spacing="16" alignment="TOP_CENTER" maxWidth="900">
+                <padding>
+                    <Insets top="20" right="20" bottom="30" left="20"/>
+                </padding>
+
+                <!-- Fila superior: Partidas Pendientes + Ranking lado a lado -->
+                <HBox spacing="16" alignment="CENTER">
+
+                    <!-- Partidas Pendientes -->
+                    <VBox spacing="10" styleClass="card-seleccion" HBox.hgrow="ALWAYS" maxWidth="400">
+                        <padding>
+                            <Insets top="18" right="18" bottom="18" left="18"/>
+                        </padding>
+                        <Label text="📋 Partidas Pendientes" styleClass="titulo-seccion"/>
+                        <ListView fx:id="listaPartidas" prefHeight="120" styleClass="lista-partidas"/>
+                        <Button fx:id="btnContinuar" text="▶ Continuar" onAction="#handleContinuarPartida"
+                                maxWidth="Infinity" styleClass="btn-continuar"/>
+                    </VBox>
+
+                    <!-- Ranking -->
+                    <VBox spacing="10" styleClass="card-seleccion" HBox.hgrow="ALWAYS" maxWidth="400">
+                        <padding>
+                            <Insets top="18" right="18" bottom="18" left="18"/>
+                        </padding>
+                        <Label text="🏆 Ranking" styleClass="titulo-seccion"/>
+                        <ListView fx:id="listaRanking" prefHeight="120" styleClass="lista-ranking"/>
+                    </VBox>
+                </HBox>
+
+                <!-- Panel inferior: Nueva Partida -->
+                <VBox spacing="12" styleClass="card-seleccion" maxWidth="820">
+                    <padding>
+                        <Insets top="20" right="24" bottom="20" left="24"/>
+                    </padding>
+
+                    <!-- Título + Selector en la misma línea -->
+                    <HBox spacing="20" alignment="CENTER">
+                        <Label text="🐧 Nueva Partida" styleClass="titulo-seleccion"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="Jugadores:" styleClass="field-label"/>
+                        <Button fx:id="btnMenos" text="−" onAction="#handleMenos" styleClass="btn-counter"/>
+                        <Label fx:id="lblNumJugadores" text="2" styleClass="num-jugadores"/>
+                        <Button fx:id="btnMas" text="+" onAction="#handleMas" styleClass="btn-counter"/>
+                    </HBox>
+
+                    <!-- Filas de jugadores en grid 2x2 -->
+                    <HBox spacing="12">
+                        <HBox fx:id="filaJugador1" spacing="8" alignment="CENTER_LEFT" styleClass="fila-jugador" HBox.hgrow="ALWAYS">
+                            <Label text="🐧" styleClass="icono-jugador"/>
+                            <TextField fx:id="nombreJ1" promptText="Jugador 1" styleClass="field" HBox.hgrow="ALWAYS"/>
+                            <ComboBox fx:id="colorJ1" promptText="Color" styleClass="combo-color"/>
+                        </HBox>
+                        <HBox fx:id="filaJugador2" spacing="8" alignment="CENTER_LEFT" styleClass="fila-jugador" HBox.hgrow="ALWAYS">
+                            <Label text="🐧" styleClass="icono-jugador"/>
+                            <TextField fx:id="nombreJ2" promptText="Jugador 2" styleClass="field" HBox.hgrow="ALWAYS"/>
+                            <ComboBox fx:id="colorJ2" promptText="Color" styleClass="combo-color"/>
+                        </HBox>
+                    </HBox>
+
+                    <HBox spacing="12">
+                        <HBox fx:id="filaJugador3" spacing="8" alignment="CENTER_LEFT" styleClass="fila-jugador" HBox.hgrow="ALWAYS">
+                            <Label text="🐧" styleClass="icono-jugador"/>
+                            <TextField fx:id="nombreJ3" promptText="Jugador 3" styleClass="field" HBox.hgrow="ALWAYS"/>
+                            <ComboBox fx:id="colorJ3" promptText="Color" styleClass="combo-color"/>
+                        </HBox>
+                        <HBox fx:id="filaJugador4" spacing="8" alignment="CENTER_LEFT" styleClass="fila-jugador" HBox.hgrow="ALWAYS">
+                            <Label text="🐧" styleClass="icono-jugador"/>
+                            <TextField fx:id="nombreJ4" promptText="Jugador 4" styleClass="field" HBox.hgrow="ALWAYS"/>
+                            <ComboBox fx:id="colorJ4" promptText="Color" styleClass="combo-color"/>
+                        </HBox>
+                    </HBox>
+
+                    <!-- Error + Botón Jugar -->
+                    <Label fx:id="lblError" text="" styleClass="error-label"/>
+                    <Button fx:id="btnJugar" text="🎮  ¡Jugar!" onAction="#handleJugar" maxWidth="Infinity" styleClass="primary btn-jugar"/>
+                </VBox>
+
+                <!-- Espacio Flexible para empujar el boton hacia abajo si hay espacio -->
+                <Region VBox.vgrow="ALWAYS" minHeight="15"/>
+
+                <!-- Botón Volver al Login en el centro inferior -->
+                <HBox alignment="CENTER">
+                    <Button fx:id="btnVolver" text="← Volver al Login" onAction="#handleVolverLogin" styleClass="btn-volver"/>
+                </HBox>
+            </VBox>
+        </StackPane>
+    </ScrollPane>
+
+</StackPane>

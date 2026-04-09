@@ -87,40 +87,40 @@
                         
                         <VBox styleClass="objetos-container">
                             <!-- Dado rápido -->
-                            <HBox styleClass="objeto-item" alignment="CENTER_LEFT">
-                                <Text text="⚡" styleClass="objeto-icono" />
-                                <Label text="Dado rápido" styleClass="objeto-cantidad" />
-                                <Region HBox.hgrow="ALWAYS" />
-                                <Label fx:id="rapidoCantidad" text="2" styleClass="objeto-cantidad" />
-                                <Button fx:id="usarRapidoBtn" text="USAR" styleClass="boton-usar" />
-                            </HBox>
-                            
-                            <!-- Dado lento -->
-                            <HBox styleClass="objeto-item" alignment="CENTER_LEFT">
-                                <Text text="🐢" styleClass="objeto-icono" />
-                                <Label text="Dado lento" styleClass="objeto-cantidad" />
-                                <Region HBox.hgrow="ALWAYS" />
-                                <Label fx:id="lentoCantidad" text="1" styleClass="objeto-cantidad" />
-                                <Button fx:id="usarLentoBtn" text="USAR" styleClass="boton-usar" />
-                            </HBox>
-                            
-                            <!-- Peces -->
-                            <HBox styleClass="objeto-item" alignment="CENTER_LEFT">
-                                <Text text="🐟" styleClass="objeto-icono" />
-                                <Label text="Peces" styleClass="objeto-cantidad" />
-                                <Region HBox.hgrow="ALWAYS" />
-                                <Label fx:id="pecesCantidad" text="1" styleClass="objeto-cantidad" />
-                                <Button fx:id="usarPezBtn" text="USAR" styleClass="boton-usar" />
-                            </HBox>
-                            
-                            <!-- Bolas de nieve -->
-                            <HBox styleClass="objeto-item" alignment="CENTER_LEFT">
-                                <Text text="⚪" styleClass="objeto-icono" />
-                                <Label text="Bolas nieve" styleClass="objeto-cantidad" />
-                                <Region HBox.hgrow="ALWAYS" />
-                                <Label fx:id="nieveCantidad" text="3" styleClass="objeto-cantidad" />
-                                <Button fx:id="usarNieveBtn" text="USAR" styleClass="boton-usar" />
-                            </HBox>
+							<HBox styleClass="objeto-item" alignment="CENTER_LEFT">
+							    <ImageView fx:id="iconoRapido" fitWidth="24" fitHeight="24" preserveRatio="true" />
+							    <Label text="Dado rápido" styleClass="objeto-cantidad" />
+							    <Region HBox.hgrow="ALWAYS" />
+							    <Label fx:id="rapidoCantidad" text="2" styleClass="objeto-cantidad" />
+							    <Button fx:id="usarRapidoBtn" text="USAR" styleClass="boton-usar" />
+							</HBox>
+							
+							<!-- Dado lento -->
+							<HBox styleClass="objeto-item" alignment="CENTER_LEFT">
+							    <ImageView fx:id="iconoLento" fitWidth="24" fitHeight="24" preserveRatio="true" />
+							    <Label text="Dado lento" styleClass="objeto-cantidad" />
+							    <Region HBox.hgrow="ALWAYS" />
+							    <Label fx:id="lentoCantidad" text="1" styleClass="objeto-cantidad" />
+							    <Button fx:id="usarLentoBtn" text="USAR" styleClass="boton-usar" />
+							</HBox>
+							
+							<!-- Peces -->
+							<HBox styleClass="objeto-item" alignment="CENTER_LEFT">
+							    <ImageView fx:id="iconoPez" fitWidth="24" fitHeight="24" preserveRatio="true" />
+							    <Label text="Peces" styleClass="objeto-cantidad" />
+							    <Region HBox.hgrow="ALWAYS" />
+							    <Label fx:id="pecesCantidad" text="1" styleClass="objeto-cantidad" />
+							    <Button fx:id="usarPezBtn" text="USAR" styleClass="boton-usar" />
+							</HBox>
+							
+							<!-- Bolas de nieve -->
+							<HBox styleClass="objeto-item" alignment="CENTER_LEFT">
+							    <ImageView fx:id="iconoNieve" fitWidth="24" fitHeight="24" preserveRatio="true" />
+							    <Label text="Bolas nieve" styleClass="objeto-cantidad" />
+							    <Region HBox.hgrow="ALWAYS" />
+							    <Label fx:id="nieveCantidad" text="3" styleClass="objeto-cantidad" />
+							    <Button fx:id="usarNieveBtn" text="USAR" styleClass="boton-usar" />
+							</HBox>
                         </VBox>
                     </VBox>
                     
@@ -136,6 +136,14 @@
                                 </padding>
                             </VBox>
                         </ScrollPane>
+                    </VBox>
+                    
+                    <!-- BOTONES GUARDAR Y SALIR -->
+                    <VBox spacing="8">
+                        <Button fx:id="guardarBtn" text="💾  Guardar Partida" onAction="#handleGuardarPartida" 
+                                maxWidth="Infinity" styleClass="boton-guardar" />
+                        <Button fx:id="salirBtn" text="🚪  Salir" onAction="#handleSalir" 
+                                maxWidth="Infinity" styleClass="boton-salir" />
                     </VBox>
                 </VBox>
             </HBox>
