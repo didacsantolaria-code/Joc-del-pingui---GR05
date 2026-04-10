@@ -39,7 +39,7 @@
                         <padding>
                             <Insets top="18" right="18" bottom="18" left="18"/>
                         </padding>
-                        <Label text="📋 Partidas Pendientes" styleClass="titulo-seccion"/>
+                        <Label text="Partidas Pendientes" styleClass="titulo-seccion"/>
                         <ListView fx:id="listaPartidas" prefHeight="120" styleClass="lista-partidas"/>
                         <Button fx:id="btnContinuar" text="▶ Continuar" onAction="#handleContinuarPartida"
                                 maxWidth="Infinity" styleClass="btn-continuar"/>
@@ -50,7 +50,7 @@
                         <padding>
                             <Insets top="18" right="18" bottom="18" left="18"/>
                         </padding>
-                        <Label text="🏆 Ranking" styleClass="titulo-seccion"/>
+                        <Label text="Ranking" styleClass="titulo-seccion"/>
                         <ListView fx:id="listaRanking" prefHeight="120" styleClass="lista-ranking"/>
                     </VBox>
                 </HBox>
@@ -63,7 +63,7 @@
 
                     <!-- Título + Selector en la misma línea -->
                     <HBox spacing="20" alignment="CENTER">
-                        <Label text="🐧 Nueva Partida" styleClass="titulo-seleccion"/>
+                        <Label text="Nueva Partida" styleClass="titulo-seleccion"/>
                         <Region HBox.hgrow="ALWAYS"/>
                         <Label text="Jugadores:" styleClass="field-label"/>
                         <Button fx:id="btnMenos" text="−" onAction="#handleMenos" styleClass="btn-counter"/>
@@ -100,7 +100,7 @@
 
                     <!-- Error + Botón Jugar -->
                     <Label fx:id="lblError" text="" styleClass="error-label"/>
-                    <Button fx:id="btnJugar" text="🎮  ¡Jugar!" onAction="#handleJugar" maxWidth="Infinity" styleClass="primary btn-jugar"/>
+                    <Button fx:id="btnJugar" text="JUGAR" onAction="#handleJugar" maxWidth="Infinity" styleClass="primary btn-jugar"/>
                 </VBox>
 
                 <!-- Espacio Flexible para empujar el boton hacia abajo si hay espacio -->
