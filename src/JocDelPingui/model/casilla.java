@@ -14,7 +14,7 @@ public abstract class casilla {
     public String getRutaImagen() {
         if (this instanceof casillaNormal) {
             if (posicion == 0)
-                return "/JocDelPingui/images/casilla_meta.png"; // O salida si tuvieras
+                return "/JocDelPingui/images/casilla_meta.png";
             if (posicion == 49)
                 return "/JocDelPingui/images/casilla_meta.png";
             return "/JocDelPingui/images/casilla_normal.png";

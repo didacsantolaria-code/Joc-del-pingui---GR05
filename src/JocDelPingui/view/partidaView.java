@@ -70,6 +70,8 @@ public class partidaView {
     private Button guardarBtn;
     @FXML
     private Button salirBtn;
+    @FXML
+    private HBox avatarContainer;
     
 
     private partida partida;
@@ -143,6 +145,9 @@ public class partidaView {
         // Crear las fichas de los jugadores
         crearFichasJugadores();
 
+        // Crear los avatares dinámicos en la barra inferior
+        crearAvatares();
+
         // Actualizar inventarios
         actualizarInventarios();
 
@@ -200,6 +205,27 @@ public class partidaView {
             // Intentar cerrar la ventana si no hay mainApp
             if (tableroGrid.getScene() != null) {
                 tableroGrid.getScene().getWindow().hide();
+            }
+        }
+    }
+
+    private void crearAvatares() {
+        if (avatarContainer != null) {
+            avatarContainer.getChildren().clear();
+            for (jugador j : partida.getJugadores()) {
+                VBox vbox = new VBox();
+                vbox.setAlignment(Pos.CENTER);
+                vbox.setSpacing(2);
+                
+                Text icono = new Text("🐧");
+                icono.setStyle("-fx-font-size: 40px;");
+                
+                Label nombre = new Label(j.getNombre().toUpperCase());
+                String colorCSS = "badge-" + j.getColor().toLowerCase();
+                nombre.getStyleClass().addAll("avatar-badge", colorCSS);
+                
+                vbox.getChildren().addAll(icono, nombre);
+                avatarContainer.getChildren().add(vbox);
             }
         }
     }
