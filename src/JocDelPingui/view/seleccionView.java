@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -14,9 +15,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import JocDelPingui.mainApp;
+import JocDelPingui.controller.gestionBBD;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 public class seleccionView {
 
@@ -43,13 +46,14 @@ public class seleccionView {
     @FXML private Label lblError;
     @FXML private Button btnJugar;
 
-    // Nuevos elementos: Partidas pendientes y Ranking
     @FXML private ListView<String> listaPartidas;
     @FXML private ListView<String> listaRanking;
     @FXML private Button btnContinuar;
     @FXML private Button btnVolver;
 
     private mainApp mainApp;
+    private gestionBBD gestionBD;
+    private String usuariActual;
     private int numJugadores = 2;
 
     private final ObservableList<String> coloresDisponibles =
@@ -57,7 +61,6 @@ public class seleccionView {
 
     @FXML
     private void initialize() {
-        // Cargar imagen de fondo
         try {
             Image imagenFondo = new Image(getClass().getResourceAsStream("/JocDelPingui/view/fondo_login.png"));
             ImageView imageView = new ImageView(imagenFondo);
@@ -69,54 +72,53 @@ public class seleccionView {
             System.out.println("No se pudo cargar la imagen de fondo: " + e.getMessage());
         }
 
-        // Configurar ComboBoxes con colores
         colorJ1.setItems(FXCollections.observableArrayList(coloresDisponibles));
         colorJ2.setItems(FXCollections.observableArrayList(coloresDisponibles));
         colorJ3.setItems(FXCollections.observableArrayList(coloresDisponibles));
         colorJ4.setItems(FXCollections.observableArrayList(coloresDisponibles));
 
-        // Preseleccionar colores por defecto
         colorJ1.setValue("Azul");
         colorJ2.setValue("Rojo");
         colorJ3.setValue("Verde");
         colorJ4.setValue("Amarillo");
 
-        // Estado inicial: 2 jugadores
         actualizarFilas();
 
-        // Cargar partidas pendientes (placeholder - futuro: desde BBDD)
-        cargarPartidasPendientes();
-
-        // Cargar ranking (placeholder - futuro: desde BBDD)
-        cargarRanking();
-
-        // Deshabilitar botón continuar si no hay partida seleccionada
         btnContinuar.setDisable(true);
         listaPartidas.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             btnContinuar.setDisable(newVal == null);
         });
     }
 
-    private void cargarPartidasPendientes() {
-        // TODO: En el futuro, cargar desde base de datos
-        ObservableList<String> partidas = FXCollections.observableArrayList(
-            "No hay partidas guardadas"
-        );
-        listaPartidas.setItems(partidas);
-    }
-
-    private void cargarRanking() {
-        // TODO: En el futuro, cargar desde base de datos
-        ObservableList<String> ranking = FXCollections.observableArrayList(
-            "🥇 Sin datos aún",
-            "🥈 -",
-            "🥉 -"
-        );
-        listaRanking.setItems(ranking);
-    }
-
     public void setMainApp(mainApp mainApp) {
         this.mainApp = mainApp;
+    }
+
+    public void setGestionBD(gestionBBD gestionBD) {
+        this.gestionBD = gestionBD;
+    }
+
+    public void setUsuariActual(String usuariActual) {
+        this.usuariActual = usuariActual;
+        carregarDadesUsuari();
+    }
+
+    private void carregarDadesUsuari() {
+        if (gestionBD != null && usuariActual != null) {
+            List<String> partides = gestionBD.obtenirPartidesPendents(usuariActual);
+            ObservableList<String> partidesList = FXCollections.observableArrayList(partides);
+            listaPartidas.setItems(partidesList);
+            
+            List<String> ranking = gestionBD.obtenirRanking();
+            ObservableList<String> rankingList = FXCollections.observableArrayList(ranking);
+            listaRanking.setItems(rankingList);
+        } else {
+            ObservableList<String> partidesDefault = FXCollections.observableArrayList("No hay partidas guardadas");
+            listaPartidas.setItems(partidesDefault);
+            
+            ObservableList<String> rankingDefault = FXCollections.observableArrayList("🥇 Sin datos aún", "🥈 -", "🥉 -");
+            listaRanking.setItems(rankingDefault);
+        }
     }
 
     @FXML
@@ -130,7 +132,6 @@ public class seleccionView {
     private void handleContinuarPartida(ActionEvent event) {
         String seleccion = listaPartidas.getSelectionModel().getSelectedItem();
         if (seleccion != null && !seleccion.equals("No hay partidas guardadas")) {
-            // TODO: En el futuro, cargar la partida desde BBDD
             System.out.println("Continuar partida: " + seleccion);
         }
     }
@@ -201,9 +202,52 @@ public class seleccionView {
         }
 
         lblError.setText("");
+        
+        // ==============================================
+        // COMPROVACIÓ: Verificar que tots els jugadors existeixen a la BD
+        // ==============================================
+        if (gestionBD != null && gestionBD.isConnected()) {
+            for (String[] jugador : jugadoresInfo) {
+                String nickname = jugador[0];
+                if (!gestionBD.existeixJugador(nickname)) {
+                    mostrarMissatgeError("Jugador no registrat", 
+                        "El jugador '" + nickname + "' no té una compte creada.",
+                        "Has de registrar aquest usuari abans de començar la partida.\n\n" +
+                        "Torna al menú principal i crea el compte '" + nickname + "'.");
+                    return;
+                }
+            }
+            
+            // Verificar que el jugador actual (login) estigui a la llista
+            boolean usuariActualTrobat = false;
+            for (String[] jugador : jugadoresInfo) {
+                if (jugador[0].equals(usuariActual)) {
+                    usuariActualTrobat = true;
+                    break;
+                }
+            }
+            if (!usuariActualTrobat && usuariActual != null) {
+                mostrarMissatgeError("Usuari no inclòs", 
+                    "L'usuari '" + usuariActual + "' no està a la llista de jugadors.",
+                    "Has d'incloure l'usuari amb el qual has iniciat sessió a la partida.");
+                return;
+            }
+        }
+        // ==============================================
 
         if (mainApp != null) {
             mainApp.nuevaPartida(jugadoresInfo);
         }
+    }
+    
+    private void mostrarMissatgeError(String titol, String header, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        if (stackPane != null && stackPane.getScene() != null) {
+            alert.initOwner(stackPane.getScene().getWindow());
+        }
+        alert.setTitle(titol);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 }

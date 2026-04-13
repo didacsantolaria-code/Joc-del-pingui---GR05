@@ -25,6 +25,11 @@ import JocDelPingui.model.pingino;
 import JocDelPingui.model.jugador;
 import JocDelPingui.model.casilla;
 import JocDelPingui.model.dado;
+import JocDelPingui.controller.gestionBBD;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import java.util.Optional;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -79,6 +84,8 @@ public class partidaView {
     private Random random = new Random();
     private ArrayList<StackPane> casillasGraficas = new ArrayList<>();
     private ArrayList<StackPane> fichasJugadores = new ArrayList<>();
+    private gestionBBD gestionBD;
+    private String usuariActual;
 
     @FXML
     private void initialize() {
@@ -161,41 +168,69 @@ public class partidaView {
 
     @FXML
     private void handleGuardarPartida() {
-        // TODO: En el futuro, guardar en base de datos
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.initOwner(tableroGrid.getScene().getWindow());
-        alert.setTitle("Guardar Partida");
-        alert.setHeaderText("Partida guardada");
-        alert.setContentText("La partida se ha guardado correctamente.\n(Funcionalidad pendiente de conexión a BBDD)");
-        alert.showAndWait();
-        agregarEvento("💾 Partida guardada");
+        if (gestionBD != null && partida != null && usuariActual != null) {
+            boolean guardat = gestionBD.guardarPartida(partida, usuariActual);
+            if (guardat) {
+                agregarEvento("✅ Partida guardada correctament!");
+                mostrarMissatgeInfo("Partida guardada", "La partida s'ha guardat a la base de dades.");
+            } else {
+                agregarEvento("❌ Error en guardar la partida");
+                mostrarMissatgeError("Error", "No s'ha pogut guardar la partida", "Revisa la connexió a la base de dades.");
+            }
+        } else {
+            agregarEvento("❌ No es pot guardar: falta connexió o partida");
+        }
     }
 
     @FXML
     private void handleSalir() {
-        ButtonType btnGuardar = new ButtonType("Guardar y Salir", ButtonBar.ButtonData.YES);
-        ButtonType btnSalir = new ButtonType("Salir sin guardar", ButtonBar.ButtonData.NO);
-        ButtonType btnCancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+        ButtonType btnGuardar = new ButtonType("Guardar i sortir", ButtonBar.ButtonData.YES);
+        ButtonType btnSortir = new ButtonType("Sortir sense guardar", ButtonBar.ButtonData.NO);
+        ButtonType btnCancelar = new ButtonType("Cancel·lar", ButtonBar.ButtonData.CANCEL_CLOSE);
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.initOwner(tableroGrid.getScene().getWindow());
-        alert.setTitle("Salir de la partida");
-        alert.setHeaderText("¿Quieres guardar la partida antes de salir?");
-        alert.setContentText("Si sales sin guardar, perderás el progreso actual.");
-        alert.getButtonTypes().setAll(btnGuardar, btnSalir, btnCancelar);
+        alert.setTitle("Sortir de la partida");
+        alert.setHeaderText("Vols guardar la partida abans de sortir?");
+        alert.setContentText("Si surts sense guardar, perdràs el progrés actual.");
+        alert.getButtonTypes().setAll(btnGuardar, btnSortir, btnCancelar);
 
-        Optional<ButtonType> resultado = alert.showAndWait();
-        if (resultado.isPresent()) {
-            if (resultado.get() == btnGuardar) {
-                // Guardar y salir
-                handleGuardarPartida();
+        Optional<ButtonType> resultat = alert.showAndWait();
+        if (mainApp != null) mainApp.setPantallaCompleta();
+        if (resultat.isPresent()) {
+            if (resultat.get() == btnGuardar) {
+                // Guardar partida
+                if (gestionBD != null && partida != null && usuariActual != null) {
+                    gestionBD.guardarPartida(partida, usuariActual);
+                    agregarEvento("💾 Partida guardada abans de sortir");
+                }
                 volverAlMenu();
-            } else if (resultado.get() == btnSalir) {
-                // Salir sin guardar
+            } else if (resultat.get() == btnSortir) {
+                // Sortir sense guardar
                 volverAlMenu();
             }
-            // Si es Cancelar, no hacer nada
+            // Si és Cancel·lar, no fer res
         }
+    }
+    
+    private void mostrarMissatgeInfo(String titol, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.initOwner(tableroGrid.getScene().getWindow());
+        alert.setTitle(titol);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+        if (mainApp != null) mainApp.setPantallaCompleta();
+    }
+
+    private void mostrarMissatgeError(String titol, String header, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.initOwner(tableroGrid.getScene().getWindow());
+        alert.setTitle(titol);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
+        if (mainApp != null) mainApp.setPantallaCompleta();
     }
 
     private void volverAlMenu() {
@@ -460,6 +495,7 @@ public class partidaView {
         alert.setHeaderText("¡" + ganador.getNombre() + " ha ganado!");
         alert.setContentText("¡Felicidades! " + ganador.getNombre() + " ha sido el primero en llegar a la meta.");
         alert.showAndWait();
+        if (mainApp != null) mainApp.setPantallaCompleta();
     }
 
     private void animarDado(int resultado) {
@@ -632,5 +668,13 @@ public class partidaView {
         } catch (Exception e) {
             System.out.println("No se pudo cargar dado_" + resultado + ".png");
         }
+    }
+    
+    public void setGestionBD(gestionBBD gestionBD) {
+        this.gestionBD = gestionBD;
+    }
+
+    public void setUsuariActual(String usuariActual) {
+        this.usuariActual = usuariActual;
     }
 }

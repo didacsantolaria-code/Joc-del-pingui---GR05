@@ -7,6 +7,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JavaFX"/>
-	<classpathentry kind="lib" path="D:/Usuarios/didacsantolaria/Joc-del-pingui---GR05/src/JocDelPingui/controller/ojdbc8-21.9.0.0.jar"/>
+	<classpathentry kind="lib" path="D:/Usuarios/didacsantolaria/Joc-del-pingui---GR05/lib/ojdbc8-21.9.0.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

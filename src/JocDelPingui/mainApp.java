@@ -1,5 +1,6 @@
 package JocDelPingui;
 
+import JocDelPingui.controller.gestionBBD;
 import JocDelPingui.model.partida;
 import JocDelPingui.view.menuView;
 import JocDelPingui.view.partidaView;
@@ -15,6 +16,8 @@ import java.util.ArrayList;
 public class mainApp extends Application {
     
     private Stage primaryStage;
+    private gestionBBD gestionBD;
+    private String usuariActual;  // Per guardar l'usuari loguejat
     
     @Override
     public void start(Stage primaryStage) {
@@ -22,8 +25,11 @@ public class mainApp extends Application {
         this.primaryStage.setTitle("El Joc del Pingüí");
         this.primaryStage.setMinWidth(1000);
         this.primaryStage.setMinHeight(700);
-        this.primaryStage.setFullScreenExitHint("");
-        this.primaryStage.setFullScreen(true);
+        
+        setPantallaCompleta();
+        
+        // Inicialitzar connexió a la base de dades
+        gestionBD = new gestionBBD();
         
         mostrarMenu();
     }
@@ -35,15 +41,11 @@ public class mainApp extends Application {
             
             menuView controller = loader.getController();
             controller.setMainApp(this);
+            controller.setGestionBD(gestionBD);
             
-            if (primaryStage.getScene() == null) {
-                Scene scene = new Scene(root, 1000, 700);
-                primaryStage.setScene(scene);
-                primaryStage.setFullScreenExitHint("");
-                primaryStage.setFullScreen(true);
-            } else {
-                primaryStage.getScene().setRoot(root);
-            }
+            Scene scene = new Scene(root, 1000, 700);
+            primaryStage.setScene(scene);
+            setPantallaCompleta();
             primaryStage.show();
         } catch (Exception e) {
             e.printStackTrace();
@@ -57,15 +59,12 @@ public class mainApp extends Application {
             
             seleccionView controller = loader.getController();
             controller.setMainApp(this);
+            controller.setGestionBD(gestionBD);
+            controller.setUsuariActual(usuariActual);
             
-            if (primaryStage.getScene() == null) {
-                Scene scene = new Scene(root, 1000, 700);
-                primaryStage.setScene(scene);
-                primaryStage.setFullScreenExitHint("");
-                primaryStage.setFullScreen(true);
-            } else {
-                primaryStage.getScene().setRoot(root);
-            }
+            Scene scene = new Scene(root, 1000, 700);
+            primaryStage.setScene(scene);
+            setPantallaCompleta();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -82,17 +81,36 @@ public class mainApp extends Application {
             partidaView controller = loader.getController();
             controller.setPartida(partida);
             controller.setMainApp(this);
+            controller.setGestionBD(gestionBD);
+            controller.setUsuariActual(usuariActual);
             
-            if (primaryStage.getScene() == null) {
-                Scene scene = new Scene(root, 1000, 700);
-                primaryStage.setScene(scene);
-                primaryStage.setFullScreenExitHint("");
-                primaryStage.setFullScreen(true);
-            } else {
-                primaryStage.getScene().setRoot(root);
-            }
+            Scene scene = new Scene(root, 1000, 700);
+            primaryStage.setScene(scene);
+            setPantallaCompleta();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+    
+    public String getUsuariActual() {
+        return usuariActual;
+    }
+    
+    public void setUsuariActual(String usuariActual) {
+        this.usuariActual = usuariActual;
+    }
+    
+    public void setPantallaCompleta() {
+        if (primaryStage != null) {
+            primaryStage.setFullScreen(true);
+            primaryStage.setFullScreenExitHint("");
+        }
+    }
+    
+    @Override
+    public void stop() {
+        if (gestionBD != null) {
+            gestionBD.tancar();
         }
     }
     
