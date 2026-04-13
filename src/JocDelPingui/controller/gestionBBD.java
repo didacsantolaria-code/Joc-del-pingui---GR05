@@ -1,15 +1,262 @@
 package JocDelPingui.controller;
 
 import JocDelPingui.model.partida;
+import JocDelPingui.model.jugador;
+import JocDelPingui.model.pingino;
+import JocDelPingui.model.casilla;
+import JocDelPingui.model.tablero;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class gestionBBD {
     
-    public void guardarBDD(partida p) {
-        System.out.println("📁 Partida guardada localmente: " + p.getIdPartida());
+    private Connection connection;
+    
+    // Dades de connexió a la teva base de dades
+    private static final String URL = "jdbc:oracle:thin:@192.168.3.26:1521/XEPDB2";
+    private static final String USUARI = "DW2526_GR05_PINGU";
+    private static final String CONTRASENYA = "AAPCSDS";
+    
+    // Constructor
+    public gestionBBD() {
+        connectar();
     }
     
-    public partida cargarBDD(String id) {
-        System.out.println("No hay partidas guardadas (modo sin BD)");
-        return null;
+    // Connectar a la base de dades Oracle
+    private void connectar() {
+        try {
+            // Carregar el driver d'Oracle
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+            
+            // Establir la connexió
+            connection = DriverManager.getConnection(URL, USUARI, CONTRASENYA);
+            System.out.println("✅ Connectat a la base de dades!");
+            System.out.println("   Usuari: " + USUARI);
+            System.out.println("   Servidor: " + URL);
+            
+        } catch (ClassNotFoundException e) {
+            System.out.println("❌ Driver d'Oracle no trobat: " + e.getMessage());
+            System.out.println("   Has afegit el ojdbc8.jar al projecte?");
+        } catch (SQLException e) {
+            System.out.println("❌ Error de connexió: " + e.getMessage());
+            System.out.println("   Comprova que el servidor estigui accessible.");
+        }
+    }
+    
+    // Tancar connexió
+    public void tancar() {
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+                System.out.println("✅ Connexió tancada.");
+            }
+        } catch (SQLException e) {
+            System.out.println("❌ Error en tancar: " + e.getMessage());
+        }
+    }
+    
+    // Comprovar si la connexió està activa
+    public boolean isConnected() {
+        try {
+            return connection != null && !connection.isClosed();
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+    
+    // ============= MÈTODES PER AL JOC =============
+    
+    // Obtenir el següent número de partida (NEXTVAL)
+    public int obtenirSeguentNumPartida() throws SQLException {
+        String sql = "SELECT seq_num_partida.NEXTVAL FROM dual";
+        Statement stmt = connection.createStatement();
+        ResultSet rs = stmt.executeQuery(sql);
+        rs.next();
+        return rs.getInt(1);
+    }
+    
+    // Guardar l'estat del taulell (convertir a String)
+    private String guardarTaulell(tablero tablero) {
+        StringBuilder sb = new StringBuilder();
+        for (casilla c : tablero.getCasillas()) {
+            sb.append(c.getTipo()).append("|");
+        }
+        return sb.toString();
+    }
+    
+    // Guardar inventari (format: dausRapids|dausLents|peces|bolesNieve)
+    private String guardarInventari(pingino p) {
+        return p.getInventario().getDausRapidos() + "|" +
+               p.getInventario().getDausLentos() + "|" +
+               p.getInventario().getPeces() + "|" +
+               p.getInventario().getBolasNieve();
+    }
+    
+    // Guardar una partida completa
+    public boolean guardarPartida(partida partida, String nickname) {
+        if (!isConnected()) {
+            System.out.println("❌ No hi ha connexió a la base de dades");
+            return false;
+        }
+        
+        try {
+            // 1. Obtenir el següent número de partida
+            int numPartida = obtenirSeguentNumPartida();
+            
+            // 2. Insertar a PARTIDES
+            String sqlPartida = "INSERT INTO PARTIDES (num_partida, data, hora, taulell) VALUES (?, SYSDATE, SYSDATE, ?)";
+            PreparedStatement pstmtPartida = connection.prepareStatement(sqlPartida);
+            pstmtPartida.setInt(1, numPartida);
+            pstmtPartida.setString(2, guardarTaulell(partida.getTablero()));
+            pstmtPartida.executeUpdate();
+            
+            // 3. Insertar jugadors a PARTIDA_JUGADORS
+            String sqlJugador = "INSERT INTO PARTIDA_JUGADORS (num_partida, nickname, inventari) VALUES (?, ?, ?)";
+            for (jugador j : partida.getJugadores()) {
+                PreparedStatement pstmtJugador = connection.prepareStatement(sqlJugador);
+                pstmtJugador.setInt(1, numPartida);
+                pstmtJugador.setString(2, j.getNombre());
+                pstmtJugador.setString(3, guardarInventari((pingino) j));
+                pstmtJugador.executeUpdate();
+            }
+            
+            System.out.println("✅ Partida guardada amb número: " + numPartida);
+            return true;
+            
+        } catch (SQLException e) {
+            System.out.println("❌ Error al guardar: " + e.getMessage());
+            return false;
+        }
+    }
+    
+    // Carregar llista de partides pendents d'un jugador
+    public List<String> obtenirPartidesPendents(String nickname) {
+        List<String> partides = new ArrayList<>();
+        
+        if (!isConnected()) {
+            System.out.println("❌ No hi ha connexió a la base de dades");
+            partides.add("❌ Sense connexió a la BD");
+            return partides;
+        }
+        
+        try {
+            String sql = "SELECT DISTINCT p.num_partida, p.data " +
+                         "FROM PARTIDES p " +
+                         "JOIN PARTIDA_JUGADORS pj ON p.num_partida = pj.num_partida " +
+                         "WHERE pj.nickname = ? " +
+                         "ORDER BY p.data DESC";
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            pstmt.setString(1, nickname);
+            ResultSet rs = pstmt.executeQuery();
+            
+            while (rs.next()) {
+                partides.add("Partida " + rs.getInt("num_partida") + " - " + rs.getDate("data"));
+            }
+            
+            if (partides.isEmpty()) {
+                partides.add("No hi ha partides pendents");
+            }
+            
+        } catch (SQLException e) {
+            System.out.println("❌ Error al carregar partides: " + e.getMessage());
+            partides.add("❌ Error al carregar");
+        }
+        return partides;
+    }
+    
+    // Carregar ranking de jugadors (els que més partides han jugat)
+    public List<String> obtenirRanking() {
+        List<String> ranking = new ArrayList<>();
+        
+        if (!isConnected()) {
+            System.out.println("❌ No hi ha connexió a la base de dades");
+            ranking.add("❌ Sense connexió a la BD");
+            return ranking;
+        }
+        
+        try {
+            String sql = "SELECT nickname, partides_jugades " +
+                         "FROM JUGADORS " +
+                         "ORDER BY partides_jugades DESC " +
+                         "FETCH FIRST 5 ROWS ONLY";
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            
+            int pos = 1;
+            while (rs.next()) {
+                String medalla = pos == 1 ? "🥇" : pos == 2 ? "🥈" : pos == 3 ? "🥉" : "  ";
+                ranking.add(medalla + " " + rs.getString("nickname") + " - " + rs.getInt("partides_jugades") + " partides");
+                pos++;
+            }
+            
+            if (ranking.isEmpty()) {
+                ranking.add("🥇 -");
+                ranking.add("🥈 -");
+                ranking.add("🥉 -");
+            }
+            
+        } catch (SQLException e) {
+            System.out.println("❌ Error al carregar ranking: " + e.getMessage());
+            ranking.add("❌ Error al carregar");
+        }
+        return ranking;
+    }
+    
+    // Registrar un nou jugador
+    public boolean registrarJugador(String nickname, String contrasenya) {
+        if (!isConnected()) {
+            System.out.println("❌ No hi ha connexió a la base de dades");
+            return false;
+        }
+        
+        try {
+            String sql = "INSERT INTO JUGADORS (nickname, contrasenya) VALUES (?, ?)";
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            pstmt.setString(1, nickname);
+            pstmt.setString(2, contrasenya);
+            pstmt.executeUpdate();
+            System.out.println("✅ Jugador " + nickname + " registrat correctament!");
+            return true;
+        } catch (SQLException e) {
+            System.out.println("❌ Error al registrar: " + e.getMessage());
+            return false;
+        }
+    }
+    
+    // Validar login d'un jugador
+    public boolean validarLogin(String nickname, String contrasenya) {
+        if (!isConnected()) {
+            System.out.println("❌ No hi ha connexió a la base de dades");
+            return false;
+        }
+        
+        try {
+            String sql = "SELECT * FROM JUGADORS WHERE nickname = ? AND contrasenya = ?";
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            pstmt.setString(1, nickname);
+            pstmt.setString(2, contrasenya);
+            ResultSet rs = pstmt.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            System.out.println("❌ Error al validar: " + e.getMessage());
+            return false;
+        }
+    }
+    
+    // Comprovar si un jugador existeix
+    public boolean existeixJugador(String nickname) {
+        if (!isConnected()) return false;
+        
+        try {
+            String sql = "SELECT * FROM JUGADORS WHERE nickname = ?";
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            pstmt.setString(1, nickname);
+            ResultSet rs = pstmt.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            return false;
+        }
     }
 }
