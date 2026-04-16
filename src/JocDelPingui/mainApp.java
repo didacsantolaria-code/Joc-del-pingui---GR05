@@ -92,6 +92,37 @@ public class mainApp extends Application {
         }
     }
     
+    public void cargarPartida(int numPartida) {
+        try {
+            partida partidaCarregada = gestionBD.carregarPartidaCompleta(numPartida);
+            
+            if (partidaCarregada == null) {
+                System.out.println("❌ No s'ha pogut carregar la partida " + numPartida);
+                return;
+            }
+
+            if (partidaCarregada.getJugadores().isEmpty()) {
+                System.out.println("❌ La partida " + numPartida + " no té jugadors.");
+                return;
+            }
+            
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/JocDelPingui/view/PantallaJuego.fxml"));
+            Parent root = loader.load();
+            
+            partidaView controller = loader.getController();
+            controller.setPartida(partidaCarregada);
+            controller.setMainApp(this);
+            controller.setGestionBD(gestionBD);
+            controller.setUsuariActual(usuariActual);
+            
+            Scene scene = new Scene(root, 1000, 700);
+            primaryStage.setScene(scene);
+            setPantallaCompleta();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
     public String getUsuariActual() {
         return usuariActual;
     }

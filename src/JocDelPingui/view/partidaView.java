@@ -401,10 +401,11 @@ public class partidaView {
 
             ficha.getChildren().addAll(circulo, texto);
 
-            // Posición inicial (casilla 0)
-            if (i < casillasGraficas.size()) {
-                StackPane casilla = casillasGraficas.get(0);
-                casilla.getChildren().add(ficha);
+            // Posició del jugador
+            int posActual = j.getPosicion();
+            if (posActual < casillasGraficas.size()) {
+                StackPane casillaActual = casillasGraficas.get(posActual);
+                casillaActual.getChildren().add(ficha);
                 StackPane.setAlignment(ficha, Pos.CENTER);
             }
 
@@ -413,6 +414,8 @@ public class partidaView {
     }
 
     private void marcarJugadorActual() {
+        if (partida == null || partida.getJugadores().isEmpty()) return;
+
         // Quitar clase de todos
         for (StackPane casilla : casillasGraficas) {
             casilla.getStyleClass().remove("turno-activo");
@@ -420,10 +423,13 @@ public class partidaView {
 
         // Añadir clase al jugador actual
         int idxActual = partida.getJugadorActual();
-        jugador j = partida.getJugadores().get(idxActual);
-
-        StackPane casillaActual = casillasGraficas.get(j.getPosicion());
-        casillaActual.getStyleClass().add("turno-activo");
+        if (idxActual >= 0 && idxActual < partida.getJugadores().size()) {
+            jugador j = partida.getJugadores().get(idxActual);
+            if (j.getPosicion() < casillasGraficas.size()) {
+                StackPane casillaActual = casillasGraficas.get(j.getPosicion());
+                casillaActual.getStyleClass().add("turno-activo");
+            }
+        }
     }
 
     private void moverFicha(int jugadorIdx, int nuevaPosicion) {
@@ -575,7 +581,11 @@ public class partidaView {
     }
 
     private void actualizarInventarios() {
+        if (partida == null || partida.getJugadores().isEmpty()) return;
+
         int idxActual = partida.getJugadorActual();
+        if (idxActual < 0 || idxActual >= partida.getJugadores().size()) return;
+
         pingino p = (pingino) partida.getJugadores().get(idxActual);
 
         rapidoCantidad.setText(String.valueOf(p.getInventario().getDausRapidos()));

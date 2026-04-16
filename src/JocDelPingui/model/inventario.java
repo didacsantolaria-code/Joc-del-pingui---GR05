@@ -75,6 +75,9 @@ public class inventario {
         this.dausLentos = 0;
     }
     
+    public void setDausRapidos(int daus) { this.dausRapidos = daus; }
+    public void setDausLentos(int daus) { this.dausLentos = daus; }
+    
     public int getPeces() { return peces; }
     public void setPeces(int peces) { this.peces = Math.min(peces, 2); }
     
