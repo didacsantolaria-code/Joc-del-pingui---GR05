@@ -177,8 +177,10 @@
     -fx-alignment: center-left;
 }
 
-.footer-icono {
-    -fx-font-size: 30px;
+.footer-turno {
+    -fx-font-size: 16px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #1E3C72;
 }
 
 /* Avatares */

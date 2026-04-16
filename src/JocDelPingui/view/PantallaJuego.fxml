@@ -157,9 +157,10 @@
                 <Insets left="30" right="30" />
             </padding>
             
-            <!-- Título e icono -->
-            <Text text="🐧" styleClass="footer-icono" />
+            <!-- Título -->
             <Label text="PINGÜI JOC - AVENTURA EN EL HIELO" styleClass="footer-titulo" />
+            <Label text="  |  " style="-fx-text-fill: #1E3C72; -fx-font-size: 16px;" />
+            <Label fx:id="turnoLabel" text="Turno: -" styleClass="footer-turno" />
             
             <Region HBox.hgrow="ALWAYS" />
             

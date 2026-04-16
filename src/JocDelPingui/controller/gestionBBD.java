@@ -337,6 +337,59 @@ public class gestionBBD {
         }
     }
     
+    // Finalitzar una partida: incrementar partides_jugades per a tots els jugadors i esborrar la partida guardada
+    public boolean finalitzarPartida(partida partida) {
+        if (!isConnected() || partida == null) return false;
+        
+        try {
+            connection.setAutoCommit(false);
+            
+            // 1. Incrementar partides_jugades per a tots els jugadors de la partida
+            String sqlUpdate = "UPDATE JUGADORS SET partides_jugades = partides_jugades + 1 WHERE nickname = ?";
+            try (PreparedStatement pstmt = connection.prepareStatement(sqlUpdate)) {
+                for (jugador j : partida.getJugadores()) {
+                    pstmt.setString(1, j.getNombre());
+                    pstmt.executeUpdate();
+                }
+            }
+            
+            // 2. Esborrar la partida guardada (ja està acabada)
+            String id = partida.getIdPartida();
+            if (id != null && id.startsWith("PARTIDA_") && !id.equals("PARTIDA_NEW")) {
+                try {
+                    int numPartida = Integer.parseInt(id.replace("PARTIDA_", ""));
+                    
+                    // Esborrar jugadors de la partida
+                    String sqlDeleteJugadors = "DELETE FROM PARTIDA_JUGADORS WHERE num_partida = ?";
+                    try (PreparedStatement pstmtDel = connection.prepareStatement(sqlDeleteJugadors)) {
+                        pstmtDel.setInt(1, numPartida);
+                        pstmtDel.executeUpdate();
+                    }
+                    
+                    // Esborrar la partida
+                    String sqlDeletePartida = "DELETE FROM PARTIDES WHERE num_partida = ?";
+                    try (PreparedStatement pstmtDel = connection.prepareStatement(sqlDeletePartida)) {
+                        pstmtDel.setInt(1, numPartida);
+                        pstmtDel.executeUpdate();
+                    }
+                } catch (NumberFormatException e) {
+                    // Si no té ID vàlid, no esborrar res
+                }
+            }
+            
+            connection.commit();
+            System.out.println("✅ Partida finalitzada! Partides jugades actualitzades.");
+            return true;
+            
+        } catch (SQLException e) {
+            try { if (connection != null) connection.rollback(); } catch (SQLException ex) {}
+            System.out.println("❌ Error al finalitzar partida: " + e.getMessage());
+            return false;
+        } finally {
+            try { if (connection != null) connection.setAutoCommit(true); } catch (SQLException e) {}
+        }
+    }
+    
     // Carregar ranking de jugadors (els que més partides han jugat)
     public List<String> obtenirRanking() {
         List<String> ranking = new ArrayList<>();
