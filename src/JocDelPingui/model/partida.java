@@ -19,7 +19,7 @@ public class partida {
         this.turnos = 0;
         this.jugadorActual = 0;
         this.finalizada = false;
-        this.idPartida = "PARTIDA_" + System.currentTimeMillis();
+        this.idPartida = "PARTIDA_NEW";
     }
 
     public void inicializarPartida(ArrayList<String[]> jugadoresInfo) {

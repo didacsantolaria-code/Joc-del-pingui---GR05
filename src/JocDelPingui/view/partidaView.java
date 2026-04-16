@@ -77,6 +77,8 @@ public class partidaView {
     private Button salirBtn;
     @FXML
     private HBox avatarContainer;
+    @FXML
+    private Label turnoLabel;
     
 
     private partida partida;
@@ -252,8 +254,19 @@ public class partidaView {
                 vbox.setAlignment(Pos.CENTER);
                 vbox.setSpacing(2);
                 
-                Text icono = new Text("🐧");
-                icono.setStyle("-fx-font-size: 40px;");
+                // Cargar imagen del pingüino del color del jugador
+                String colorAvatar = j.getColor().toLowerCase();
+                String rutaAvatar = "/JocDelPingui/images/pingu_" + colorAvatar + ".png";
+                ImageView icono = new ImageView();
+                try {
+                    Image imgAvatar = new Image(getClass().getResourceAsStream(rutaAvatar));
+                    icono.setImage(imgAvatar);
+                } catch (Exception e) {
+                    System.out.println("No se pudo cargar avatar: " + rutaAvatar);
+                }
+                icono.setFitWidth(45);
+                icono.setFitHeight(45);
+                icono.setPreserveRatio(true);
                 
                 Label nombre = new Label(j.getNombre().toUpperCase());
                 String colorCSS = "badge-" + j.getColor().toLowerCase();
@@ -373,43 +386,91 @@ public class partidaView {
         for (int i = 0; i < numJugadores; i++) {
             jugador j = partida.getJugadores().get(i);
             StackPane ficha = new StackPane();
-            ficha.setPrefSize(40, 40);
-            ficha.setMaxSize(40, 40);
 
-            // Círculo de fondo según el color del jugador
-            javafx.scene.shape.Circle circulo = new javafx.scene.shape.Circle(20);
-            switch (j.getColor()) {
-                case "Rojo":
-                    circulo.setFill(javafx.scene.paint.Color.web("#E53935"));
-                    break;
-                case "Azul":
-                    circulo.setFill(javafx.scene.paint.Color.web("#1E88E5"));
-                    break;
-                case "Verde":
-                    circulo.setFill(javafx.scene.paint.Color.web("#43A047"));
-                    break;
-                case "Amarillo":
-                    circulo.setFill(javafx.scene.paint.Color.web("#FDD835"));
-                    break;
-                default:
-                    circulo.setFill(javafx.scene.paint.Color.web("#9E9E9E"));
-                    break;
-            }
-
-            Text texto = new Text("🐧");
-            texto.setStyle("-fx-font-size: 24px;");
-
-            ficha.getChildren().addAll(circulo, texto);
-
-            // Posició del jugador
-            int posActual = j.getPosicion();
-            if (posActual < casillasGraficas.size()) {
-                StackPane casillaActual = casillasGraficas.get(posActual);
-                casillaActual.getChildren().add(ficha);
-                StackPane.setAlignment(ficha, Pos.CENTER);
+            // Cargar imagen del pingüino según el color del jugador
+            String colorImagen = j.getColor().toLowerCase();
+            String rutaImagen = "/JocDelPingui/images/pingu_" + colorImagen + ".png";
+            try {
+                Image imgPingu = new Image(getClass().getResourceAsStream(rutaImagen));
+                ImageView pinguView = new ImageView(imgPingu);
+                pinguView.setPreserveRatio(true);
+                ficha.getChildren().add(pinguView);
+            } catch (Exception e) {
+                System.out.println("No se pudo cargar imagen: " + rutaImagen);
+                Text texto = new Text("🐧");
+                ficha.getChildren().add(texto);
             }
 
             fichasJugadores.add(ficha);
+        }
+        // Colocar todas las fichas con offsets
+        recolocarFichas();
+    }
+
+    private void ajustarTamañoFicha(StackPane ficha, double size) {
+        ficha.setPrefSize(size, size);
+        ficha.setMaxSize(size, size);
+        // Ajustar el ImageView o Text dentro
+        if (!ficha.getChildren().isEmpty()) {
+            if (ficha.getChildren().get(0) instanceof ImageView) {
+                ImageView iv = (ImageView) ficha.getChildren().get(0);
+                iv.setFitWidth(size);
+                iv.setFitHeight(size);
+            } else if (ficha.getChildren().get(0) instanceof Text) {
+                Text t = (Text) ficha.getChildren().get(0);
+                t.setStyle("-fx-font-size: " + (int)(size * 0.7) + "px;");
+            }
+        }
+    }
+
+    private void recolocarFichas() {
+        // Primero quitar todas las fichas de las casillas
+        for (StackPane ficha : fichasJugadores) {
+            for (StackPane casilla : casillasGraficas) {
+                casilla.getChildren().remove(ficha);
+            }
+        }
+
+        // Agrupar jugadores por posición
+        for (int pos = 0; pos < casillasGraficas.size(); pos++) {
+            ArrayList<Integer> jugadoresEnPos = new ArrayList<>();
+            for (int i = 0; i < partida.getJugadores().size(); i++) {
+                if (partida.getJugadores().get(i).getPosicion() == pos) {
+                    jugadoresEnPos.add(i);
+                }
+            }
+
+            if (jugadoresEnPos.isEmpty()) continue;
+
+            StackPane casilla = casillasGraficas.get(pos);
+            int count = jugadoresEnPos.size();
+
+            // Tamaño y offsets según cantidad de jugadores en la casilla
+            double size;
+            double[][] offsets;
+            if (count == 1) {
+                size = 35;
+                offsets = new double[][]{{0, 6}};
+            } else if (count == 2) {
+                size = 24;
+                offsets = new double[][]{{-10, 6}, {10, 6}};
+            } else if (count == 3) {
+                size = 22;
+                offsets = new double[][]{{-10, 2}, {10, 2}, {0, 16}};
+            } else {
+                size = 20;
+                offsets = new double[][]{{-10, 2}, {10, 2}, {-10, 16}, {10, 16}};
+            }
+
+            for (int k = 0; k < jugadoresEnPos.size(); k++) {
+                int idx = jugadoresEnPos.get(k);
+                StackPane ficha = fichasJugadores.get(idx);
+                ajustarTamañoFicha(ficha, size);
+                ficha.setTranslateX(offsets[k][0]);
+                ficha.setTranslateY(offsets[k][1]);
+                StackPane.setAlignment(ficha, Pos.CENTER);
+                casilla.getChildren().add(ficha);
+            }
         }
     }
 
@@ -429,25 +490,26 @@ public class partidaView {
                 StackPane casillaActual = casillasGraficas.get(j.getPosicion());
                 casillaActual.getStyleClass().add("turno-activo");
             }
+            // Actualizar label de turno en el footer
+            if (turnoLabel != null) {
+                turnoLabel.setText("Turno de: " + j.getNombre().toUpperCase());
+                String color = j.getColor().toLowerCase();
+                String colorHex;
+                switch (color) {
+                    case "rojo": colorHex = "#E53935"; break;
+                    case "azul": colorHex = "#1E88E5"; break;
+                    case "verde": colorHex = "#43A047"; break;
+                    case "amarillo": colorHex = "#F9A825"; break;
+                    default: colorHex = "#1E3C72"; break;
+                }
+                turnoLabel.setStyle("-fx-text-fill: " + colorHex + "; -fx-font-size: 16px; -fx-font-weight: 800;");
+            }
         }
     }
 
     private void moverFicha(int jugadorIdx, int nuevaPosicion) {
-        if (jugadorIdx < fichasJugadores.size()) {
-            StackPane ficha = fichasJugadores.get(jugadorIdx);
-
-            // Quitar ficha de su casilla actual
-            for (StackPane casilla : casillasGraficas) {
-                casilla.getChildren().remove(ficha);
-            }
-
-            // Añadir a nueva casilla
-            if (nuevaPosicion < casillasGraficas.size()) {
-                StackPane nuevaCasilla = casillasGraficas.get(nuevaPosicion);
-                nuevaCasilla.getChildren().add(ficha);
-                StackPane.setAlignment(ficha, Pos.CENTER);
-            }
-        }
+        // Recolocar todas las fichas con offsets correctos
+        recolocarFichas();
     }
 
     @FXML
@@ -492,6 +554,12 @@ public class partidaView {
         usarPezBtn.setDisable(true);
         usarNieveBtn.setDisable(true);
 
+        // Finalizar partida en la BD: incrementar partides_jugades y eliminar partida guardada
+        if (gestionBD != null && partida != null) {
+            gestionBD.finalitzarPartida(partida);
+            agregarEvento("🏆 Partida finalitzada! Estadístiques actualitzades.");
+        }
+
         // Mostrar alerta de victoria
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         if (tableroGrid != null && tableroGrid.getScene() != null) {
@@ -502,6 +570,9 @@ public class partidaView {
         alert.setContentText("¡Felicidades! " + ganador.getNombre() + " ha sido el primero en llegar a la meta.");
         alert.showAndWait();
         if (mainApp != null) mainApp.setPantallaCompleta();
+
+        // Volver al menú después de la victoria
+        volverAlMenu();
     }
 
     private void animarDado(int resultado) {
