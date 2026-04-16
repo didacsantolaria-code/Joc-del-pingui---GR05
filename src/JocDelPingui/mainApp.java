@@ -100,6 +100,11 @@ public class mainApp extends Application {
                 System.out.println("❌ No s'ha pogut carregar la partida " + numPartida);
                 return;
             }
+
+            if (partidaCarregada.getJugadores().isEmpty()) {
+                System.out.println("❌ La partida " + numPartida + " no té jugadors.");
+                return;
+            }
             
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/JocDelPingui/view/PantallaJuego.fxml"));
             Parent root = loader.load();

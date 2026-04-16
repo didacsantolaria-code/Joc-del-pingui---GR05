@@ -108,32 +108,50 @@ public class gestionBBD {
         }
         
         try {
+            // Desactivar auto-commit per a transacció
+            connection.setAutoCommit(false);
+
             // 1. Obtenir el següent número de partida
             int numPartida = obtenirSeguentNumPartida();
             
             // 2. Insertar a PARTIDES
             String sqlPartida = "INSERT INTO PARTIDES (num_partida, data, hora, taulell) VALUES (?, SYSDATE, SYSDATE, ?)";
-            PreparedStatement pstmtPartida = connection.prepareStatement(sqlPartida);
-            pstmtPartida.setInt(1, numPartida);
-            pstmtPartida.setString(2, guardarTaulell(partida));
-            pstmtPartida.executeUpdate();
+            try (PreparedStatement pstmtPartida = connection.prepareStatement(sqlPartida)) {
+                pstmtPartida.setInt(1, numPartida);
+                pstmtPartida.setString(2, guardarTaulell(partida));
+                pstmtPartida.executeUpdate();
+            }
             
             // 3. Insertar jugadors a PARTIDA_JUGADORS
             String sqlJugador = "INSERT INTO PARTIDA_JUGADORS (num_partida, nickname, inventari) VALUES (?, ?, ?)";
-            for (jugador j : partida.getJugadores()) {
-                PreparedStatement pstmtJugador = connection.prepareStatement(sqlJugador);
-                pstmtJugador.setInt(1, numPartida);
-                pstmtJugador.setString(2, j.getNombre());
-                pstmtJugador.setString(3, guardarInventari((pingino) j));
-                pstmtJugador.executeUpdate();
+            try (PreparedStatement pstmtJugador = connection.prepareStatement(sqlJugador)) {
+                for (jugador j : partida.getJugadores()) {
+                    pstmtJugador.setInt(1, numPartida);
+                    pstmtJugador.setString(2, j.getNombre());
+                    pstmtJugador.setString(3, guardarInventari((pingino) j));
+                    pstmtJugador.executeUpdate();
+                }
             }
             
+            // Confirmar transacció
+            connection.commit();
             System.out.println("✅ Partida guardada amb número: " + numPartida);
             return true;
             
         } catch (SQLException e) {
+            try {
+                if (connection != null) connection.rollback();
+            } catch (SQLException ex) {
+                System.out.println("❌ Error en rollback: " + ex.getMessage());
+            }
             System.out.println("❌ Error al guardar: " + e.getMessage());
             return false;
+        } finally {
+            try {
+                if (connection != null) connection.setAutoCommit(true);
+            } catch (SQLException e) {
+                System.out.println("❌ Error en restablir auto-commit: " + e.getMessage());
+            }
         }
     }
     
@@ -189,8 +207,18 @@ public class gestionBBD {
                 String taulellStr = rsPartida.getString("taulell");
                 String[] parts = taulellStr.split("\\|");
                 
-                // Les dues primeres parts són turnos i jugadorActual
-                if (parts.length >= 2) {
+                // Detectar format: El format nou té turnos|jugadorActual al principi
+                boolean formatNou = false;
+                try {
+                    if (parts.length >= 2) {
+                        Integer.parseInt(parts[0]); // Provem si el primer és un número
+                        formatNou = true;
+                    }
+                } catch (NumberFormatException e) {
+                    formatNou = false;
+                }
+
+                if (formatNou) {
                     p.setTurnos(Integer.parseInt(parts[0]));
                     p.setJugadorActual(Integer.parseInt(parts[1]));
                     
@@ -200,6 +228,11 @@ public class gestionBBD {
                         layout.append(parts[i]).append("|");
                     }
                     p.getTablero().inicializarDesdeString(layout.toString());
+                } else {
+                    // Format antic: tot són caselles, assumim valors per defecte per a turnos i jugadorActual
+                    p.setTurnos(0);
+                    p.setJugadorActual(0);
+                    p.getTablero().inicializarDesdeString(taulellStr);
                 }
             } else {
                 return null;
@@ -207,27 +240,46 @@ public class gestionBBD {
             
             // 2. Carregar jugadors
             String sqlJugadors = "SELECT nickname, inventari FROM PARTIDA_JUGADORS WHERE num_partida = ?";
-            PreparedStatement pstmtJugadors = connection.prepareStatement(sqlJugadors);
-            pstmtJugadors.setInt(1, numPartida);
-            ResultSet rsJugadors = pstmtJugadors.executeQuery();
-            
             ArrayList<jugador> llistaJugadors = new ArrayList<>();
-            while (rsJugadors.next()) {
-                String nickname = rsJugadors.getString("nickname");
-                String invStr = rsJugadors.getString("inventari");
-                String[] partsInv = invStr.split("\\|");
-                
-                // Unpack: posicion|color|rapids|lents|peces|boles
-                if (partsInv.length >= 6) {
-                    pingino pin = new pingino(nickname, partsInv[1]);
-                    pin.setPosicion(Integer.parseInt(partsInv[0]));
-                    pin.getInventario().setDausRapidos(Integer.parseInt(partsInv[2]));
-                    pin.getInventario().setDausLentos(Integer.parseInt(partsInv[3]));
-                    pin.getInventario().setPeces(Integer.parseInt(partsInv[4]));
-                    pin.getInventario().setBolasNieve(Integer.parseInt(partsInv[5]));
-                    llistaJugadors.add(pin);
+            
+            try (PreparedStatement pstmtJugadors = connection.prepareStatement(sqlJugadors)) {
+                pstmtJugadors.setInt(1, numPartida);
+                try (ResultSet rsJugadors = pstmtJugadors.executeQuery()) {
+                    while (rsJugadors.next()) {
+                        String nickname = rsJugadors.getString("nickname");
+                        String invStr = rsJugadors.getString("inventari");
+                        if (invStr == null) continue;
+
+                        String[] partsInv = invStr.split("\\|");
+                        
+                        // Compatibilitat amb formats antics:
+                        if (partsInv.length == 4) {
+                            // Format llegat: dausRapids|dausLents|peces|boles
+                            pingino pin = new pingino(nickname, "Azul");
+                            pin.getInventario().setDausRapidos(Integer.parseInt(partsInv[0]));
+                            pin.getInventario().setDausLentos(Integer.parseInt(partsInv[1]));
+                            pin.getInventario().setPeces(Integer.parseInt(partsInv[2]));
+                            pin.getInventario().setBolasNieve(Integer.parseInt(partsInv[3]));
+                            llistaJugadors.add(pin);
+                        } else if (partsInv.length >= 6) {
+                            // Format actual: posicion|color|dausRapids|dausLents|peces|boles
+                            pingino pin = new pingino(nickname, partsInv[1]);
+                            pin.setPosicion(Integer.parseInt(partsInv[0]));
+                            pin.getInventario().setDausRapidos(Integer.parseInt(partsInv[2]));
+                            pin.getInventario().setDausLentos(Integer.parseInt(partsInv[3]));
+                            pin.getInventario().setPeces(Integer.parseInt(partsInv[4]));
+                            pin.getInventario().setBolasNieve(Integer.parseInt(partsInv[5]));
+                            llistaJugadors.add(pin);
+                        }
+                    }
                 }
             }
+
+            if (llistaJugadors.isEmpty()) {
+                System.out.println("⚠️ Partida " + numPartida + " no té jugadors registrats.");
+                return null;
+            }
+
             p.setJugadores(llistaJugadors);
             p.setIdPartida("PARTIDA_" + numPartida);
             

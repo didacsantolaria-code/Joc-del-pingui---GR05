@@ -14,6 +14,7 @@
 <?import javafx.scene.control.ScrollPane?>
 
 <StackPane
+    fx:id="stackPane"
     xmlns="http://javafx.com/javafx/21.0.10"
     xmlns:fx="http://javafx.com/fxml/1"
     fx:controller="JocDelPingui.view.seleccionView"

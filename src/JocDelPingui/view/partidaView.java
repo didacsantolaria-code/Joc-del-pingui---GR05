@@ -414,6 +414,8 @@ public class partidaView {
     }
 
     private void marcarJugadorActual() {
+        if (partida == null || partida.getJugadores().isEmpty()) return;
+
         // Quitar clase de todos
         for (StackPane casilla : casillasGraficas) {
             casilla.getStyleClass().remove("turno-activo");
@@ -421,10 +423,13 @@ public class partidaView {
 
         // Añadir clase al jugador actual
         int idxActual = partida.getJugadorActual();
-        jugador j = partida.getJugadores().get(idxActual);
-
-        StackPane casillaActual = casillasGraficas.get(j.getPosicion());
-        casillaActual.getStyleClass().add("turno-activo");
+        if (idxActual >= 0 && idxActual < partida.getJugadores().size()) {
+            jugador j = partida.getJugadores().get(idxActual);
+            if (j.getPosicion() < casillasGraficas.size()) {
+                StackPane casillaActual = casillasGraficas.get(j.getPosicion());
+                casillaActual.getStyleClass().add("turno-activo");
+            }
+        }
     }
 
     private void moverFicha(int jugadorIdx, int nuevaPosicion) {
@@ -576,7 +581,11 @@ public class partidaView {
     }
 
     private void actualizarInventarios() {
+        if (partida == null || partida.getJugadores().isEmpty()) return;
+
         int idxActual = partida.getJugadorActual();
+        if (idxActual < 0 || idxActual >= partida.getJugadores().size()) return;
+
         pingino p = (pingino) partida.getJugadores().get(idxActual);
 
         rapidoCantidad.setText(String.valueOf(p.getInventario().getDausRapidos()));
