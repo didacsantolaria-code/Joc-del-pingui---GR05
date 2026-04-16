@@ -401,10 +401,11 @@ public class partidaView {
 
             ficha.getChildren().addAll(circulo, texto);
 
-            // Posición inicial (casilla 0)
-            if (i < casillasGraficas.size()) {
-                StackPane casilla = casillasGraficas.get(0);
-                casilla.getChildren().add(ficha);
+            // Posició del jugador
+            int posActual = j.getPosicion();
+            if (posActual < casillasGraficas.size()) {
+                StackPane casillaActual = casillasGraficas.get(posActual);
+                casillaActual.getChildren().add(ficha);
                 StackPane.setAlignment(ficha, Pos.CENTER);
             }
 

@@ -131,8 +131,19 @@ public class seleccionView {
     @FXML
     private void handleContinuarPartida(ActionEvent event) {
         String seleccion = listaPartidas.getSelectionModel().getSelectedItem();
-        if (seleccion != null && !seleccion.equals("No hay partidas guardadas")) {
-            System.out.println("Continuar partida: " + seleccion);
+        if (seleccion != null && seleccion.startsWith("Partida ")) {
+            try {
+                // El format és "Partida X - YYYY-MM-DD"
+                String idStr = seleccion.split(" ")[1];
+                int idPartida = Integer.parseInt(idStr);
+                
+                System.out.println("Continuar partida ID: " + idPartida);
+                if (mainApp != null) {
+                    mainApp.cargarPartida(idPartida);
+                }
+            } catch (Exception e) {
+                System.out.println("❌ Error al parsejar ID de partida: " + e.getMessage());
+            }
         }
     }
 

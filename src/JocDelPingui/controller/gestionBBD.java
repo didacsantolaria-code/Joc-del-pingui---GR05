@@ -14,7 +14,7 @@ public class gestionBBD {
     
     private Connection connection;
     
-    // Dades de connexió a la teva base de dades
+    // Dades de connexió a la base de dades
     private static final String URL = "jdbc:oracle:thin:@192.168.3.26:1521/XEPDB2";
     private static final String USUARI = "DW2526_GR05_PINGU";
     private static final String CONTRASENYA = "AAPCSDS";
@@ -77,18 +77,24 @@ public class gestionBBD {
         return rs.getInt(1);
     }
     
-    // Guardar l'estat del taulell (convertir a String)
-    private String guardarTaulell(tablero tablero) {
+    // Guardar l'estat de la partida (metadades + taulell)
+    private String guardarTaulell(partida p) {
         StringBuilder sb = new StringBuilder();
-        for (casilla c : tablero.getCasillas()) {
+        // Pack: turnos|jugadorActual|casillas...
+        sb.append(p.getTurnos()).append("|");
+        sb.append(p.getJugadorActual()).append("|");
+        
+        for (casilla c : p.getTablero().getCasillas()) {
             sb.append(c.getTipo()).append("|");
         }
         return sb.toString();
     }
     
-    // Guardar inventari (format: dausRapids|dausLents|peces|bolesNieve)
+    // Guardar inventari ampliat (posicion|color|dausRapids|dausLents|peces|bolesNieve)
     private String guardarInventari(pingino p) {
-        return p.getInventario().getDausRapidos() + "|" +
+        return p.getPosicion() + "|" +
+               p.getColor() + "|" +
+               p.getInventario().getDausRapidos() + "|" +
                p.getInventario().getDausLentos() + "|" +
                p.getInventario().getPeces() + "|" +
                p.getInventario().getBolasNieve();
@@ -109,7 +115,7 @@ public class gestionBBD {
             String sqlPartida = "INSERT INTO PARTIDES (num_partida, data, hora, taulell) VALUES (?, SYSDATE, SYSDATE, ?)";
             PreparedStatement pstmtPartida = connection.prepareStatement(sqlPartida);
             pstmtPartida.setInt(1, numPartida);
-            pstmtPartida.setString(2, guardarTaulell(partida.getTablero()));
+            pstmtPartida.setString(2, guardarTaulell(partida));
             pstmtPartida.executeUpdate();
             
             // 3. Insertar jugadors a PARTIDA_JUGADORS
@@ -164,6 +170,74 @@ public class gestionBBD {
             partides.add("❌ Error al carregar");
         }
         return partides;
+    }
+    
+    // Carregar una partida completa des de la base de dades
+    public partida carregarPartidaCompleta(int numPartida) {
+        if (!isConnected()) return null;
+        
+        try {
+            partida p = new partida();
+            
+            // 1. Carregar dades de la partida (taulell + metadades)
+            String sqlPartida = "SELECT taulell FROM PARTIDES WHERE num_partida = ?";
+            PreparedStatement pstmtPartida = connection.prepareStatement(sqlPartida);
+            pstmtPartida.setInt(1, numPartida);
+            ResultSet rsPartida = pstmtPartida.executeQuery();
+            
+            if (rsPartida.next()) {
+                String taulellStr = rsPartida.getString("taulell");
+                String[] parts = taulellStr.split("\\|");
+                
+                // Les dues primeres parts són turnos i jugadorActual
+                if (parts.length >= 2) {
+                    p.setTurnos(Integer.parseInt(parts[0]));
+                    p.setJugadorActual(Integer.parseInt(parts[1]));
+                    
+                    // Reconstruir taulell (resta de parts)
+                    StringBuilder layout = new StringBuilder();
+                    for (int i = 2; i < parts.length; i++) {
+                        layout.append(parts[i]).append("|");
+                    }
+                    p.getTablero().inicializarDesdeString(layout.toString());
+                }
+            } else {
+                return null;
+            }
+            
+            // 2. Carregar jugadors
+            String sqlJugadors = "SELECT nickname, inventari FROM PARTIDA_JUGADORS WHERE num_partida = ?";
+            PreparedStatement pstmtJugadors = connection.prepareStatement(sqlJugadors);
+            pstmtJugadors.setInt(1, numPartida);
+            ResultSet rsJugadors = pstmtJugadors.executeQuery();
+            
+            ArrayList<jugador> llistaJugadors = new ArrayList<>();
+            while (rsJugadors.next()) {
+                String nickname = rsJugadors.getString("nickname");
+                String invStr = rsJugadors.getString("inventari");
+                String[] partsInv = invStr.split("\\|");
+                
+                // Unpack: posicion|color|rapids|lents|peces|boles
+                if (partsInv.length >= 6) {
+                    pingino pin = new pingino(nickname, partsInv[1]);
+                    pin.setPosicion(Integer.parseInt(partsInv[0]));
+                    pin.getInventario().setDausRapidos(Integer.parseInt(partsInv[2]));
+                    pin.getInventario().setDausLentos(Integer.parseInt(partsInv[3]));
+                    pin.getInventario().setPeces(Integer.parseInt(partsInv[4]));
+                    pin.getInventario().setBolasNieve(Integer.parseInt(partsInv[5]));
+                    llistaJugadors.add(pin);
+                }
+            }
+            p.setJugadores(llistaJugadors);
+            p.setIdPartida("PARTIDA_" + numPartida);
+            
+            return p;
+            
+        } catch (Exception e) {
+            System.out.println("❌ Error al carregar partida completa: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
     }
     
     // Carregar ranking de jugadors (els que més partides han jugat)

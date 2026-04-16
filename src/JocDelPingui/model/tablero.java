@@ -80,4 +80,38 @@ public class tablero {
     
     public int getNumCasillas() { return casillas.size(); }
     public ArrayList<casilla> getCasillas() { return casillas; }
+    
+    public void inicializarDesdeString(String taulellStr) {
+        this.casillas = new ArrayList<>();
+        String[] tipusCaselles = taulellStr.split("\\|");
+        
+        for (int i = 0; i < tipusCaselles.length; i++) {
+            String tipus = tipusCaselles[i];
+            if (tipus.isEmpty()) continue;
+            
+            casilla nuevaCasilla;
+            switch (tipus) {
+                case "casillaOso": 
+                    nuevaCasilla = new casillaOso(i); 
+                    break;
+                case "casillaAgujero": 
+                    nuevaCasilla = new casillaAgujero(i); 
+                    break;
+                case "casillaTrineo": 
+                    nuevaCasilla = new casillaTrineo(i); 
+                    break;
+                case "casillaInterrogante": 
+                    nuevaCasilla = new casillaInterrogante(i); 
+                    break;
+                case "casillaTierraQuebradiza": 
+                    nuevaCasilla = new casillaTierraQuebradiza(i); 
+                    break;
+                default: 
+                    String desc = (i == 0) ? "Salida" : (i == tipusCaselles.length - 1) ? "🏆 Meta" : "Normal";
+                    nuevaCasilla = new casillaNormal(i, desc); 
+                    break;
+            }
+            casillas.add(nuevaCasilla);
+        }
+    }
 }
