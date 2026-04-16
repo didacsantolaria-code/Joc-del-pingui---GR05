@@ -252,8 +252,19 @@ public class partidaView {
                 vbox.setAlignment(Pos.CENTER);
                 vbox.setSpacing(2);
                 
-                Text icono = new Text("🐧");
-                icono.setStyle("-fx-font-size: 40px;");
+                // Cargar imagen del pingüino del color del jugador
+                String colorAvatar = j.getColor().toLowerCase();
+                String rutaAvatar = "/JocDelPingui/images/pingu_" + colorAvatar + ".png";
+                ImageView icono = new ImageView();
+                try {
+                    Image imgAvatar = new Image(getClass().getResourceAsStream(rutaAvatar));
+                    icono.setImage(imgAvatar);
+                } catch (Exception e) {
+                    System.out.println("No se pudo cargar avatar: " + rutaAvatar);
+                }
+                icono.setFitWidth(45);
+                icono.setFitHeight(45);
+                icono.setPreserveRatio(true);
                 
                 Label nombre = new Label(j.getNombre().toUpperCase());
                 String colorCSS = "badge-" + j.getColor().toLowerCase();
@@ -376,30 +387,23 @@ public class partidaView {
             ficha.setPrefSize(40, 40);
             ficha.setMaxSize(40, 40);
 
-            // Círculo de fondo según el color del jugador
-            javafx.scene.shape.Circle circulo = new javafx.scene.shape.Circle(20);
-            switch (j.getColor()) {
-                case "Rojo":
-                    circulo.setFill(javafx.scene.paint.Color.web("#E53935"));
-                    break;
-                case "Azul":
-                    circulo.setFill(javafx.scene.paint.Color.web("#1E88E5"));
-                    break;
-                case "Verde":
-                    circulo.setFill(javafx.scene.paint.Color.web("#43A047"));
-                    break;
-                case "Amarillo":
-                    circulo.setFill(javafx.scene.paint.Color.web("#FDD835"));
-                    break;
-                default:
-                    circulo.setFill(javafx.scene.paint.Color.web("#9E9E9E"));
-                    break;
+            // Cargar imagen del pingüino según el color del jugador
+            String colorImagen = j.getColor().toLowerCase(); // "rojo", "azul", "verde", "amarillo"
+            String rutaImagen = "/JocDelPingui/images/pingu_" + colorImagen + ".png";
+            try {
+                Image imgPingu = new Image(getClass().getResourceAsStream(rutaImagen));
+                ImageView pinguView = new ImageView(imgPingu);
+                pinguView.setFitWidth(40);
+                pinguView.setFitHeight(40);
+                pinguView.setPreserveRatio(true);
+                ficha.getChildren().add(pinguView);
+            } catch (Exception e) {
+                // Fallback: si no se encuentra la imagen, usar emoji
+                System.out.println("No se pudo cargar imagen: " + rutaImagen);
+                Text texto = new Text("🐧");
+                texto.setStyle("-fx-font-size: 24px;");
+                ficha.getChildren().add(texto);
             }
-
-            Text texto = new Text("🐧");
-            texto.setStyle("-fx-font-size: 24px;");
-
-            ficha.getChildren().addAll(circulo, texto);
 
             // Posició del jugador
             int posActual = j.getPosicion();
