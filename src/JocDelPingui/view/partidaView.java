@@ -78,7 +78,7 @@ public class partidaView {
     @FXML
     private HBox avatarContainer;
     @FXML
-    private Label turnoLabel;
+    private Label turnoNombreLabel;
     
 
     private partida partida;
@@ -491,18 +491,12 @@ public class partidaView {
                 casillaActual.getStyleClass().add("turno-activo");
             }
             // Actualizar label de turno en el footer
-            if (turnoLabel != null) {
-                turnoLabel.setText("Turno de: " + j.getNombre().toUpperCase());
-                String color = j.getColor().toLowerCase();
-                String colorHex;
-                switch (color) {
-                    case "rojo": colorHex = "#E53935"; break;
-                    case "azul": colorHex = "#1E88E5"; break;
-                    case "verde": colorHex = "#43A047"; break;
-                    case "amarillo": colorHex = "#F9A825"; break;
-                    default: colorHex = "#1E3C72"; break;
-                }
-                turnoLabel.setStyle("-fx-text-fill: " + colorHex + "; -fx-font-size: 16px; -fx-font-weight: 800;");
+            if (turnoNombreLabel != null) {
+                turnoNombreLabel.setText(j.getNombre().toUpperCase());
+                // Quitar clases de color anteriores y aplicar la del jugador actual
+                turnoNombreLabel.getStyleClass().removeAll("badge-rojo", "badge-azul", "badge-verde", "badge-amarillo");
+                String colorCSS = "badge-" + j.getColor().toLowerCase();
+                turnoNombreLabel.getStyleClass().add(colorCSS);
             }
         }
     }
@@ -667,7 +661,7 @@ public class partidaView {
 
     private void agregarEvento(String mensaje) {
         HBox eventoBox = new HBox(8);
-        eventoBox.setAlignment(Pos.CENTER_LEFT);
+        eventoBox.setAlignment(Pos.TOP_LEFT);
         eventoBox.getStyleClass().add("evento-mensaje");
 
         // Cargar imagen según el mensaje
@@ -679,14 +673,17 @@ public class partidaView {
 
         Text mensajeText = new Text(mensaje);
         mensajeText.getStyleClass().add("evento-texto");
-        mensajeText.setWrappingWidth(200);
+        // Bind wrapping width dynamically to the container width minus icon and padding
+        mensajeText.wrappingWidthProperty().bind(
+            eventosLista.widthProperty().subtract(60)
+        );
 
         eventoBox.getChildren().addAll(imagenEvento, mensajeText);
         eventosLista.getChildren().add(0, eventoBox);
 
-        // Limitar a 10 eventos
-        if (eventosLista.getChildren().size() > 10) {
-            eventosLista.getChildren().remove(10, eventosLista.getChildren().size());
+        // Limitar a 15 eventos
+        if (eventosLista.getChildren().size() > 15) {
+            eventosLista.getChildren().remove(15, eventosLista.getChildren().size());
         }
     }
     
