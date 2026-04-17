@@ -337,23 +337,14 @@ public class gestionBBD {
         }
     }
     
-    // Finalitzar una partida: incrementar partides_jugades per a tots els jugadors i esborrar la partida guardada
+    // Finalitzar una partida: esborrar la partida guardada i incrementar partides_jugades
     public boolean finalitzarPartida(partida partida) {
         if (!isConnected() || partida == null) return false;
         
         try {
             connection.setAutoCommit(false);
             
-            // 1. Incrementar partides_jugades per a tots els jugadors de la partida
-            String sqlUpdate = "UPDATE JUGADORS SET partides_jugades = partides_jugades + 1 WHERE nickname = ?";
-            try (PreparedStatement pstmt = connection.prepareStatement(sqlUpdate)) {
-                for (jugador j : partida.getJugadores()) {
-                    pstmt.setString(1, j.getNombre());
-                    pstmt.executeUpdate();
-                }
-            }
-            
-            // 2. Esborrar la partida guardada (ja està acabada)
+            // 1. PRIMER: Esborrar la partida guardada (per evitar triggers que incrementin partides_jugades)
             String id = partida.getIdPartida();
             if (id != null && id.startsWith("PARTIDA_") && !id.equals("PARTIDA_NEW")) {
                 try {
@@ -374,6 +365,15 @@ public class gestionBBD {
                     }
                 } catch (NumberFormatException e) {
                     // Si no té ID vàlid, no esborrar res
+                }
+            }
+            
+            // 2. DESPRÉS: Incrementar partides_jugades (només quan la partida realment s'ha acabat)
+            String sqlUpdate = "UPDATE JUGADORS SET partides_jugades = partides_jugades + 1 WHERE nickname = ?";
+            try (PreparedStatement pstmt = connection.prepareStatement(sqlUpdate)) {
+                for (jugador j : partida.getJugadores()) {
+                    pstmt.setString(1, j.getNombre());
+                    pstmt.executeUpdate();
                 }
             }
             
@@ -403,6 +403,7 @@ public class gestionBBD {
         try {
             String sql = "SELECT nickname, partides_jugades " +
                          "FROM JUGADORS " +
+                         "WHERE partides_jugades > 0 " +
                          "ORDER BY partides_jugades DESC " +
                          "FETCH FIRST 5 ROWS ONLY";
             Statement stmt = connection.createStatement();
@@ -436,7 +437,7 @@ public class gestionBBD {
         }
         
         try {
-            String sql = "INSERT INTO JUGADORS (nickname, contrasenya) VALUES (?, ?)";
+            String sql = "INSERT INTO JUGADORS (nickname, contrasenya, partides_jugades) VALUES (?, ?, 0)";
             PreparedStatement pstmt = connection.prepareStatement(sql);
             pstmt.setString(1, nickname);
             pstmt.setString(2, contrasenya);

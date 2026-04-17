@@ -160,7 +160,8 @@
             <!-- Título -->
             <Label text="PINGÜI JOC - AVENTURA EN EL HIELO" styleClass="footer-titulo" />
             <Label text="  |  " style="-fx-text-fill: #1E3C72; -fx-font-size: 16px;" />
-            <Label fx:id="turnoLabel" text="Turno: -" styleClass="footer-turno" />
+            <Label text="Turno de:" styleClass="footer-titulo" />
+            <Label fx:id="turnoNombreLabel" text="-" styleClass="turno-nombre-badge" />
             
             <Region HBox.hgrow="ALWAYS" />
             
