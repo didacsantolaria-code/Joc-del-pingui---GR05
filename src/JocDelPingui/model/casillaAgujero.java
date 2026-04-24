@@ -9,14 +9,17 @@ public class casillaAgujero extends casilla {
     @Override
     public void realizarAccion(partida partida, jugador jugador) {
         partida.mostrarMensaje("¡Caes por un agujero! Retrocedes.");
-        int nuevaPos = buscarAgujeroAnterior(posicion);
+        int nuevaPos = buscarAgujeroAnterior(posicion, partida);
         jugador.setPosicion(nuevaPos);
     }
     
-    private int buscarAgujeroAnterior(int posActual) {
-        for (int i = posActual - 1; i >= 0; i--) {
-            if (i == 0) return 0;
-            if (i % 7 == 0) return i;
+    private int buscarAgujeroAnterior(int posActual, partida partida) {
+        tablero tablero = partida.getTablero();
+        for (int i = posActual - 1; i > 0; i--) {
+            casilla c = tablero.getCasilla(i);
+            if (c instanceof casillaAgujero) {
+                return i;
+            }
         }
         return 0;
     }

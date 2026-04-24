@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
@@ -23,6 +24,7 @@ public class menuView extends VBox {
     @FXML private Button loginButton;
     @FXML private Button registerButton;
     @FXML private StackPane stackPane;
+    @FXML private Slider volumeSlider;
     
     private mainApp mainApp;
     private gestionBBD gestionBD;
@@ -51,6 +53,12 @@ public class menuView extends VBox {
     
     public void setMainApp(mainApp mainApp) {
         this.mainApp = mainApp;
+        if (volumeSlider != null) {
+            volumeSlider.setValue(mainApp.getVolumenActual());
+            volumeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+                mainApp.setVolumen(newVal.doubleValue());
+            });
+        }
     }
     
     public void setGestionBD(gestionBBD gestionBD) {

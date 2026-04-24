@@ -12,12 +12,16 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.lang.reflect.Method;
+import java.net.URL;
 
 public class mainApp extends Application {
     
     private Stage primaryStage;
     private gestionBBD gestionBD;
     private String usuariActual;  
+    private Object mediaPlayer; // javafx.scene.media.MediaPlayer via reflection
+    private double volumenActual = 0.5;
     
     @Override
     public void start(Stage primaryStage) {
@@ -31,7 +35,62 @@ public class mainApp extends Application {
         
         gestionBD = new gestionBBD();
         
+        inicializarMusica();
+        
         mostrarMenu();
+    }
+    
+    private void inicializarMusica() {
+        new Thread(() -> {
+            try {
+                URL urlResource = getClass().getResource("/JocDelPingui/images/sonido_fondo.mp3");
+                if (urlResource == null) {
+                    System.out.println("Archivo de música no encontrado.");
+                    return;
+                }
+                String url = urlResource.toExternalForm();
+                
+                Class<?> mediaClass = Class.forName("javafx.scene.media.Media");
+                Class<?> playerClass = Class.forName("javafx.scene.media.MediaPlayer");
+                
+                Object media = mediaClass.getConstructor(String.class).newInstance(url);
+                mediaPlayer = playerClass.getConstructor(mediaClass).newInstance(media);
+                
+                Method setCycle = playerClass.getMethod("setCycleCount", int.class);
+                setCycle.invoke(mediaPlayer, Integer.MAX_VALUE);
+                
+                Method setVol = playerClass.getMethod("setVolume", double.class);
+                setVol.invoke(mediaPlayer, volumenActual);
+                
+                Method play = playerClass.getMethod("play");
+                play.invoke(mediaPlayer);
+                
+                System.out.println("Música de fondo iniciada correctamente.");
+            } catch (Exception e) {
+                System.out.println("No se pudo iniciar la música de fondo: " + e.getMessage());
+                mediaPlayer = null;
+            }
+        }, "MusicThread").start();
+    }
+    
+    public Object getMediaPlayer() {
+        return mediaPlayer;
+    }
+    
+    public double getVolumenActual() {
+        return volumenActual;
+    }
+    
+    public void setVolumen(double vol) {
+        this.volumenActual = vol;
+        if (mediaPlayer != null) {
+            try {
+                Method setVol = mediaPlayer.getClass().getMethod("setVolume", double.class);
+                setVol.invoke(mediaPlayer, vol);
+            } catch (Exception e) {
+                System.out.println("No se pudo cambiar el volumen: " + e.getMessage());
+            }
+        }
     }
     
     public void mostrarMenu() {
@@ -43,9 +102,7 @@ public class mainApp extends Application {
             controller.setMainApp(this);
             controller.setGestionBD(gestionBD);
             
-            Scene scene = new Scene(root, 1000, 700);
-            primaryStage.setScene(scene);
-            setPantallaCompleta();
+            cambiarEscena(root);
             primaryStage.show();
         } catch (Exception e) {
             e.printStackTrace();
@@ -62,9 +119,7 @@ public class mainApp extends Application {
             controller.setGestionBD(gestionBD);
             controller.setUsuariActual(usuariActual);
             
-            Scene scene = new Scene(root, 1000, 700);
-            primaryStage.setScene(scene);
-            setPantallaCompleta();
+            cambiarEscena(root);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -84,9 +139,7 @@ public class mainApp extends Application {
             controller.setGestionBD(gestionBD);
             controller.setUsuariActual(usuariActual);
             
-            Scene scene = new Scene(root, 1000, 700);
-            primaryStage.setScene(scene);
-            setPantallaCompleta();
+            cambiarEscena(root);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -115,9 +168,7 @@ public class mainApp extends Application {
             controller.setGestionBD(gestionBD);
             controller.setUsuariActual(usuariActual);
             
-            Scene scene = new Scene(root, 1000, 700);
-            primaryStage.setScene(scene);
-            setPantallaCompleta();
+            cambiarEscena(root);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -135,6 +186,16 @@ public class mainApp extends Application {
         if (primaryStage != null) {
             primaryStage.setFullScreen(true);
             primaryStage.setFullScreenExitHint("");
+        }
+    }
+    
+    private void cambiarEscena(Parent root) {
+        if (primaryStage.getScene() == null) {
+            Scene scene = new Scene(root, 1000, 700);
+            primaryStage.setScene(scene);
+            setPantallaCompleta();
+        } else {
+            primaryStage.getScene().setRoot(root);
         }
     }
     

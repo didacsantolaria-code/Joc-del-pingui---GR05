@@ -45,11 +45,17 @@ public class partida {
 
     public void siguienteTurno() {
         turnos++;
-        jugadores.get(jugadorActual).setPierdeTurno(false);
 
         do {
             jugadorActual = (jugadorActual + 1) % jugadores.size();
-        } while (jugadores.get(jugadorActual).isPierdeTurno());
+            
+            if (jugadores.get(jugadorActual).isPierdeTurno()) {
+                jugadores.get(jugadorActual).setPierdeTurno(false);
+                mostrarMensaje(jugadores.get(jugadorActual).getNombre() + " no tira porque pierde el turno.");
+            } else {
+                break;
+            }
+        } while (true);
     }
 
     public static void setVistaActual(partidaView vista) {

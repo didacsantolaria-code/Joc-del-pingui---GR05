@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -50,6 +51,7 @@ public class seleccionView {
     @FXML private ListView<String> listaRanking;
     @FXML private Button btnContinuar;
     @FXML private Button btnVolver;
+    @FXML private Slider volumeSlider;
 
     private mainApp mainApp;
     private gestionBBD gestionBD;
@@ -92,6 +94,12 @@ public class seleccionView {
 
     public void setMainApp(mainApp mainApp) {
         this.mainApp = mainApp;
+        if (volumeSlider != null) {
+            volumeSlider.setValue(mainApp.getVolumenActual());
+            volumeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+                mainApp.setVolumen(newVal.doubleValue());
+            });
+        }
     }
 
     public void setGestionBD(gestionBBD gestionBD) {
