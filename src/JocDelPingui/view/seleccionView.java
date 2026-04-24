@@ -133,7 +133,7 @@ public class seleccionView {
         String seleccion = listaPartidas.getSelectionModel().getSelectedItem();
         if (seleccion != null && seleccion.startsWith("Partida ")) {
             try {
-                // El format és "Partida X - YYYY-MM-DD"
+                
                 String idStr = seleccion.split(" ")[1];
                 int idPartida = Integer.parseInt(idStr);
                 
@@ -214,9 +214,9 @@ public class seleccionView {
 
         lblError.setText("");
         
-        // ==============================================
-        // COMPROVACIÓ: Verificar que tots els jugadors existeixen a la BD
-        // ==============================================
+        
+        
+        
         if (gestionBD != null && gestionBD.isConnected()) {
             for (String[] jugador : jugadoresInfo) {
                 String nickname = jugador[0];
@@ -229,7 +229,7 @@ public class seleccionView {
                 }
             }
             
-            // Verificar que el jugador actual (login) estigui a la llista
+            
             boolean usuariActualTrobat = false;
             for (String[] jugador : jugadoresInfo) {
                 if (jugador[0].equals(usuariActual)) {
@@ -244,7 +244,7 @@ public class seleccionView {
                 return;
             }
         }
-        // ==============================================
+        
 
         if (mainApp != null) {
             mainApp.nuevaPartida(jugadoresInfo);

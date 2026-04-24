@@ -51,8 +51,6 @@
                 
                 <Button fx:id="exitButton" text="Salir del Juego" onAction="#handleSalirPrograma" maxWidth="Infinity" style="-fx-background-color: #ff4d4d; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8px; -fx-background-radius: 5px;"/>
 
-                <Label text="Tip: para la demo, puedes entrar con cualquier usuario si aún no hay validación."
-                       styleClass="hint" wrapText="true"/>
             </VBox>
         </StackPane>
     </center>
