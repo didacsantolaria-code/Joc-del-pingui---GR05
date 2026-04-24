@@ -16,16 +16,16 @@ public class tablero {
     
     private void generarCasillasAleatorias() {
         this.casillas = new ArrayList<>();
-        this.random = new Random();   // por si acaso
+        this.random = new Random();   
 
-        // Casilla 0 - Salida (siempre normal)
+        
         casillas.add(new casillaNormal(0, "Salida"));
 
-        // Casillas 1 a 48 - Generación con control de adyacencia
+        
         for (int i = 1; i < NUM_CASILLAS - 1; i++) {
             casilla nuevaCasilla;
 
-            while (true) {  // re-intentamos hasta que sea válida
+            while (true) {  
                 int tipo = random.nextInt(100);
 
                 if (tipo < 10) {
@@ -42,7 +42,7 @@ public class tablero {
                     nuevaCasilla = new casillaNormal(i, "Normal");
                 }
 
-                // === VERIFICACIÓN DE REGLA ===
+                
                 boolean esValida = true;
 
                 if (i > 0) {
@@ -59,15 +59,15 @@ public class tablero {
                 }
 
                 if (esValida) {
-                    break;   // ¡válido! salimos del while
+                    break;   
                 }
-                // Si no es válida → volvemos a tirar el dado (re-roll)
+                
             }
 
             casillas.add(nuevaCasilla);
         }
 
-        // Casilla 49 - Meta (siempre normal)
+        
         casillas.add(new casillaNormal(NUM_CASILLAS - 1, "🏆 Meta"));
     }
     

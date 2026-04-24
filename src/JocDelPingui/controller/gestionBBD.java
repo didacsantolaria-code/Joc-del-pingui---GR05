@@ -14,23 +14,23 @@ public class gestionBBD {
     
     private Connection connection;
     
-    // Dades de connexió a la base de dades
+    
     private static final String URL = "jdbc:oracle:thin:@192.168.3.26:1521/XEPDB2";
     private static final String USUARI = "DW2526_GR05_PINGU";
     private static final String CONTRASENYA = "AAPCSDS";
     
-    // Constructor
+    
     public gestionBBD() {
         connectar();
     }
     
-    // Connectar a la base de dades Oracle
+    
     private void connectar() {
         try {
-            // Carregar el driver d'Oracle
+            
             Class.forName("oracle.jdbc.driver.OracleDriver");
             
-            // Establir la connexió
+            
             connection = DriverManager.getConnection(URL, USUARI, CONTRASENYA);
             System.out.println("✅ Connectat a la base de dades!");
             System.out.println("   Usuari: " + USUARI);
@@ -45,7 +45,7 @@ public class gestionBBD {
         }
     }
     
-    // Tancar connexió
+    
     public void tancar() {
         try {
             if (connection != null && !connection.isClosed()) {
@@ -57,7 +57,7 @@ public class gestionBBD {
         }
     }
     
-    // Comprovar si la connexió està activa
+    
     public boolean isConnected() {
         try {
             return connection != null && !connection.isClosed();
@@ -66,9 +66,9 @@ public class gestionBBD {
         }
     }
     
-    // ============= MÈTODES PER AL JOC =============
     
-    // Obtenir el següent número de partida (NEXTVAL)
+    
+    
     public int obtenirSeguentNumPartida() throws SQLException {
         String sql = "SELECT seq_num_partida.NEXTVAL FROM dual";
         Statement stmt = connection.createStatement();
@@ -77,10 +77,10 @@ public class gestionBBD {
         return rs.getInt(1);
     }
     
-    // Guardar l'estat de la partida (metadades + taulell)
+    
     private String guardarTaulell(partida p) {
         StringBuilder sb = new StringBuilder();
-        // Pack: turnos|jugadorActual|casillas...
+        
         sb.append(p.getTurnos()).append("|");
         sb.append(p.getJugadorActual()).append("|");
         
@@ -90,7 +90,7 @@ public class gestionBBD {
         return sb.toString();
     }
     
-    // Guardar inventari ampliat (posicion|color|dausRapids|dausLents|peces|bolesNieve)
+    
     private String guardarInventari(pingino p) {
         return p.getPosicion() + "|" +
                p.getColor() + "|" +
@@ -100,7 +100,7 @@ public class gestionBBD {
                p.getInventario().getBolasNieve();
     }
     
-    // Guardar una partida completa (INSERT si és nova, UPDATE si ja existeix)
+    
     public boolean guardarPartida(partida partida, String nickname) {
         if (!isConnected()) {
             System.out.println("❌ No hi ha connexió a la base de dades");
@@ -108,10 +108,10 @@ public class gestionBBD {
         }
         
         try {
-            // Desactivar auto-commit per a transacció
+            
             connection.setAutoCommit(false);
 
-            // 1. Determinar si la partida ja existeix a la BD
+            
             int numPartida = -1;
             String id = partida.getIdPartida();
             if (id != null && id.startsWith("PARTIDA_")) {
@@ -125,12 +125,12 @@ public class gestionBBD {
             boolean esNova = (numPartida <= 0);
 
             if (esNova) {
-                // Partida nova: obtenir el següent número de seqüència
+                
                 numPartida = obtenirSeguentNumPartida();
             }
             
             if (esNova) {
-                // ---- INSERT: partida nova ----
+                
                 String sqlPartida = "INSERT INTO PARTIDES (num_partida, data, hora, taulell) VALUES (?, SYSDATE, SYSDATE, ?)";
                 try (PreparedStatement pstmtPartida = connection.prepareStatement(sqlPartida)) {
                     pstmtPartida.setInt(1, numPartida);
@@ -148,8 +148,8 @@ public class gestionBBD {
                     }
                 }
             } else {
-                // ---- UPDATE: partida existent ----
-                // Actualitzar el taulell a PARTIDES
+                
+                
                 String sqlUpdatePartida = "UPDATE PARTIDES SET taulell = ?, data = SYSDATE, hora = SYSDATE WHERE num_partida = ?";
                 try (PreparedStatement pstmtUpdate = connection.prepareStatement(sqlUpdatePartida)) {
                     pstmtUpdate.setString(1, guardarTaulell(partida));
@@ -157,7 +157,7 @@ public class gestionBBD {
                     pstmtUpdate.executeUpdate();
                 }
                 
-                // Esborrar jugadors antics i tornar-los a insertar amb les dades actualitzades
+                
                 String sqlDeleteJugadors = "DELETE FROM PARTIDA_JUGADORS WHERE num_partida = ?";
                 try (PreparedStatement pstmtDelete = connection.prepareStatement(sqlDeleteJugadors)) {
                     pstmtDelete.setInt(1, numPartida);
@@ -175,10 +175,10 @@ public class gestionBBD {
                 }
             }
             
-            // Assignar l'idPartida perquè futures guardades facin UPDATE
+            
             partida.setIdPartida("PARTIDA_" + numPartida);
             
-            // Confirmar transacció
+            
             connection.commit();
             System.out.println("✅ Partida guardada amb número: " + numPartida + (esNova ? " (nova)" : " (actualitzada)"));
             return true;
@@ -200,7 +200,7 @@ public class gestionBBD {
         }
     }
     
-    // Carregar llista de partides pendents d'un jugador
+    
     public List<String> obtenirPartidesPendents(String nickname) {
         List<String> partides = new ArrayList<>();
         
@@ -235,14 +235,14 @@ public class gestionBBD {
         return partides;
     }
     
-    // Carregar una partida completa des de la base de dades
+    
     public partida carregarPartidaCompleta(int numPartida) {
         if (!isConnected()) return null;
         
         try {
             partida p = new partida();
             
-            // 1. Carregar dades de la partida (taulell + metadades)
+            
             String sqlPartida = "SELECT taulell FROM PARTIDES WHERE num_partida = ?";
             PreparedStatement pstmtPartida = connection.prepareStatement(sqlPartida);
             pstmtPartida.setInt(1, numPartida);
@@ -252,11 +252,11 @@ public class gestionBBD {
                 String taulellStr = rsPartida.getString("taulell");
                 String[] parts = taulellStr.split("\\|");
                 
-                // Detectar format: El format nou té turnos|jugadorActual al principi
+                
                 boolean formatNou = false;
                 try {
                     if (parts.length >= 2) {
-                        Integer.parseInt(parts[0]); // Provem si el primer és un número
+                        Integer.parseInt(parts[0]); 
                         formatNou = true;
                     }
                 } catch (NumberFormatException e) {
@@ -267,14 +267,14 @@ public class gestionBBD {
                     p.setTurnos(Integer.parseInt(parts[0]));
                     p.setJugadorActual(Integer.parseInt(parts[1]));
                     
-                    // Reconstruir taulell (resta de parts)
+                    
                     StringBuilder layout = new StringBuilder();
                     for (int i = 2; i < parts.length; i++) {
                         layout.append(parts[i]).append("|");
                     }
                     p.getTablero().inicializarDesdeString(layout.toString());
                 } else {
-                    // Format antic: tot són caselles, assumim valors per defecte per a turnos i jugadorActual
+                    
                     p.setTurnos(0);
                     p.setJugadorActual(0);
                     p.getTablero().inicializarDesdeString(taulellStr);
@@ -283,7 +283,7 @@ public class gestionBBD {
                 return null;
             }
             
-            // 2. Carregar jugadors
+            
             String sqlJugadors = "SELECT nickname, inventari FROM PARTIDA_JUGADORS WHERE num_partida = ?";
             ArrayList<jugador> llistaJugadors = new ArrayList<>();
             
@@ -297,9 +297,9 @@ public class gestionBBD {
 
                         String[] partsInv = invStr.split("\\|");
                         
-                        // Compatibilitat amb formats antics:
+                        
                         if (partsInv.length == 4) {
-                            // Format llegat: dausRapids|dausLents|peces|boles
+                            
                             pingino pin = new pingino(nickname, "Azul");
                             pin.getInventario().setDausRapidos(Integer.parseInt(partsInv[0]));
                             pin.getInventario().setDausLentos(Integer.parseInt(partsInv[1]));
@@ -307,7 +307,7 @@ public class gestionBBD {
                             pin.getInventario().setBolasNieve(Integer.parseInt(partsInv[3]));
                             llistaJugadors.add(pin);
                         } else if (partsInv.length >= 6) {
-                            // Format actual: posicion|color|dausRapids|dausLents|peces|boles
+                            
                             pingino pin = new pingino(nickname, partsInv[1]);
                             pin.setPosicion(Integer.parseInt(partsInv[0]));
                             pin.getInventario().setDausRapidos(Integer.parseInt(partsInv[2]));
@@ -337,38 +337,38 @@ public class gestionBBD {
         }
     }
     
-    // Finalitzar una partida: esborrar la partida guardada i incrementar partides_jugades
+    
     public boolean finalitzarPartida(partida partida) {
         if (!isConnected() || partida == null) return false;
         
         try {
             connection.setAutoCommit(false);
             
-            // 1. PRIMER: Esborrar la partida guardada (per evitar triggers que incrementin partides_jugades)
+            
             String id = partida.getIdPartida();
             if (id != null && id.startsWith("PARTIDA_") && !id.equals("PARTIDA_NEW")) {
                 try {
                     int numPartida = Integer.parseInt(id.replace("PARTIDA_", ""));
                     
-                    // Esborrar jugadors de la partida
+                    
                     String sqlDeleteJugadors = "DELETE FROM PARTIDA_JUGADORS WHERE num_partida = ?";
                     try (PreparedStatement pstmtDel = connection.prepareStatement(sqlDeleteJugadors)) {
                         pstmtDel.setInt(1, numPartida);
                         pstmtDel.executeUpdate();
                     }
                     
-                    // Esborrar la partida
+                    
                     String sqlDeletePartida = "DELETE FROM PARTIDES WHERE num_partida = ?";
                     try (PreparedStatement pstmtDel = connection.prepareStatement(sqlDeletePartida)) {
                         pstmtDel.setInt(1, numPartida);
                         pstmtDel.executeUpdate();
                     }
                 } catch (NumberFormatException e) {
-                    // Si no té ID vàlid, no esborrar res
+                    
                 }
             }
             
-            // 2. DESPRÉS: Incrementar partides_jugades (només quan la partida realment s'ha acabat)
+            
             String sqlUpdate = "UPDATE JUGADORS SET partides_jugades = partides_jugades + 1 WHERE nickname = ?";
             try (PreparedStatement pstmt = connection.prepareStatement(sqlUpdate)) {
                 for (jugador j : partida.getJugadores()) {
@@ -390,7 +390,7 @@ public class gestionBBD {
         }
     }
     
-    // Carregar ranking de jugadors (els que més partides han jugat)
+    
     public List<String> obtenirRanking() {
         List<String> ranking = new ArrayList<>();
         
@@ -429,7 +429,7 @@ public class gestionBBD {
         return ranking;
     }
     
-    // Registrar un nou jugador
+    
     public boolean registrarJugador(String nickname, String contrasenya) {
         if (!isConnected()) {
             System.out.println("❌ No hi ha connexió a la base de dades");
@@ -450,7 +450,7 @@ public class gestionBBD {
         }
     }
     
-    // Validar login d'un jugador
+    
     public boolean validarLogin(String nickname, String contrasenya) {
         if (!isConnected()) {
             System.out.println("❌ No hi ha connexió a la base de dades");
@@ -470,7 +470,7 @@ public class gestionBBD {
         }
     }
     
-    // Comprovar si un jugador existeix
+    
     public boolean existeixJugador(String nickname) {
         if (!isConnected()) return false;
         

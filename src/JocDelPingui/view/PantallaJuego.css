@@ -1,4 +1,4 @@
-/* ===== FUENTES ===== */
+
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&family=Varela+Round&display=swap');
 
 .root {
@@ -9,7 +9,7 @@
     -fx-background-repeat: no-repeat;
 }
 
-/* ===== FONDO CON AURORAS ===== */
+
 .aurora {
     -fx-background-color: linear-gradient(to bottom, rgba(120,200,255,0.3), rgba(0,50,100,0.5));
 }
@@ -21,13 +21,13 @@
     -fx-effect: dropshadow(gaussian, white, 5, 0, 0, 0);
 }
 
-/* ===== CONTENEDOR PRINCIPAL ===== */
+
 .main-container {
     -fx-padding: 15px;
     -fx-spacing: 15px;
 }
 
-/* ===== TABLERO ===== */
+
 .board-container {
     -fx-background-color: #B0E0E6;
     -fx-background-radius: 20px;
@@ -64,7 +64,7 @@
     -fx-font-weight: bold;
 }
 
-/* ===== PANEL LATERAL ===== */
+
 .side-panel {
     -fx-background-color: rgba(255, 255, 255, 0.9);
     -fx-background-radius: 20px;
@@ -83,7 +83,7 @@
     -fx-alignment: center;
 }
 
-/* Dado */
+
 .dado-container {
     -fx-alignment: center;
     -fx-spacing: 10px;
@@ -105,7 +105,7 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 8, 0, 0, 3);
 }
 
-/* Objetos */
+
 .objetos-container {
     -fx-spacing: 8px;
 }
@@ -137,7 +137,7 @@
     -fx-cursor: hand;
 }
 
-/* Eventos */
+
 .eventos-container {
     -fx-spacing: 8px;
 }
@@ -161,7 +161,7 @@
     -fx-line-spacing: 2px;
 }
 
-/* ===== BARRA INFERIOR ===== */
+
 .footer {
     -fx-background-color: #B3E5FC;
     -fx-border-color: #81D4FA;
@@ -187,7 +187,7 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 3, 0, 0, 1);
 }
 
-/* Avatares */
+
 .avatar-container {
     -fx-spacing: 12px;
     -fx-alignment: center-right;
@@ -206,7 +206,7 @@
 .badge-verde { -fx-background-color: #43A047; }
 .badge-amarillo { -fx-background-color: #FDD835; -fx-text-fill: #1E3C72; }
 
-/* ===== DECORACIÓN ===== */
+
 .mountain-left, .mountain-right {
     -fx-font-size: 80px;
     -fx-opacity: 0.3;
@@ -218,7 +218,7 @@
     -fx-opacity: 0.5;
 }
 
-/* ===== BOTONES GUARDAR / SALIR ===== */
+
 .boton-guardar {
     -fx-background-color: #43A047;
     -fx-background-radius: 12px;

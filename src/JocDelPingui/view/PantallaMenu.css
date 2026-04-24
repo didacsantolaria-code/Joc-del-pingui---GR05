@@ -3,14 +3,14 @@
     -fx-background-color: #f6f7fb;
 }
 
-/* MENU */
+
 .menu-bar {
     -fx-background-color: white;
     -fx-border-color: #e6e7ee;
     -fx-border-width: 0 0 1px 0;
 }
 
-/* CARD */
+
 .card {
     -fx-background-color: rgba(255, 255, 255, 0.80);
     -fx-background-radius: 16px;
@@ -23,7 +23,7 @@
     -fx-alignment: center;
 }
 
-/* TITLES */
+
 .title {
     -fx-font-size: 24px;
     -fx-font-weight: 800;
@@ -36,7 +36,7 @@
     -fx-opacity: 0.65;
 }
 
-/* FIELDS */
+
 .field-label {
     -fx-font-size: 12px;
     -fx-opacity: 0.75;
@@ -51,7 +51,7 @@
     -fx-padding: 8px 10px;
 }
 
-/* BUTTONS */
+
 .button {
     -fx-background-radius: 8px;
     -fx-padding: 8px 12px;
@@ -66,7 +66,7 @@
     -fx-text-fill: white;
 }
 
-/* Hint */
+
 .hint {
     -fx-font-size: 11px;
     -fx-opacity: 0.6;

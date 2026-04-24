@@ -32,10 +32,10 @@
                     <Insets top="20" right="20" bottom="30" left="20"/>
                 </padding>
 
-                <!-- Fila superior: Partidas Pendientes + Ranking lado a lado -->
+                
                 <HBox spacing="16" alignment="CENTER">
 
-                    <!-- Partidas Pendientes -->
+                    
                     <VBox spacing="10" styleClass="card-seleccion" HBox.hgrow="ALWAYS" maxWidth="400">
                         <padding>
                             <Insets top="18" right="18" bottom="18" left="18"/>
@@ -46,7 +46,7 @@
                                 maxWidth="Infinity" styleClass="btn-continuar"/>
                     </VBox>
 
-                    <!-- Ranking -->
+                    
                     <VBox spacing="10" styleClass="card-seleccion" HBox.hgrow="ALWAYS" maxWidth="400">
                         <padding>
                             <Insets top="18" right="18" bottom="18" left="18"/>
@@ -56,13 +56,13 @@
                     </VBox>
                 </HBox>
 
-                <!-- Panel inferior: Nueva Partida -->
+                
                 <VBox spacing="12" styleClass="card-seleccion" maxWidth="820">
                     <padding>
                         <Insets top="20" right="24" bottom="20" left="24"/>
                     </padding>
 
-                    <!-- Título + Selector en la misma línea -->
+                    
                     <HBox spacing="20" alignment="CENTER">
                         <Label text="Nueva Partida" styleClass="titulo-seleccion"/>
                         <Region HBox.hgrow="ALWAYS"/>
@@ -72,7 +72,7 @@
                         <Button fx:id="btnMas" text="+" onAction="#handleMas" styleClass="btn-counter"/>
                     </HBox>
 
-                    <!-- Filas de jugadores en grid 2x2 -->
+                    
                     <HBox spacing="12">
                         <HBox fx:id="filaJugador1" spacing="8" alignment="CENTER_LEFT" styleClass="fila-jugador" HBox.hgrow="ALWAYS">
                             <Label text="🐧" styleClass="icono-jugador"/>
@@ -99,15 +99,15 @@
                         </HBox>
                     </HBox>
 
-                    <!-- Error + Botón Jugar -->
+                    
                     <Label fx:id="lblError" text="" styleClass="error-label"/>
                     <Button fx:id="btnJugar" text="JUGAR" onAction="#handleJugar" maxWidth="Infinity" styleClass="primary btn-jugar"/>
                 </VBox>
 
-                <!-- Espacio Flexible para empujar el boton hacia abajo si hay espacio -->
+                
                 <Region VBox.vgrow="ALWAYS" minHeight="15"/>
 
-                <!-- Botón Volver al Login en el centro inferior -->
+                
                 <HBox alignment="CENTER">
                     <Button fx:id="btnVolver" text="← Volver al Login" onAction="#handleVolverLogin" styleClass="btn-volver"/>
                 </HBox>

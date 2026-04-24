@@ -17,7 +17,7 @@ public class mainApp extends Application {
     
     private Stage primaryStage;
     private gestionBBD gestionBD;
-    private String usuariActual;  // Per guardar l'usuari loguejat
+    private String usuariActual;  
     
     @Override
     public void start(Stage primaryStage) {
@@ -28,7 +28,7 @@ public class mainApp extends Application {
         
         setPantallaCompleta();
         
-        // Inicialitzar connexió a la base de dades
+        
         gestionBD = new gestionBBD();
         
         mostrarMenu();

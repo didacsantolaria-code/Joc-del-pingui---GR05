@@ -91,25 +91,25 @@ public class partidaView {
 
     @FXML
     private void initialize() {
-        // Configurar botones
-        // tirarDadoBtn.setOnAction(e -> handleTirarDado());
+        
+        
         usarRapidoBtn.setOnAction(e -> handleUsarRapido());
         usarLentoBtn.setOnAction(e -> handleUsarLento());
         usarPezBtn.setOnAction(e -> handleUsarPez());
         usarNieveBtn.setOnAction(e -> handleUsarNieve());
 
-        // Inicializar con valores de ejemplo
+        
         dadoResultado.setText("5");
 
         dadoResultado.setVisible(false);
         
-     // Cargar imágenes de objetos
+     
         cargarImagen(iconoRapido, "dado_rapido.png");
         cargarImagen(iconoLento, "dado_lento.png");
         cargarImagen(iconoPez, "pez.png");
         cargarImagen(iconoNieve, "bola_nieve.png");
         
-     // Cargar imágenes de los objetos del panel lateral
+     
         cargarImagenObjeto(iconoRapido, "dado_rapido.png");
         cargarImagenObjeto(iconoLento, "dado_lento.png");
         cargarImagenObjeto(iconoPez, "pez.png");
@@ -123,10 +123,10 @@ public class partidaView {
             imageView.setImage(imagen);
         } catch (Exception e) {
             System.out.println("No se pudo cargar la imagen: " + nombreArchivo);
-            // Opcional: mostrar un emoji como fallback
+            
             Text fallback = new Text("❓");
             fallback.setStyle("-fx-font-size: 16px;");
-            // No es trivial reemplazar el ImageView por Text, así que mejor dejamos el ImageView vacío
+            
         }
     }
     
@@ -137,10 +137,10 @@ public class partidaView {
             imageView.setImage(img);
         } catch (Exception e) {
             System.out.println("No se pudo cargar imagen objeto: " + nombreArchivo);
-            // Opcional: poner un emoji de fallback
+            
             Text fallback = new Text("?");
             fallback.setStyle("-fx-font-size: 16px;");
-            // No podemos añadir el Text al ImageView fácilmente, así que mejor dejar vacío
+            
         }
     }
 
@@ -148,19 +148,19 @@ public class partidaView {
         this.partida = partida;
         partida.setVistaActual(this);
 
-        // Crear el tablero gráfico
+        
         crearTablero();
 
-        // Crear las fichas de los jugadores
+        
         crearFichasJugadores();
 
-        // Crear los avatares dinámicos en la barra inferior
+        
         crearAvatares();
 
-        // Actualizar inventarios
+        
         actualizarInventarios();
 
-        // Marcar jugador actual
+        
         marcarJugadorActual();
     }
 
@@ -201,17 +201,17 @@ public class partidaView {
         if (mainApp != null) mainApp.setPantallaCompleta();
         if (resultat.isPresent()) {
             if (resultat.get() == btnGuardar) {
-                // Guardar partida
+                
                 if (gestionBD != null && partida != null && usuariActual != null) {
                     gestionBD.guardarPartida(partida, usuariActual);
                     agregarEvento("💾 Partida guardada abans de sortir");
                 }
                 volverAlMenu();
             } else if (resultat.get() == btnSortir) {
-                // Sortir sense guardar
+                
                 volverAlMenu();
             }
-            // Si és Cancel·lar, no fer res
+            
         }
     }
     
@@ -239,7 +239,7 @@ public class partidaView {
         if (mainApp != null) {
             mainApp.mostrarSeleccion();
         } else {
-            // Intentar cerrar la ventana si no hay mainApp
+            
             if (tableroGrid.getScene() != null) {
                 tableroGrid.getScene().getWindow().hide();
             }
@@ -254,7 +254,7 @@ public class partidaView {
                 vbox.setAlignment(Pos.CENTER);
                 vbox.setSpacing(2);
                 
-                // Cargar imagen del pingüino del color del jugador
+                
                 String colorAvatar = j.getColor().toLowerCase();
                 String rutaAvatar = "/JocDelPingui/images/pingu_" + colorAvatar + ".png";
                 ImageView icono = new ImageView();
@@ -300,21 +300,21 @@ public class partidaView {
             boolean esCasillaNormal = c.getTipo().equals("casillaNormal") && i != 0 && i != 49;
 
             if (esCasillaNormal) {
-                // Casillas normales: solo el número, sin imagen
+                
                 casillaPane.getChildren().add(numero);
             } else {
-                // Casillas especiales: imagen en la esquina superior derecha
+                
                 try {
                     String rutaImagen = c.getRutaImagen();
                     System.out.println("Cargando: " + rutaImagen);
 
                     Image imagen = new Image(getClass().getResourceAsStream(rutaImagen));
                     ImageView imageView = new ImageView(imagen);
-                    imageView.setFitWidth(30); // se reduce un poco el tamaño para que quepa bien
+                    imageView.setFitWidth(30); 
                     imageView.setFitHeight(30);
                     imageView.setPreserveRatio(true);
 
-                    // Alinear la foto arriba a la derecha
+                    
                     StackPane.setAlignment(imageView, Pos.TOP_RIGHT);
                     StackPane.setMargin(imageView, new javafx.geometry.Insets(2, 2, 0, 0));
 
@@ -357,7 +357,7 @@ public class partidaView {
     }
 
     private boolean descripcionTiene(String texto) {
-        // Método auxiliar para simplificar
+        
         return false;
     }
 
@@ -387,7 +387,7 @@ public class partidaView {
             jugador j = partida.getJugadores().get(i);
             StackPane ficha = new StackPane();
 
-            // Cargar imagen del pingüino según el color del jugador
+            
             String colorImagen = j.getColor().toLowerCase();
             String rutaImagen = "/JocDelPingui/images/pingu_" + colorImagen + ".png";
             try {
@@ -403,14 +403,14 @@ public class partidaView {
 
             fichasJugadores.add(ficha);
         }
-        // Colocar todas las fichas con offsets
+        
         recolocarFichas();
     }
 
     private void ajustarTamañoFicha(StackPane ficha, double size) {
         ficha.setPrefSize(size, size);
         ficha.setMaxSize(size, size);
-        // Ajustar el ImageView o Text dentro
+        
         if (!ficha.getChildren().isEmpty()) {
             if (ficha.getChildren().get(0) instanceof ImageView) {
                 ImageView iv = (ImageView) ficha.getChildren().get(0);
@@ -424,14 +424,14 @@ public class partidaView {
     }
 
     private void recolocarFichas() {
-        // Primero quitar todas las fichas de las casillas
+        
         for (StackPane ficha : fichasJugadores) {
             for (StackPane casilla : casillasGraficas) {
                 casilla.getChildren().remove(ficha);
             }
         }
 
-        // Agrupar jugadores por posición
+        
         for (int pos = 0; pos < casillasGraficas.size(); pos++) {
             ArrayList<Integer> jugadoresEnPos = new ArrayList<>();
             for (int i = 0; i < partida.getJugadores().size(); i++) {
@@ -445,7 +445,7 @@ public class partidaView {
             StackPane casilla = casillasGraficas.get(pos);
             int count = jugadoresEnPos.size();
 
-            // Tamaño y offsets según cantidad de jugadores en la casilla
+            
             double size;
             double[][] offsets;
             if (count == 1) {
@@ -477,12 +477,12 @@ public class partidaView {
     private void marcarJugadorActual() {
         if (partida == null || partida.getJugadores().isEmpty()) return;
 
-        // Quitar clase de todos
+        
         for (StackPane casilla : casillasGraficas) {
             casilla.getStyleClass().remove("turno-activo");
         }
 
-        // Añadir clase al jugador actual
+        
         int idxActual = partida.getJugadorActual();
         if (idxActual >= 0 && idxActual < partida.getJugadores().size()) {
             jugador j = partida.getJugadores().get(idxActual);
@@ -490,10 +490,10 @@ public class partidaView {
                 StackPane casillaActual = casillasGraficas.get(j.getPosicion());
                 casillaActual.getStyleClass().add("turno-activo");
             }
-            // Actualizar label de turno en el footer
+            
             if (turnoNombreLabel != null) {
                 turnoNombreLabel.setText(j.getNombre().toUpperCase());
-                // Quitar clases de color anteriores y aplicar la del jugador actual
+                
                 turnoNombreLabel.getStyleClass().removeAll("badge-rojo", "badge-azul", "badge-verde", "badge-amarillo");
                 String colorCSS = "badge-" + j.getColor().toLowerCase();
                 turnoNombreLabel.getStyleClass().add(colorCSS);
@@ -502,7 +502,7 @@ public class partidaView {
     }
 
     private void moverFicha(int jugadorIdx, int nuevaPosicion) {
-        // Recolocar todas las fichas con offsets correctos
+        
         recolocarFichas();
     }
 
@@ -521,40 +521,40 @@ public class partidaView {
         dadoResultado.setText(String.valueOf(resultado));
         animarDado(resultado);
 
-        // Mover jugador en el modelo
+        
         partida.moverJugador(jugadorActual, resultado);
 
-        // Animar la ficha del jugador en la vista
+        
         moverFicha(idxActual, jugadorActual.getPosicion());
 
-        // Comprobar si el jugador ha llegado a la meta
+        
         if (partida.isFinalizada()) {
             agregarEvento("¡" + jugadorActual.getNombre() + " ha llegado a la meta!");
             mostrarVictoria(jugadorActual);
             return;
         }
 
-        // Actualizar inventario, turno, etc.
+        
         actualizarInventarios();
         partida.siguienteTurno();
         marcarJugadorActual();
     }
 
     private void mostrarVictoria(jugador ganador) {
-        // Desactivar todos los botones de juego
+        
         tirarDadoBtn.setDisable(true);
         usarRapidoBtn.setDisable(true);
         usarLentoBtn.setDisable(true);
         usarPezBtn.setDisable(true);
         usarNieveBtn.setDisable(true);
 
-        // Finalizar partida en la BD: incrementar partides_jugades y eliminar partida guardada
+        
         if (gestionBD != null && partida != null) {
             gestionBD.finalitzarPartida(partida);
             agregarEvento("🏆 Partida finalitzada! Estadístiques actualitzades.");
         }
 
-        // Mostrar alerta de victoria
+        
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         if (tableroGrid != null && tableroGrid.getScene() != null) {
             alert.initOwner(tableroGrid.getScene().getWindow());
@@ -565,14 +565,14 @@ public class partidaView {
         alert.showAndWait();
         if (mainApp != null) mainApp.setPantallaCompleta();
 
-        // Volver al menú después de la victoria
+        
         volverAlMenu();
     }
 
     private void animarDado(int resultado) {
         actualizarImagenDado(resultado);
 
-        // Resetear escala por si había animación anterior
+        
         dadoImagen.setScaleX(1.0);
         dadoImagen.setScaleY(1.0);
 
@@ -628,7 +628,7 @@ public class partidaView {
         pingino p = (pingino) partida.getJugadores().get(idxActual);
 
         if (p.getInventario().getBolasNieve() > 0) {
-            // Atacar al siguiente jugador
+            
             int objetivo = (idxActual + 1) % partida.getJugadores().size();
             jugador objetivoJugador = partida.getJugadores().get(objetivo);
 
@@ -636,7 +636,7 @@ public class partidaView {
             agregarEvento(p.getNombre() + " lanzó una bola de nieve a " +
                     objetivoJugador.getNombre());
 
-            // Animar retroceso del objetivo
+            
             moverFicha(objetivo, objetivoJugador.getPosicion());
 
             actualizarInventarios();
@@ -664,7 +664,7 @@ public class partidaView {
         eventoBox.setAlignment(Pos.TOP_LEFT);
         eventoBox.getStyleClass().add("evento-mensaje");
 
-        // Cargar imagen según el mensaje
+        
         ImageView imagenEvento = new ImageView();
         imagenEvento.setFitWidth(20);
         imagenEvento.setFitHeight(20);
@@ -673,7 +673,7 @@ public class partidaView {
 
         Text mensajeText = new Text(mensaje);
         mensajeText.getStyleClass().add("evento-texto");
-        // Bind wrapping width dynamically to the container width minus icon and padding
+        
         mensajeText.wrappingWidthProperty().bind(
             eventosLista.widthProperty().subtract(60)
         );
@@ -681,7 +681,7 @@ public class partidaView {
         eventoBox.getChildren().addAll(imagenEvento, mensajeText);
         eventosLista.getChildren().add(0, eventoBox);
 
-        // Limitar a 15 eventos
+        
         if (eventosLista.getChildren().size() > 15) {
             eventosLista.getChildren().remove(15, eventosLista.getChildren().size());
         }
@@ -696,7 +696,7 @@ public class partidaView {
             Image img = new Image(getClass().getResourceAsStream(ruta));
             imageView.setImage(img);
         } catch (Exception e) {
-            // Si no existe, no mostrar nada (o podrías mostrar un emoji de fallback)
+            
             System.out.println("No se pudo cargar imagen evento: " + nombreArchivo);
         }
     }
