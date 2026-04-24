@@ -73,7 +73,10 @@
 				        <Label text="DADO" styleClass="panel-titulo" />
 				        
 				        <StackPane styleClass="dado-container">
-				            <ImageView fx:id="dadoImagen" fitWidth="80" fitHeight="80" preserveRatio="true" />
+				            <HBox alignment="CENTER" spacing="5">
+				                <ImageView fx:id="dadoImagen1" fitWidth="50" fitHeight="50" preserveRatio="true" />
+				                <ImageView fx:id="dadoImagen2" fitWidth="50" fitHeight="50" preserveRatio="true" managed="false" visible="false" />
+				            </HBox>
 				            <Label fx:id="dadoResultado" text="5" 
 				                   style="-fx-font-size: 30px; -fx-font-weight: bold; -fx-translate-y: -5;" />
 				        </StackPane>
@@ -106,20 +109,18 @@
 							
 							
 							<HBox styleClass="objeto-item" alignment="CENTER_LEFT">
-							    <ImageView fx:id="iconoPez" fitWidth="24" fitHeight="24" preserveRatio="true" />
-							    <Label text="Peces" styleClass="objeto-cantidad" />
-							    <Region HBox.hgrow="ALWAYS" />
-							    <Label fx:id="pecesCantidad" text="1" styleClass="objeto-cantidad" />
-							    <Button fx:id="usarPezBtn" text="USAR" styleClass="boton-usar" />
-							</HBox>
-							
-							
-							<HBox styleClass="objeto-item" alignment="CENTER_LEFT">
 							    <ImageView fx:id="iconoNieve" fitWidth="24" fitHeight="24" preserveRatio="true" />
 							    <Label text="Bolas nieve" styleClass="objeto-cantidad" />
 							    <Region HBox.hgrow="ALWAYS" />
 							    <Label fx:id="nieveCantidad" text="3" styleClass="objeto-cantidad" />
 							    <Button fx:id="usarNieveBtn" text="USAR" styleClass="boton-usar" />
+							</HBox>
+							
+							<HBox styleClass="objeto-item" alignment="CENTER_LEFT">
+							    <ImageView fx:id="iconoPez" fitWidth="24" fitHeight="24" preserveRatio="true" />
+							    <Label text="Peces" styleClass="objeto-cantidad" />
+							    <Region HBox.hgrow="ALWAYS" />
+							    <Label fx:id="pecesCantidad" text="1" styleClass="objeto-cantidad" />
 							</HBox>
                         </VBox>
                     </VBox>
@@ -165,8 +166,12 @@
             
             <Region HBox.hgrow="ALWAYS" />
             
-            
             <HBox fx:id="avatarContainer" styleClass="avatar-container" spacing="10">
+            </HBox>
+            
+            <HBox styleClass="volume-pill" spacing="8" alignment="CENTER">
+                <Label text="🔊" style="-fx-text-fill: white; -fx-font-size: 13px;"/>
+                <javafx.scene.control.Slider fx:id="volumeSlider" min="0" max="1" value="0.5" prefWidth="90" styleClass="volume-slider"/>
             </HBox>
         </HBox>
     </bottom>

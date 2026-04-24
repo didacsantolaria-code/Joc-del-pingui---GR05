@@ -246,3 +246,43 @@
 .boton-salir:hover {
     -fx-background-color: #C62828;
 }
+
+/* ── Volume Pill Container ── */
+.volume-pill {
+    -fx-background-color: rgba(0, 30, 80, 0.45);
+    -fx-background-radius: 30px;
+    -fx-padding: 6px 14px 6px 12px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0, 0, 2);
+}
+
+/* ── Volume Slider ── */
+.volume-slider {
+    -fx-pref-height: 20px;
+}
+.volume-slider .track {
+    -fx-background-color: rgba(180,220,255,0.25);
+    -fx-background-radius: 6px;
+    -fx-pref-height: 5px;
+}
+.volume-slider .colored-track {
+    -fx-background-color: linear-gradient(to right, #74b9ff, #0984e3);
+    -fx-background-radius: 6px;
+}
+.volume-slider .thumb {
+    -fx-background-color: white;
+    -fx-background-radius: 50%;
+    -fx-pref-width: 16px;
+    -fx-pref-height: 16px;
+    -fx-effect: dropshadow(gaussian, rgba(0,100,255,0.5), 6, 0, 0, 1);
+    -fx-cursor: hand;
+}
+.volume-slider .thumb:hover {
+    -fx-background-color: #dff0ff;
+    -fx-scale-x: 1.25;
+    -fx-scale-y: 1.25;
+}
+.volume-slider .thumb:pressed {
+    -fx-background-color: #74b9ff;
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+}

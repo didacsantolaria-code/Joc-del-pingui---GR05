@@ -9,8 +9,8 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -48,8 +48,6 @@ public class partidaView {
     @FXML
     private Button usarLentoBtn;
     @FXML
-    private Button usarPezBtn;
-    @FXML
     private Button usarNieveBtn;
     @FXML
     private Label rapidoCantidad;
@@ -62,7 +60,9 @@ public class partidaView {
     @FXML
     private VBox eventosLista;
     @FXML
-    private ImageView dadoImagen;
+    private ImageView dadoImagen1;
+    @FXML
+    private ImageView dadoImagen2;
     @FXML 
     private ImageView iconoRapido;
     @FXML 
@@ -79,6 +79,8 @@ public class partidaView {
     private HBox avatarContainer;
     @FXML
     private Label turnoNombreLabel;
+    @FXML
+    private Slider volumeSlider;
     
 
     private partida partida;
@@ -95,7 +97,6 @@ public class partidaView {
         
         usarRapidoBtn.setOnAction(e -> handleUsarRapido());
         usarLentoBtn.setOnAction(e -> handleUsarLento());
-        usarPezBtn.setOnAction(e -> handleUsarPez());
         usarNieveBtn.setOnAction(e -> handleUsarNieve());
 
         
@@ -166,6 +167,12 @@ public class partidaView {
 
     public void setMainApp(mainApp mainApp) {
         this.mainApp = mainApp;
+        if (volumeSlider != null) {
+            volumeSlider.setValue(mainApp.getVolumenActual());
+            volumeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+                mainApp.setVolumen(newVal.doubleValue());
+            });
+        }
     }
 
     @FXML
@@ -517,9 +524,10 @@ public class partidaView {
 
         int posAnterior = jugadorActual.getPosicion();
         int resultado = p.getDadoActual().tirar();
+        boolean esRapido = p.getDadoActual().getTipo().equals("rapido");
 
         dadoResultado.setText(String.valueOf(resultado));
-        animarDado(resultado);
+        animarDado(resultado, esRapido);
 
         
         partida.moverJugador(jugadorActual, resultado);
@@ -545,7 +553,6 @@ public class partidaView {
         tirarDadoBtn.setDisable(true);
         usarRapidoBtn.setDisable(true);
         usarLentoBtn.setDisable(true);
-        usarPezBtn.setDisable(true);
         usarNieveBtn.setDisable(true);
 
         
@@ -569,17 +576,26 @@ public class partidaView {
         volverAlMenu();
     }
 
-    private void animarDado(int resultado) {
-        actualizarImagenDado(resultado);
+    private void animarDado(int resultado, boolean esRapido) {
+        actualizarImagenDado(resultado, esRapido);
 
         
-        dadoImagen.setScaleX(1.0);
-        dadoImagen.setScaleY(1.0);
+        dadoImagen1.setScaleX(1.0);
+        dadoImagen1.setScaleY(1.0);
 
-        FadeTransition ft = new FadeTransition(Duration.millis(400), dadoImagen);
-        ft.setFromValue(0.4);
-        ft.setToValue(1.0);
-        ft.play();
+        FadeTransition ft1 = new FadeTransition(Duration.millis(400), dadoImagen1);
+        ft1.setFromValue(0.4);
+        ft1.setToValue(1.0);
+        ft1.play();
+        
+        if (esRapido && dadoImagen2 != null) {
+            dadoImagen2.setScaleX(1.0);
+            dadoImagen2.setScaleY(1.0);
+            FadeTransition ft2 = new FadeTransition(Duration.millis(400), dadoImagen2);
+            ft2.setFromValue(0.4);
+            ft2.setToValue(1.0);
+            ft2.play();
+        }
     }
 
     @FXML
@@ -605,19 +621,6 @@ public class partidaView {
             p.setDadoActual(new dado("lento"));
             agregarEvento("¡Dado lento activado! (1-3 casillas)");
             actualizarInventarios();
-        }
-    }
-
-    @FXML
-    private void handleUsarPez() {
-        if (partida == null || partida.isFinalizada()) return;
-        int idxActual = partida.getJugadorActual();
-        pingino p = (pingino) partida.getJugadores().get(idxActual);
-
-        if (p.getInventario().getPeces() > 0) {
-            agregarEvento("Usaste un pez (tienes " + p.getInventario().getPeces() + ")");
-        } else {
-            agregarEvento("No tienes peces");
         }
     }
 
@@ -715,7 +718,7 @@ public class partidaView {
         if (mensaje.contains("bola(s) de nieve")) return "bola_nieve.png";
         if (mensaje.contains("DADO RÁPIDO")) return "dado_rapido.png";
         if (mensaje.contains("dado lento")) return "dado_lento.png";
-        if (mensaje.contains("Pierdes un turno")) return "evento_perder_turno.png";
+        if (mensaje.contains("Pierdes un turno") || mensaje.contains("pierde el turno")) return "evento_turno.png";
         if (mensaje.contains("perdido un objeto")) return "evento_perder_objeto.png";
 
         if (mensaje.contains("Casilla misteriosa") || mensaje.contains("❓"))
@@ -736,15 +739,35 @@ public class partidaView {
         agregarEvento(mensaje);
     }
 
-    private void actualizarImagenDado(int resultado) {
+    private void actualizarImagenDado(int resultado, boolean esRapido) {
         try {
-            String ruta = "/JocDelPingui/images/dado_" + resultado + ".png";
-            Image imagen = new Image(getClass().getResourceAsStream(ruta));
-            if (dadoImagen != null) {
-                dadoImagen.setImage(imagen);
+            if (esRapido) {
+                int d1 = Math.min(6, resultado - 1);
+                int d2 = resultado - d1;
+                
+                String ruta1 = "/JocDelPingui/images/dado_" + d1 + ".png";
+                String ruta2 = "/JocDelPingui/images/dado_" + d2 + ".png";
+                
+                if (dadoImagen1 != null) {
+                    dadoImagen1.setImage(new Image(getClass().getResourceAsStream(ruta1)));
+                }
+                if (dadoImagen2 != null) {
+                    dadoImagen2.setImage(new Image(getClass().getResourceAsStream(ruta2)));
+                    dadoImagen2.setVisible(true);
+                    dadoImagen2.setManaged(true);
+                }
+            } else {
+                String ruta = "/JocDelPingui/images/dado_" + resultado + ".png";
+                if (dadoImagen1 != null) {
+                    dadoImagen1.setImage(new Image(getClass().getResourceAsStream(ruta)));
+                }
+                if (dadoImagen2 != null) {
+                    dadoImagen2.setVisible(false);
+                    dadoImagen2.setManaged(false);
+                }
             }
         } catch (Exception e) {
-            System.out.println("No se pudo cargar dado_" + resultado + ".png");
+            System.out.println("No se pudo cargar imagen del dado.");
         }
     }
     

@@ -9,15 +9,19 @@ public class casillaTrineo extends casilla {
     @Override
     public void realizarAccion(partida partida, jugador jugador) {
         partida.mostrarMensaje("¡Trineo! Avanzas al siguiente trineo.");
-        int sigTrineo = buscarSiguienteTrineo(posicion);
+        int sigTrineo = buscarSiguienteTrineo(posicion, partida);
         if (sigTrineo > posicion) {
             jugador.setPosicion(sigTrineo);
         }
     }
     
-    private int buscarSiguienteTrineo(int posActual) {
-        for (int i = posActual + 1; i < 50; i++) {
-            if (i % 5 == 0) return i;
+    private int buscarSiguienteTrineo(int posActual, partida partida) {
+        tablero tablero = partida.getTablero();
+        for (int i = posActual + 1; i < tablero.getNumCasillas(); i++) {
+            casilla c = tablero.getCasilla(i);
+            if (c instanceof casillaTrineo) {
+                return i;
+            }
         }
         return posActual;
     }
