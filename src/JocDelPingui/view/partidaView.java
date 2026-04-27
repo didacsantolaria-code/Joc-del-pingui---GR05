@@ -558,8 +558,8 @@ public class partidaView {
         
         if (gestionBD != null && partida != null) {
             gestionBD.finalitzarPartida(partida);
-            agregarEvento("🏆 Partida finalitzada! Estadístiques actualitzades.");
-        }
+            agregarEvento("Partida finalitzada! Estadístiques actualitzades.");
+        }	
 
         
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
