@@ -102,101 +102,102 @@ public class gestionBBD {
     
     
     public boolean guardarPartida(partida partida, String nickname) {
+        System.out.println("🔵 1. Entrando a guardarPartida para: " + nickname);
+        
         if (!isConnected()) {
-            System.out.println("❌ No hi ha connexió a la base de dades");
+            System.out.println("❌ 2. No hay conexión");
             return false;
         }
+        System.out.println("✅ 2. Conexión OK");
         
         try {
-            
             connection.setAutoCommit(false);
-
+            System.out.println("✅ 3. AutoCommit false OK");
+            
+            String id = partida.getIdPartida();
+            System.out.println("📌 4. ID Partida: " + id);
             
             int numPartida = -1;
-            String id = partida.getIdPartida();
+            boolean esNova = false;
+            
             if (id != null && id.startsWith("PARTIDA_")) {
                 try {
                     numPartida = Integer.parseInt(id.replace("PARTIDA_", ""));
-                } catch (NumberFormatException e) {
-                    numPartida = -1;
-                }
-            }
-
-            boolean esNova = (numPartida <= 0);
-
-            if (esNova) {
-                
-                numPartida = obtenirSeguentNumPartida();
-            }
-            
-            if (esNova) {
-                
-                String sqlPartida = "INSERT INTO PARTIDES (num_partida, data, hora, taulell) VALUES (?, SYSDATE, SYSDATE, ?)";
-                try (PreparedStatement pstmtPartida = connection.prepareStatement(sqlPartida)) {
-                    pstmtPartida.setInt(1, numPartida);
-                    pstmtPartida.setString(2, guardarTaulell(partida));
-                    pstmtPartida.executeUpdate();
-                }
-                
-                String sqlJugador = "INSERT INTO PARTIDA_JUGADORS (num_partida, nickname, inventari) VALUES (?, ?, ?)";
-                try (PreparedStatement pstmtJugador = connection.prepareStatement(sqlJugador)) {
-                    for (jugador j : partida.getJugadores()) {
-                        pstmtJugador.setInt(1, numPartida);
-                        pstmtJugador.setString(2, j.getNombre());
-                        pstmtJugador.setString(3, guardarInventari((pingino) j));
-                        pstmtJugador.executeUpdate();
+                    System.out.println("📌 5. numPartida parseado: " + numPartida);
+                    if (numPartida > 0) {
+                        esNova = false;
+                    } else {
+                        esNova = true;
                     }
+                } catch (NumberFormatException e) {
+                    System.out.println("❌ 5. Error parseando ID");
+                    esNova = true;
                 }
             } else {
-                
-                
-                String sqlUpdatePartida = "UPDATE PARTIDES SET taulell = ?, data = SYSDATE, hora = SYSDATE WHERE num_partida = ?";
-                try (PreparedStatement pstmtUpdate = connection.prepareStatement(sqlUpdatePartida)) {
-                    pstmtUpdate.setString(1, guardarTaulell(partida));
-                    pstmtUpdate.setInt(2, numPartida);
-                    pstmtUpdate.executeUpdate();
+                System.out.println("📌 5. ID no válido, es partida nueva");
+                esNova = true;
+            }
+            
+            if (esNova) {
+                System.out.println("📌 6. Es partida NUEVA, obteniendo siguiente número");
+                numPartida = obtenirSeguentNumPartida();
+                System.out.println("📌 7. Nuevo numPartida: " + numPartida);
+            } else {
+                System.out.println("📌 6. Es partida EXISTENTE, actualizando: " + numPartida);
+            }
+            
+            // Guardar en PARTIDES
+            if (esNova) {
+                String sqlPartida = "INSERT INTO PARTIDES (num_partida, data, hora, taulell) VALUES (?, SYSDATE, SYSDATE, ?)";
+                try (PreparedStatement pstmt = connection.prepareStatement(sqlPartida)) {
+                    pstmt.setInt(1, numPartida);
+                    pstmt.setString(2, guardarTaulell(partida));
+                    int filas = pstmt.executeUpdate();
+                    System.out.println("📌 8. INSERT en PARTIDES: " + filas + " filas afectadas");
                 }
-                
-                
-                String sqlDeleteJugadors = "DELETE FROM PARTIDA_JUGADORS WHERE num_partida = ?";
-                try (PreparedStatement pstmtDelete = connection.prepareStatement(sqlDeleteJugadors)) {
-                    pstmtDelete.setInt(1, numPartida);
-                    pstmtDelete.executeUpdate();
-                }
-                
-                String sqlJugador = "INSERT INTO PARTIDA_JUGADORS (num_partida, nickname, inventari) VALUES (?, ?, ?)";
-                try (PreparedStatement pstmtJugador = connection.prepareStatement(sqlJugador)) {
-                    for (jugador j : partida.getJugadores()) {
-                        pstmtJugador.setInt(1, numPartida);
-                        pstmtJugador.setString(2, j.getNombre());
-                        pstmtJugador.setString(3, guardarInventari((pingino) j));
-                        pstmtJugador.executeUpdate();
-                    }
+            } else {
+                String sqlUpdate = "UPDATE PARTIDES SET taulell = ?, data = SYSDATE, hora = SYSDATE WHERE num_partida = ?";
+                try (PreparedStatement pstmt = connection.prepareStatement(sqlUpdate)) {
+                    pstmt.setString(1, guardarTaulell(partida));
+                    pstmt.setInt(2, numPartida);
+                    int filas = pstmt.executeUpdate();
+                    System.out.println("📌 8. UPDATE en PARTIDES: " + filas + " filas afectadas");
                 }
             }
             
+            // Borrar y reinsetar jugadores
+            String sqlDelete = "DELETE FROM PARTIDA_JUGADORS WHERE num_partida = ?";
+            try (PreparedStatement pstmt = connection.prepareStatement(sqlDelete)) {
+                pstmt.setInt(1, numPartida);
+                int filas = pstmt.executeUpdate();
+                System.out.println("📌 9. DELETE en PARTIDA_JUGADORS: " + filas + " filas afectadas");
+            }
             
-            partida.setIdPartida("PARTIDA_" + numPartida);
-            
+            String sqlInsert = "INSERT INTO PARTIDA_JUGADORS (num_partida, nickname, inventari) VALUES (?, ?, ?)";
+            int totalInsert = 0;
+            try (PreparedStatement pstmt = connection.prepareStatement(sqlInsert)) {
+                for (jugador j : partida.getJugadores()) {
+                    pstmt.setInt(1, numPartida);
+                    pstmt.setString(2, j.getNombre());
+                    pstmt.setString(3, guardarInventari((pingino) j));
+                    totalInsert += pstmt.executeUpdate();
+                }
+                System.out.println("📌 10. INSERT en PARTIDA_JUGADORS: " + totalInsert + " jugadores insertados");
+            }
             
             connection.commit();
-            System.out.println("✅ Partida guardada amb número: " + numPartida + (esNova ? " (nova)" : " (actualitzada)"));
+            System.out.println("✅ 11. COMMIT realizado con éxito!");
+            
+            partida.setIdPartida("PARTIDA_" + numPartida);
             return true;
             
         } catch (SQLException e) {
-            try {
-                if (connection != null) connection.rollback();
-            } catch (SQLException ex) {
-                System.out.println("❌ Error en rollback: " + ex.getMessage());
-            }
-            System.out.println("❌ Error al guardar: " + e.getMessage());
+            try { if (connection != null) connection.rollback(); } catch (SQLException ex) {}
+            System.out.println("❌ ERROR SQL: " + e.getMessage());
+            e.printStackTrace();
             return false;
         } finally {
-            try {
-                if (connection != null) connection.setAutoCommit(true);
-            } catch (SQLException e) {
-                System.out.println("❌ Error en restablir auto-commit: " + e.getMessage());
-            }
+            try { if (connection != null) connection.setAutoCommit(true); } catch (SQLException e) {}
         }
     }
     
@@ -344,46 +345,60 @@ public class gestionBBD {
         try {
             connection.setAutoCommit(false);
             
-            
             String id = partida.getIdPartida();
-            if (id != null && id.startsWith("PARTIDA_") && !id.equals("PARTIDA_NEW")) {
+            int numPartida = -1;
+            if (id != null && id.startsWith("PARTIDA_")) {
                 try {
-                    int numPartida = Integer.parseInt(id.replace("PARTIDA_", ""));
-                    
-                    
-                    String sqlDeleteJugadors = "DELETE FROM PARTIDA_JUGADORS WHERE num_partida = ?";
-                    try (PreparedStatement pstmtDel = connection.prepareStatement(sqlDeleteJugadors)) {
-                        pstmtDel.setInt(1, numPartida);
-                        pstmtDel.executeUpdate();
-                    }
-                    
-                    
-                    String sqlDeletePartida = "DELETE FROM PARTIDES WHERE num_partida = ?";
-                    try (PreparedStatement pstmtDel = connection.prepareStatement(sqlDeletePartida)) {
-                        pstmtDel.setInt(1, numPartida);
-                        pstmtDel.executeUpdate();
-                    }
+                    numPartida = Integer.parseInt(id.replace("PARTIDA_", ""));
                 } catch (NumberFormatException e) {
-                    
+                    System.out.println("❌ Error al parsejar ID de partida");
+                    return false;
                 }
+            } else {
+                System.out.println("❌ ID de partida no válido");
+                return false;
             }
             
+            System.out.println("Finalizando partida " + numPartida);
             
             String sqlUpdate = "UPDATE JUGADORS SET partides_jugades = partides_jugades + 1 WHERE nickname = ?";
             try (PreparedStatement pstmt = connection.prepareStatement(sqlUpdate)) {
                 for (jugador j : partida.getJugadores()) {
                     pstmt.setString(1, j.getNombre());
+                    int filas = pstmt.executeUpdate();
+                    System.out.println("✅ Actualizado partides_jugades para " + j.getNombre() + ": " + filas + " filas");
+                }
+            }
+            
+            String sqlPosicio = "UPDATE PARTIDA_JUGADORS SET posicio_max = ? WHERE num_partida = ? AND nickname = ?";
+            try (PreparedStatement pstmt = connection.prepareStatement(sqlPosicio)) {
+                for (jugador j : partida.getJugadores()) {
+                    pstmt.setInt(1, j.getPosicion());
+                    pstmt.setInt(2, numPartida);
+                    pstmt.setString(3, j.getNombre());
+                    int filas = pstmt.executeUpdate();
+                    System.out.println("✅ posicio_max=" + j.getPosicion() + " para " + j.getNombre() + " (" + filas + " filas)");
+                }
+            }
+            
+            if (partida.getGanador() != null) {
+                String sqlGuanyador = "UPDATE PARTIDES SET guanyador = ? WHERE num_partida = ?";
+                try (PreparedStatement pstmt = connection.prepareStatement(sqlGuanyador)) {
+                    pstmt.setString(1, partida.getGanador().getNombre());
+                    pstmt.setInt(2, numPartida);
                     pstmt.executeUpdate();
+                    System.out.println("✅ Guanyador registrat: " + partida.getGanador().getNombre());
                 }
             }
             
             connection.commit();
-            System.out.println("✅ Partida finalitzada! Partides jugades actualitzades.");
+            System.out.println("✅ Partida " + numPartida + " finalizada correctamente");
             return true;
             
         } catch (SQLException e) {
             try { if (connection != null) connection.rollback(); } catch (SQLException ex) {}
             System.out.println("❌ Error al finalitzar partida: " + e.getMessage());
+            e.printStackTrace();
             return false;
         } finally {
             try { if (connection != null) connection.setAutoCommit(true); } catch (SQLException e) {}
@@ -450,6 +465,20 @@ public class gestionBBD {
         }
     }
     
+    public void registrarGuanyador(int numPartida, String nicknameGuanyador) {
+        if (!isConnected()) return;
+        
+        try {
+            String sql = "UPDATE PARTIDES SET guanyador = ? WHERE num_partida = ?";
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            pstmt.setString(1, nicknameGuanyador);
+            pstmt.setInt(2, numPartida);
+            pstmt.executeUpdate();
+            System.out.println("✅ Guanyador " + nicknameGuanyador + " registrat a la partida " + numPartida);
+        } catch (SQLException e) {
+            System.out.println("❌ Error al registrar guanyador: " + e.getMessage());
+        }
+    }
     
     public boolean validarLogin(String nickname, String contrasenya) {
         if (!isConnected()) {
