@@ -78,23 +78,17 @@ public class menuView extends VBox {
         
         if (username.isEmpty() || password.isEmpty()) {
             mostrarMissatgeError("Error", "Camps buits", "Introdueix usuari i contrasenya.");
-            return;
-        }
-        
-        if (gestionBD == null || !gestionBD.isConnected()) {
-            mostrarMissatgeError("Error de connexió", "No es pot connectar a la base de dades", 
+        } else if (gestionBD == null || !gestionBD.isConnected()) {
+            mostrarMissatgeError("Error de connexió", "No es pot connectar a la base de dades",
                                 "Comprova la connexió i torna a intentar.");
-            return;
-        }
-        
-        if (gestionBD.validarLogin(username, password)) {
+        } else if (gestionBD.validarLogin(username, password)) {
             System.out.println("✅ Login correcte per a: " + username);
             if (mainApp != null) {
                 mainApp.setUsuariActual(username);
                 mainApp.mostrarSeleccion();
             }
         } else {
-            mostrarMissatgeError("Error de login", "Usuari o contrasenya incorrectes", 
+            mostrarMissatgeError("Error de login", "Usuari o contrasenya incorrectes",
                                 "Torna a intentar o registra't si no tens compte.");
         }
     }
@@ -106,27 +100,15 @@ public class menuView extends VBox {
         
         if (username.isEmpty() || password.isEmpty()) {
             mostrarMissatgeError("Error", "Camps buits", "Introdueix usuari i contrasenya.");
-            return;
-        }
-        
-        if (password.length() < 3) {
+        } else if (password.length() < 3) {
             mostrarMissatgeError("Error", "Contrasenya massa curta", "La contrasenya ha de tenir almenys 3 caràcters.");
-            return;
-        }
-        
-        if (gestionBD == null || !gestionBD.isConnected()) {
-            mostrarMissatgeError("Error de connexió", "No es pot connectar a la base de dades", 
+        } else if (gestionBD == null || !gestionBD.isConnected()) {
+            mostrarMissatgeError("Error de connexió", "No es pot connectar a la base de dades",
                                 "Comprova la connexió i torna a intentar.");
-            return;
-        }
-        
-        if (gestionBD.existeixJugador(username)) {
-            mostrarMissatgeError("Error de registre", "L'usuari ja existeix", 
+        } else if (gestionBD.existeixJugador(username)) {
+            mostrarMissatgeError("Error de registre", "L'usuari ja existeix",
                                 "El nom d'usuari '" + username + "' ja està registrat.");
-            return;
-        }
-        
-        if (gestionBD.registrarJugador(username, password)) {
+        } else if (gestionBD.registrarJugador(username, password)) {
             System.out.println("✅ Usuari registrat: " + username);
             mostrarMissatgeInfo("Registre correcte", "Usuari '" + username + "' registrat amb èxit!");
             userField.clear();

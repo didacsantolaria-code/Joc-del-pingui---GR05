@@ -196,66 +196,61 @@ public class seleccionView {
         ComboBox<String>[] colores = new ComboBox[]{colorJ1, colorJ2, colorJ3, colorJ4};
 
         HashSet<String> coloresUsados = new HashSet<>();
+        boolean valido = true;
 
-        for (int i = 0; i < numJugadores; i++) {
+        for (int i = 0; i < numJugadores && valido; i++) {
             String nombre = nombres[i].getText().trim();
             String color = colores[i].getValue();
 
             if (nombre.isEmpty()) {
                 lblError.setText("¡Todos los jugadores deben tener un nombre!");
-                return;
-            }
-
-            if (color == null || color.isEmpty()) {
+                valido = false;
+            } else if (color == null || color.isEmpty()) {
                 lblError.setText("¡Todos los jugadores deben tener un color!");
-                return;
-            }
-
-            if (coloresUsados.contains(color)) {
+                valido = false;
+            } else if (coloresUsados.contains(color)) {
                 lblError.setText("¡No se pueden repetir colores! (" + color + " está duplicado)");
-                return;
-            }
-
-            coloresUsados.add(color);
-            jugadoresInfo.add(new String[]{nombre, color});
-        }
-
-        lblError.setText("");
-        
-        
-        
-        
-        if (gestionBD != null && gestionBD.isConnected()) {
-            for (String[] jugador : jugadoresInfo) {
-                String nickname = jugador[0];
-                if (!gestionBD.existeixJugador(nickname)) {
-                    mostrarMissatgeError("Jugador no registrat", 
-                        "El jugador '" + nickname + "' no té una compte creada.",
-                        "Has de registrar aquest usuari abans de començar la partida.\n\n" +
-                        "Torna al menú principal i crea el compte '" + nickname + "'.");
-                    return;
-                }
-            }
-            
-            
-            boolean usuariActualTrobat = false;
-            for (String[] jugador : jugadoresInfo) {
-                if (jugador[0].equals(usuariActual)) {
-                    usuariActualTrobat = true;
-                    break;
-                }
-            }
-            if (!usuariActualTrobat && usuariActual != null) {
-                mostrarMissatgeError("Usuari no inclòs", 
-                    "L'usuari '" + usuariActual + "' no està a la llista de jugadors.",
-                    "Has d'incloure l'usuari amb el qual has iniciat sessió a la partida.");
-                return;
+                valido = false;
+            } else {
+                coloresUsados.add(color);
+                jugadoresInfo.add(new String[]{nombre, color});
             }
         }
-        
 
-        if (mainApp != null) {
-            mainApp.nuevaPartida(jugadoresInfo);
+        if (valido) {
+            lblError.setText("");
+
+            if (gestionBD != null && gestionBD.isConnected()) {
+                boolean todosRegistrados = true;
+                for (String[] jugador : jugadoresInfo) {
+                    String nickname = jugador[0];
+                    if (!gestionBD.existeixJugador(nickname)) {
+                        mostrarMissatgeError("Jugador no registrat",
+                            "El jugador '" + nickname + "' no té una compte creada.",
+                            "Has de registrar aquest usuari abans de començar la partida.\n\n" +
+                            "Torna al menú principal i crea el compte '" + nickname + "'.");
+                        todosRegistrados = false;
+                    }
+                }
+
+                if (todosRegistrados) {
+                    boolean usuariActualTrobat = false;
+                    for (String[] jugador : jugadoresInfo) {
+                        if (jugador[0].equals(usuariActual)) {
+                            usuariActualTrobat = true;
+                        }
+                    }
+                    if (!usuariActualTrobat && usuariActual != null) {
+                        mostrarMissatgeError("Usuari no inclòs",
+                            "L'usuari '" + usuariActual + "' no està a la llista de jugadors.",
+                            "Has d'incloure l'usuari amb el qual has iniciat sessió a la partida.");
+                    } else if (mainApp != null) {
+                        mainApp.nuevaPartida(jugadoresInfo);
+                    }
+                }
+            } else if (mainApp != null) {
+                mainApp.nuevaPartida(jugadoresInfo);
+            }
         }
     }
     

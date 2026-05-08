@@ -447,63 +447,63 @@ public class partidaView {
                 }
             }
 
-            if (jugadoresEnPos.isEmpty()) continue;
+            if (!jugadoresEnPos.isEmpty()) {
+                StackPane casilla = casillasGraficas.get(pos);
+                int count = jugadoresEnPos.size();
 
-            StackPane casilla = casillasGraficas.get(pos);
-            int count = jugadoresEnPos.size();
+                
+                double size;
+                double[][] offsets;
+                if (count == 1) {
+                    size = 35;
+                    offsets = new double[][]{{0, 6}};
+                } else if (count == 2) {
+                    size = 24;
+                    offsets = new double[][]{{-10, 6}, {10, 6}};
+                } else if (count == 3) {
+                    size = 22;
+                    offsets = new double[][]{{-10, 2}, {10, 2}, {0, 16}};
+                } else {
+                    size = 20;
+                    offsets = new double[][]{{-10, 2}, {10, 2}, {-10, 16}, {10, 16}};
+                }
 
-            
-            double size;
-            double[][] offsets;
-            if (count == 1) {
-                size = 35;
-                offsets = new double[][]{{0, 6}};
-            } else if (count == 2) {
-                size = 24;
-                offsets = new double[][]{{-10, 6}, {10, 6}};
-            } else if (count == 3) {
-                size = 22;
-                offsets = new double[][]{{-10, 2}, {10, 2}, {0, 16}};
-            } else {
-                size = 20;
-                offsets = new double[][]{{-10, 2}, {10, 2}, {-10, 16}, {10, 16}};
-            }
-
-            for (int k = 0; k < jugadoresEnPos.size(); k++) {
-                int idx = jugadoresEnPos.get(k);
-                StackPane ficha = fichasJugadores.get(idx);
-                ajustarTamañoFicha(ficha, size);
-                ficha.setTranslateX(offsets[k][0]);
-                ficha.setTranslateY(offsets[k][1]);
-                StackPane.setAlignment(ficha, Pos.CENTER);
-                casilla.getChildren().add(ficha);
+                for (int k = 0; k < jugadoresEnPos.size(); k++) {
+                    int idx = jugadoresEnPos.get(k);
+                    StackPane ficha = fichasJugadores.get(idx);
+                    ajustarTamañoFicha(ficha, size);
+                    ficha.setTranslateX(offsets[k][0]);
+                    ficha.setTranslateY(offsets[k][1]);
+                    StackPane.setAlignment(ficha, Pos.CENTER);
+                    casilla.getChildren().add(ficha);
+                }
             }
         }
     }
 
     private void marcarJugadorActual() {
-        if (partida == null || partida.getJugadores().isEmpty()) return;
-
-        
-        for (StackPane casilla : casillasGraficas) {
-            casilla.getStyleClass().remove("turno-activo");
-        }
-
-        
-        int idxActual = partida.getJugadorActual();
-        if (idxActual >= 0 && idxActual < partida.getJugadores().size()) {
-            jugador j = partida.getJugadores().get(idxActual);
-            if (j.getPosicion() < casillasGraficas.size()) {
-                StackPane casillaActual = casillasGraficas.get(j.getPosicion());
-                casillaActual.getStyleClass().add("turno-activo");
-            }
+        if (partida != null && !partida.getJugadores().isEmpty()) {
             
-            if (turnoNombreLabel != null) {
-                turnoNombreLabel.setText(j.getNombre().toUpperCase());
+            for (StackPane casilla : casillasGraficas) {
+                casilla.getStyleClass().remove("turno-activo");
+            }
+
+            
+            int idxActual = partida.getJugadorActual();
+            if (idxActual >= 0 && idxActual < partida.getJugadores().size()) {
+                jugador j = partida.getJugadores().get(idxActual);
+                if (j.getPosicion() < casillasGraficas.size()) {
+                    StackPane casillaActual = casillasGraficas.get(j.getPosicion());
+                    casillaActual.getStyleClass().add("turno-activo");
+                }
                 
-                turnoNombreLabel.getStyleClass().removeAll("badge-rojo", "badge-azul", "badge-verde", "badge-amarillo");
-                String colorCSS = "badge-" + j.getColor().toLowerCase();
-                turnoNombreLabel.getStyleClass().add(colorCSS);
+                if (turnoNombreLabel != null) {
+                    turnoNombreLabel.setText(j.getNombre().toUpperCase());
+                    
+                    turnoNombreLabel.getStyleClass().removeAll("badge-rojo", "badge-azul", "badge-verde", "badge-amarillo");
+                    String colorCSS = "badge-" + j.getColor().toLowerCase();
+                    turnoNombreLabel.getStyleClass().add(colorCSS);
+                }
             }
         }
     }
@@ -515,37 +515,35 @@ public class partidaView {
 
     @FXML
     private void handleTirarDado() {
-        if (partida == null || partida.isFinalizada())
-            return;
+        if (partida != null && !partida.isFinalizada()) {
+            int idxActual = partida.getJugadorActual();
+            jugador jugadorActual = partida.getJugadores().get(idxActual);
+            pingino p = (pingino) jugadorActual;
 
-        int idxActual = partida.getJugadorActual();
-        jugador jugadorActual = partida.getJugadores().get(idxActual);
-        pingino p = (pingino) jugadorActual;
+            int posAnterior = jugadorActual.getPosicion();
+            int resultado = p.getDadoActual().tirar();
+            boolean esRapido = p.getDadoActual().getTipo().equals("rapido");
 
-        int posAnterior = jugadorActual.getPosicion();
-        int resultado = p.getDadoActual().tirar();
-        boolean esRapido = p.getDadoActual().getTipo().equals("rapido");
+            dadoResultado.setText(String.valueOf(resultado));
+            animarDado(resultado, esRapido);
 
-        dadoResultado.setText(String.valueOf(resultado));
-        animarDado(resultado, esRapido);
+            
+            partida.moverJugador(jugadorActual, resultado);
 
-        
-        partida.moverJugador(jugadorActual, resultado);
+            
+            moverFicha(idxActual, jugadorActual.getPosicion());
 
-        
-        moverFicha(idxActual, jugadorActual.getPosicion());
-
-        
-        if (partida.isFinalizada()) {
-            agregarEvento("¡" + jugadorActual.getNombre() + " ha llegado a la meta!");
-            mostrarVictoria(jugadorActual);
-            return;
+            
+            if (partida.isFinalizada()) {
+                agregarEvento("¡" + jugadorActual.getNombre() + " ha llegado a la meta!");
+                mostrarVictoria(jugadorActual);
+            } else {
+                
+                actualizarInventarios();
+                partida.siguienteTurno();
+                marcarJugadorActual();
+            }
         }
-
-        
-        actualizarInventarios();
-        partida.siguienteTurno();
-        marcarJugadorActual();
     }
 
     private void mostrarVictoria(jugador ganador) {
@@ -600,66 +598,69 @@ public class partidaView {
 
     @FXML
     private void handleUsarRapido() {
-        if (partida == null || partida.isFinalizada()) return;
-        int idxActual = partida.getJugadorActual();
-        pingino p = (pingino) partida.getJugadores().get(idxActual);
+        if (partida != null && !partida.isFinalizada()) {
+            int idxActual = partida.getJugadorActual();
+            pingino p = (pingino) partida.getJugadores().get(idxActual);
 
-        if (p.getInventario().getDausRapidos() > 0) {
-            p.setDadoActual(new dado("rapido"));
-            agregarEvento("¡Dado rápido activado! (5-10 casillas)");
-            actualizarInventarios();
+            if (p.getInventario().getDausRapidos() > 0) {
+                p.setDadoActual(new dado("rapido"));
+                agregarEvento("¡Dado rápido activado! (5-10 casillas)");
+                actualizarInventarios();
+            }
         }
     }
 
     @FXML
     private void handleUsarLento() {
-        if (partida == null || partida.isFinalizada()) return;
-        int idxActual = partida.getJugadorActual();
-        pingino p = (pingino) partida.getJugadores().get(idxActual);
+        if (partida != null && !partida.isFinalizada()) {
+            int idxActual = partida.getJugadorActual();
+            pingino p = (pingino) partida.getJugadores().get(idxActual);
 
-        if (p.getInventario().getDausLentos() > 0) {
-            p.setDadoActual(new dado("lento"));
-            agregarEvento("¡Dado lento activado! (1-3 casillas)");
-            actualizarInventarios();
+            if (p.getInventario().getDausLentos() > 0) {
+                p.setDadoActual(new dado("lento"));
+                agregarEvento("¡Dado lento activado! (1-3 casillas)");
+                actualizarInventarios();
+            }
         }
     }
 
     @FXML
     private void handleUsarNieve() {
-        if (partida == null || partida.isFinalizada()) return;
-        int idxActual = partida.getJugadorActual();
-        pingino p = (pingino) partida.getJugadores().get(idxActual);
+        if (partida != null && !partida.isFinalizada()) {
+            int idxActual = partida.getJugadorActual();
+            pingino p = (pingino) partida.getJugadores().get(idxActual);
 
-        if (p.getInventario().getBolasNieve() > 0) {
-            
-            int objetivo = (idxActual + 1) % partida.getJugadores().size();
-            jugador objetivoJugador = partida.getJugadores().get(objetivo);
+            if (p.getInventario().getBolasNieve() > 0) {
+                
+                int objetivo = (idxActual + 1) % partida.getJugadores().size();
+                jugador objetivoJugador = partida.getJugadores().get(objetivo);
 
-            p.usarBolaNieve(objetivoJugador);
-            agregarEvento(p.getNombre() + " lanzó una bola de nieve a " +
-                    objetivoJugador.getNombre());
+                p.usarBolaNieve(objetivoJugador);
+                agregarEvento(p.getNombre() + " lanzó una bola de nieve a " +
+                        objetivoJugador.getNombre());
 
-            
-            moverFicha(objetivo, objetivoJugador.getPosicion());
+                
+                moverFicha(objetivo, objetivoJugador.getPosicion());
 
-            actualizarInventarios();
-        } else {
-            agregarEvento("No tienes bolas de nieve");
+                actualizarInventarios();
+            } else {
+                agregarEvento("No tienes bolas de nieve");
+            }
         }
     }
 
     private void actualizarInventarios() {
-        if (partida == null || partida.getJugadores().isEmpty()) return;
+        if (partida != null && !partida.getJugadores().isEmpty()) {
+            int idxActual = partida.getJugadorActual();
+            if (idxActual >= 0 && idxActual < partida.getJugadores().size()) {
+                pingino p = (pingino) partida.getJugadores().get(idxActual);
 
-        int idxActual = partida.getJugadorActual();
-        if (idxActual < 0 || idxActual >= partida.getJugadores().size()) return;
-
-        pingino p = (pingino) partida.getJugadores().get(idxActual);
-
-        rapidoCantidad.setText(String.valueOf(p.getInventario().getDausRapidos()));
-        lentoCantidad.setText(String.valueOf(p.getInventario().getDausLentos()));
-        pecesCantidad.setText(String.valueOf(p.getInventario().getPeces()));
-        nieveCantidad.setText(String.valueOf(p.getInventario().getBolasNieve()));
+                rapidoCantidad.setText(String.valueOf(p.getInventario().getDausRapidos()));
+                lentoCantidad.setText(String.valueOf(p.getInventario().getDausLentos()));
+                pecesCantidad.setText(String.valueOf(p.getInventario().getPeces()));
+                nieveCantidad.setText(String.valueOf(p.getInventario().getBolasNieve()));
+            }
+        }
     }
 
     private void agregarEvento(String mensaje) {
@@ -692,15 +693,15 @@ public class partidaView {
     
     private void cargarImagenEvento(ImageView imageView, String mensaje) {
         String nombreArchivo = obtenerNombreImagenEvento(mensaje);
-        if (nombreArchivo == null) return;
-
-        try {
-            String ruta = "/JocDelPingui/images/" + nombreArchivo;
-            Image img = new Image(getClass().getResourceAsStream(ruta));
-            imageView.setImage(img);
-        } catch (Exception e) {
-            
-            System.out.println("No se pudo cargar imagen evento: " + nombreArchivo);
+        if (nombreArchivo != null) {
+            try {
+                String ruta = "/JocDelPingui/images/" + nombreArchivo;
+                Image img = new Image(getClass().getResourceAsStream(ruta));
+                imageView.setImage(img);
+            } catch (Exception e) {
+                
+                System.out.println("No se pudo cargar imagen evento: " + nombreArchivo);
+            }
         }
     }
     

@@ -44,30 +44,30 @@ public class mainApp extends Application {
         new Thread(() -> {
             try {
                 URL urlResource = getClass().getResource("/JocDelPingui/images/sonido_fondo.mp3");
-                if (urlResource == null) {
-                    System.out.println("Archivo de música no encontrado.");
-                    return;
+                if (urlResource != null) {
+                    String url = urlResource.toExternalForm();
+                    
+                    Class<?> mediaClass = Class.forName("javafx.scene.media.Media");
+                    Class<?> playerClass = Class.forName("javafx.scene.media.MediaPlayer");
+                    
+                    Object media = mediaClass.getConstructor(String.class).newInstance(url);
+                    mediaPlayer = playerClass.getConstructor(mediaClass).newInstance(media);
+                    
+                    Method setCycle = playerClass.getMethod("setCycleCount", int.class);
+                    setCycle.invoke(mediaPlayer, Integer.MAX_VALUE);
+                    
+                    Method setVol = playerClass.getMethod("setVolume", double.class);
+                    setVol.invoke(mediaPlayer, volumenActual);
+                    
+                    Method play = playerClass.getMethod("play");
+                    play.invoke(mediaPlayer);
+                    
+                    System.out.println("M\u00fasica de fondo iniciada correctamente.");
+                } else {
+                    System.out.println("Archivo de m\u00fasica no encontrado.");
                 }
-                String url = urlResource.toExternalForm();
-                
-                Class<?> mediaClass = Class.forName("javafx.scene.media.Media");
-                Class<?> playerClass = Class.forName("javafx.scene.media.MediaPlayer");
-                
-                Object media = mediaClass.getConstructor(String.class).newInstance(url);
-                mediaPlayer = playerClass.getConstructor(mediaClass).newInstance(media);
-                
-                Method setCycle = playerClass.getMethod("setCycleCount", int.class);
-                setCycle.invoke(mediaPlayer, Integer.MAX_VALUE);
-                
-                Method setVol = playerClass.getMethod("setVolume", double.class);
-                setVol.invoke(mediaPlayer, volumenActual);
-                
-                Method play = playerClass.getMethod("play");
-                play.invoke(mediaPlayer);
-                
-                System.out.println("Música de fondo iniciada correctamente.");
             } catch (Exception e) {
-                System.out.println("No se pudo iniciar la música de fondo: " + e.getMessage());
+                System.out.println("No se pudo iniciar la m\u00fasica de fondo: " + e.getMessage());
                 mediaPlayer = null;
             }
         }, "MusicThread").start();
@@ -149,26 +149,22 @@ public class mainApp extends Application {
         try {
             partida partidaCarregada = gestionBD.carregarPartidaCompleta(numPartida);
             
-            if (partidaCarregada == null) {
-                System.out.println("❌ No s'ha pogut carregar la partida " + numPartida);
-                return;
+            if (partidaCarregada != null && !partidaCarregada.getJugadores().isEmpty()) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/JocDelPingui/view/PantallaJuego.fxml"));
+                Parent root = loader.load();
+                
+                partidaView controller = loader.getController();
+                controller.setPartida(partidaCarregada);
+                controller.setMainApp(this);
+                controller.setGestionBD(gestionBD);
+                controller.setUsuariActual(usuariActual);
+                
+                cambiarEscena(root);
+            } else if (partidaCarregada == null) {
+                System.out.println("\u274c No s'ha pogut carregar la partida " + numPartida);
+            } else {
+                System.out.println("\u274c La partida " + numPartida + " no t\u00e9 jugadors.");
             }
-
-            if (partidaCarregada.getJugadores().isEmpty()) {
-                System.out.println("❌ La partida " + numPartida + " no té jugadors.");
-                return;
-            }
-            
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/JocDelPingui/view/PantallaJuego.fxml"));
-            Parent root = loader.load();
-            
-            partidaView controller = loader.getController();
-            controller.setPartida(partidaCarregada);
-            controller.setMainApp(this);
-            controller.setGestionBD(gestionBD);
-            controller.setUsuariActual(usuariActual);
-            
-            cambiarEscena(root);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -294,28 +294,28 @@ public class gestionBBD {
                     while (rsJugadors.next()) {
                         String nickname = rsJugadors.getString("nickname");
                         String invStr = rsJugadors.getString("inventari");
-                        if (invStr == null) continue;
-
-                        String[] partsInv = invStr.split("\\|");
-                        
-                        
-                        if (partsInv.length == 4) {
+                        if (invStr != null) {
+                            String[] partsInv = invStr.split("\\|");
                             
-                            pingino pin = new pingino(nickname, "Azul");
-                            pin.getInventario().setDausRapidos(Integer.parseInt(partsInv[0]));
-                            pin.getInventario().setDausLentos(Integer.parseInt(partsInv[1]));
-                            pin.getInventario().setPeces(Integer.parseInt(partsInv[2]));
-                            pin.getInventario().setBolasNieve(Integer.parseInt(partsInv[3]));
-                            llistaJugadors.add(pin);
-                        } else if (partsInv.length >= 6) {
                             
-                            pingino pin = new pingino(nickname, partsInv[1]);
-                            pin.setPosicion(Integer.parseInt(partsInv[0]));
-                            pin.getInventario().setDausRapidos(Integer.parseInt(partsInv[2]));
-                            pin.getInventario().setDausLentos(Integer.parseInt(partsInv[3]));
-                            pin.getInventario().setPeces(Integer.parseInt(partsInv[4]));
-                            pin.getInventario().setBolasNieve(Integer.parseInt(partsInv[5]));
-                            llistaJugadors.add(pin);
+                            if (partsInv.length == 4) {
+                                
+                                pingino pin = new pingino(nickname, "Azul");
+                                pin.getInventario().setDausRapidos(Integer.parseInt(partsInv[0]));
+                                pin.getInventario().setDausLentos(Integer.parseInt(partsInv[1]));
+                                pin.getInventario().setPeces(Integer.parseInt(partsInv[2]));
+                                pin.getInventario().setBolasNieve(Integer.parseInt(partsInv[3]));
+                                llistaJugadors.add(pin);
+                            } else if (partsInv.length >= 6) {
+                                
+                                pingino pin = new pingino(nickname, partsInv[1]);
+                                pin.setPosicion(Integer.parseInt(partsInv[0]));
+                                pin.getInventario().setDausRapidos(Integer.parseInt(partsInv[2]));
+                                pin.getInventario().setDausLentos(Integer.parseInt(partsInv[3]));
+                                pin.getInventario().setPeces(Integer.parseInt(partsInv[4]));
+                                pin.getInventario().setBolasNieve(Integer.parseInt(partsInv[5]));
+                                llistaJugadors.add(pin);
+                            }
                         }
                     }
                 }
@@ -466,17 +466,17 @@ public class gestionBBD {
     }
     
     public void registrarGuanyador(int numPartida, String nicknameGuanyador) {
-        if (!isConnected()) return;
-        
-        try {
-            String sql = "UPDATE PARTIDES SET guanyador = ? WHERE num_partida = ?";
-            PreparedStatement pstmt = connection.prepareStatement(sql);
-            pstmt.setString(1, nicknameGuanyador);
-            pstmt.setInt(2, numPartida);
-            pstmt.executeUpdate();
-            System.out.println("✅ Guanyador " + nicknameGuanyador + " registrat a la partida " + numPartida);
-        } catch (SQLException e) {
-            System.out.println("❌ Error al registrar guanyador: " + e.getMessage());
+        if (isConnected()) {
+            try {
+                String sql = "UPDATE PARTIDES SET guanyador = ? WHERE num_partida = ?";
+                PreparedStatement pstmt = connection.prepareStatement(sql);
+                pstmt.setString(1, nicknameGuanyador);
+                pstmt.setInt(2, numPartida);
+                pstmt.executeUpdate();
+                System.out.println("✅ Guanyador " + nicknameGuanyador + " registrat a la partida " + numPartida);
+            } catch (SQLException e) {
+                System.out.println("❌ Error al registrar guanyador: " + e.getMessage());
+            }
         }
     }
     

@@ -23,9 +23,10 @@ public class tablero {
 
         
         for (int i = 1; i < NUM_CASILLAS - 1; i++) {
-            casilla nuevaCasilla;
+            casilla nuevaCasilla = null;
+            boolean esValida = false;
 
-            while (true) {  
+            while (!esValida) {
                 int tipo = random.nextInt(100);
 
                 if (tipo < 10) {
@@ -42,8 +43,7 @@ public class tablero {
                     nuevaCasilla = new casillaNormal(i, "Normal");
                 }
 
-                
-                boolean esValida = true;
+                esValida = true;
 
                 if (i > 0) {
                     casilla anterior = casillas.get(i - 1);
@@ -57,11 +57,6 @@ public class tablero {
                         esValida = false;
                     }
                 }
-
-                if (esValida) {
-                    break;   
-                }
-                
             }
 
             casillas.add(nuevaCasilla);
@@ -87,31 +82,31 @@ public class tablero {
         
         for (int i = 0; i < tipusCaselles.length; i++) {
             String tipus = tipusCaselles[i];
-            if (tipus.isEmpty()) continue;
-            
-            casilla nuevaCasilla;
-            switch (tipus) {
-                case "casillaOso": 
-                    nuevaCasilla = new casillaOso(i); 
-                    break;
-                case "casillaAgujero": 
-                    nuevaCasilla = new casillaAgujero(i); 
-                    break;
-                case "casillaTrineo": 
-                    nuevaCasilla = new casillaTrineo(i); 
-                    break;
-                case "casillaInterrogante": 
-                    nuevaCasilla = new casillaInterrogante(i); 
-                    break;
-                case "casillaTierraQuebradiza": 
-                    nuevaCasilla = new casillaTierraQuebradiza(i); 
-                    break;
-                default: 
-                    String desc = (i == 0) ? "Salida" : (i == tipusCaselles.length - 1) ? "🏆 Meta" : "Normal";
-                    nuevaCasilla = new casillaNormal(i, desc); 
-                    break;
+            if (!tipus.isEmpty()) {
+                casilla nuevaCasilla;
+                switch (tipus) {
+                    case "casillaOso": 
+                        nuevaCasilla = new casillaOso(i); 
+                        break;
+                    case "casillaAgujero": 
+                        nuevaCasilla = new casillaAgujero(i); 
+                        break;
+                    case "casillaTrineo": 
+                        nuevaCasilla = new casillaTrineo(i); 
+                        break;
+                    case "casillaInterrogante": 
+                        nuevaCasilla = new casillaInterrogante(i); 
+                        break;
+                    case "casillaTierraQuebradiza": 
+                        nuevaCasilla = new casillaTierraQuebradiza(i); 
+                        break;
+                    default: 
+                        String desc = (i == 0) ? "Salida" : (i == tipusCaselles.length - 1) ? "🏆 Meta" : "Normal";
+                        nuevaCasilla = new casillaNormal(i, desc); 
+                        break;
+                }
+                casillas.add(nuevaCasilla);
             }
-            casillas.add(nuevaCasilla);
         }
     }
 }

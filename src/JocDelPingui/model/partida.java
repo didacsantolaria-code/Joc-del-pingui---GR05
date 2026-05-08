@@ -35,27 +35,27 @@ public class partida {
             jugador.setPosicion(tablero.getNumCasillas() - 1);
             this.finalizada = true;
             this.ganador = jugador;
-            return;
+        } else {
+            jugador.setPosicion(nuevaPosicion);
+            casilla casilla = tablero.getCasilla(jugador.getPosicion());
+            casilla.realizarAccion(this, jugador);
         }
-
-        jugador.setPosicion(nuevaPosicion);
-        casilla casilla = tablero.getCasilla(jugador.getPosicion());
-        casilla.realizarAccion(this, jugador);
     }
 
     public void siguienteTurno() {
         turnos++;
 
-        do {
+        boolean turnoEncontrado = false;
+        while (!turnoEncontrado) {
             jugadorActual = (jugadorActual + 1) % jugadores.size();
             
             if (jugadores.get(jugadorActual).isPierdeTurno()) {
                 jugadores.get(jugadorActual).setPierdeTurno(false);
                 mostrarMensaje(jugadores.get(jugadorActual).getNombre() + " no tira porque pierde el turno.");
             } else {
-                break;
+                turnoEncontrado = true;
             }
-        } while (true);
+        }
     }
 
     public static void setVistaActual(partidaView vista) {
