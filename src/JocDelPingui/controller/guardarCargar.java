@@ -5,23 +5,29 @@ import JocDelPingui.model.partida;
 import JocDelPingui.model.jugador;
 import JocDelPingui.model.pingino;
 
+// Se encarga de guardar y cargar partidas en archivos de texto
 public class guardarCargar {
     
+    // El constructor recibe datos de conexion pero no los usa aqui
     public guardarCargar(String urlBBDD, String username, String password) {
     }
     
+    // Guarda toda la info de la partida en un archivo de texto
     public boolean guardarPartida(partida partida, String rutaArchivo) {
         try {
             FileWriter writer = new FileWriter(rutaArchivo);
             
+            // Primero guarda los datos generales de la partida
             writer.write(partida.getIdPartida() + "\n");
             writer.write(partida.getTurnos() + "\n");
             writer.write(partida.getJugadorActual() + "\n");
             writer.write(partida.isFinalizada() + "\n");
             
+            // Guarda cuantos jugadores hay
             int numJugadores = partida.getJugadores().size();
             writer.write(numJugadores + "\n");
             
+            // Para cada jugador guarda nombre, color, posicion e inventario
             for (jugador j : partida.getJugadores()) {
                 writer.write(j.getNombre() + "\n");
                 writer.write(j.getColor() + "\n");
@@ -42,10 +48,12 @@ public class guardarCargar {
         }
     }
     
+    // Lee un archivo de texto y reconstruye la partida guardada
     public partida cargarPartida(String rutaArchivo) {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(rutaArchivo));
             
+            // Lee los datos generales de la partida
             String idPartida = reader.readLine();
             int turnos = Integer.parseInt(reader.readLine());
             int jugadorActual = Integer.parseInt(reader.readLine());
@@ -53,12 +61,14 @@ public class guardarCargar {
             
             int numJugadores = Integer.parseInt(reader.readLine());
             
+            // Crea la partida con los datos leidos
             partida partida = new partida();
             partida.setIdPartida(idPartida);
             partida.setTurnos(turnos);
             partida.setJugadorActual(jugadorActual);
             partida.setFinalizada(finalizada);
             
+            // Lee cada jugador y lo añade a la partida
             for (int i = 0; i < numJugadores; i++) {
                 String nombre = reader.readLine();
                 String color = reader.readLine();
@@ -68,6 +78,7 @@ public class guardarCargar {
                 int peces = Integer.parseInt(reader.readLine());
                 int bolas = Integer.parseInt(reader.readLine());
                 
+                // Crea el pinguino con toda su info
                 pingino j = new pingino(nombre, color);
                 j.setPosicion(posicion);
                 j.setPierdeTurno(pierdeTurno);

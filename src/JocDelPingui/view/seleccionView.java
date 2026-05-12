@@ -22,31 +22,28 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+// Pantalla de seleccion: aqui eliges jugadores, ves partidas guardadas y el ranking
 public class seleccionView {
 
+    // Elementos de la pantalla
     @FXML private StackPane stackPane;
     @FXML private Label lblNumJugadores;
     @FXML private Button btnMenos;
     @FXML private Button btnMas;
-
     @FXML private HBox filaJugador1;
     @FXML private HBox filaJugador2;
     @FXML private HBox filaJugador3;
     @FXML private HBox filaJugador4;
-
     @FXML private TextField nombreJ1;
     @FXML private TextField nombreJ2;
     @FXML private TextField nombreJ3;
     @FXML private TextField nombreJ4;
-
     @FXML private ComboBox<String> colorJ1;
     @FXML private ComboBox<String> colorJ2;
     @FXML private ComboBox<String> colorJ3;
     @FXML private ComboBox<String> colorJ4;
-
     @FXML private Label lblError;
     @FXML private Button btnJugar;
-
     @FXML private ListView<String> listaPartidas;
     @FXML private ListView<String> listaRanking;
     @FXML private Button btnContinuar;
@@ -56,11 +53,13 @@ public class seleccionView {
     private mainApp mainApp;
     private gestionBBD gestionBD;
     private String usuariActual;
-    private int numJugadores = 2;
+    private int numJugadores = 2; // minimo 2 jugadores
 
+    // Los colores que pueden elegir los jugadores
     private final ObservableList<String> coloresDisponibles =
             FXCollections.observableArrayList("Azul", "Rojo", "Verde", "Amarillo");
 
+    // Se ejecuta al cargar: pone fondo, colores por defecto y configura la lista de partidas
     @FXML
     private void initialize() {
         try {
@@ -74,11 +73,13 @@ public class seleccionView {
             System.out.println("No se pudo cargar la imagen de fondo: " + e.getMessage());
         }
 
+        // Pone los colores disponibles en cada selector
         colorJ1.setItems(FXCollections.observableArrayList(coloresDisponibles));
         colorJ2.setItems(FXCollections.observableArrayList(coloresDisponibles));
         colorJ3.setItems(FXCollections.observableArrayList(coloresDisponibles));
         colorJ4.setItems(FXCollections.observableArrayList(coloresDisponibles));
 
+        // Colores por defecto
         colorJ1.setValue("Azul");
         colorJ2.setValue("Rojo");
         colorJ3.setValue("Verde");
@@ -86,12 +87,14 @@ public class seleccionView {
 
         actualizarFilas();
 
+        // El boton de continuar solo se activa si seleccionas una partida
         btnContinuar.setDisable(true);
         listaPartidas.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             btnContinuar.setDisable(newVal == null);
         });
     }
 
+    // Conecta con la app principal y configura el volumen
     public void setMainApp(mainApp mainApp) {
         this.mainApp = mainApp;
         if (volumeSlider != null) {
@@ -106,11 +109,13 @@ public class seleccionView {
         this.gestionBD = gestionBD;
     }
 
+    // Guarda quien es el usuario actual y carga sus datos de la BD
     public void setUsuariActual(String usuariActual) {
         this.usuariActual = usuariActual;
         carregarDadesUsuari();
     }
 
+    // Carga las partidas guardadas y el ranking desde la base de datos
     private void carregarDadesUsuari() {
         if (gestionBD != null && usuariActual != null) {
             List<String> partides = gestionBD.obtenirPartidesPendents(usuariActual);
@@ -129,6 +134,7 @@ public class seleccionView {
         }
     }
 
+    // Vuelve a la pantalla de login
     @FXML
     private void handleVolverLogin(ActionEvent event) {
         if (mainApp != null) {
@@ -136,12 +142,12 @@ public class seleccionView {
         }
     }
 
+    // Carga la partida guardada que hayas seleccionado de la lista
     @FXML
     private void handleContinuarPartida(ActionEvent event) {
         String seleccion = listaPartidas.getSelectionModel().getSelectedItem();
         if (seleccion != null && seleccion.startsWith("Partida ")) {
             try {
-                
                 String idStr = seleccion.split(" ")[1];
                 int idPartida = Integer.parseInt(idStr);
                 
@@ -155,6 +161,7 @@ public class seleccionView {
         }
     }
 
+    // Quita un jugador (minimo 2)
     @FXML
     private void handleMenos(ActionEvent event) {
         if (numJugadores > 2) {
@@ -164,6 +171,7 @@ public class seleccionView {
         }
     }
 
+    // Añade un jugador (maximo 4)
     @FXML
     private void handleMas(ActionEvent event) {
         if (numJugadores < 4) {
@@ -173,6 +181,7 @@ public class seleccionView {
         }
     }
 
+    // Muestra u oculta las filas de jugadores segun cuantos haya
     private void actualizarFilas() {
         filaJugador1.setVisible(true);
         filaJugador1.setManaged(true);
@@ -187,6 +196,7 @@ public class seleccionView {
         lblError.setText("");
     }
 
+    // Cuando pulsas "Jugar": comprueba que todo esta bien y empieza la partida
     @SuppressWarnings("unchecked")
     @FXML
     private void handleJugar(ActionEvent event) {
@@ -198,6 +208,7 @@ public class seleccionView {
         HashSet<String> coloresUsados = new HashSet<>();
         boolean valido = true;
 
+        // Comprueba que cada jugador tenga nombre y color sin repetir
         for (int i = 0; i < numJugadores && valido; i++) {
             String nombre = nombres[i].getText().trim();
             String color = colores[i].getValue();
@@ -220,6 +231,7 @@ public class seleccionView {
         if (valido) {
             lblError.setText("");
 
+            // Comprueba que todos los jugadores esten registrados en la BD
             if (gestionBD != null && gestionBD.isConnected()) {
                 boolean todosRegistrados = true;
                 for (String[] jugador : jugadoresInfo) {
@@ -234,6 +246,7 @@ public class seleccionView {
                 }
 
                 if (todosRegistrados) {
+                    // Comprueba que el usuario que inicio sesion este en la partida
                     boolean usuariActualTrobat = false;
                     for (String[] jugador : jugadoresInfo) {
                         if (jugador[0].equals(usuariActual)) {
@@ -254,6 +267,7 @@ public class seleccionView {
         }
     }
     
+    // Muestra un mensaje de error en una ventanita
     private void mostrarMissatgeError(String titol, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         if (stackPane != null && stackPane.getScene() != null) {
