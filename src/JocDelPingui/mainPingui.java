@@ -8,11 +8,13 @@ import JocDelPingui.model.jugador;
 import JocDelPingui.model.pingino;
 import JocDelPingui.model.partida;
 
+// Version del juego por consola (sin ventana grafica)
 public class mainPingui {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         missatgesConsola.mostrarBienvenida();
         
+        // Bucle del menu principal: se repite hasta que el usuario elija salir
         boolean salir = false;
         while (!salir) {
             missatgesConsola.mostrarMenuPrincipal();
@@ -21,13 +23,13 @@ public class mainPingui {
             
             switch (opcion) {
                 case 1:
-                    iniciarNuevaPartida(scanner);
+                    iniciarNuevaPartida(scanner);  // empieza partida nueva
                     break;
                 case 2:
-                    cargarPartida(scanner);
+                    cargarPartida(scanner);  // carga una partida guardada
                     break;
                 case 3:
-                    salir = true;
+                    salir = true;  // sale del juego
                     missatgesConsola.mostrarDespedida();
                     break;
                 default:
@@ -37,33 +39,40 @@ public class mainPingui {
         scanner.close();
     }
     
+    // Pide el nombre del usuario y crea una partida con 4 jugadores
     private static void iniciarNuevaPartida(Scanner scanner) {
         System.out.print("Introduce tu nombre de usuario: ");
         String username = scanner.nextLine();
         
+        // Crea la lista de jugadores con nombre y color
         java.util.ArrayList<String[]> jugadoresInfo = new java.util.ArrayList<>();
         jugadoresInfo.add(new String[]{username, "Azul"});
         jugadoresInfo.add(new String[]{"Jugador 2", "Rojo"});
         jugadoresInfo.add(new String[]{"Jugador 3", "Verde"});
         jugadoresInfo.add(new String[]{"Jugador 4", "Amarillo"});
         
+        // Crea la partida y la arranca
         partida partida = new partida();
         partida.inicializarPartida(jugadoresInfo);
         
         jugarPartida(partida, scanner);
     }
     
+    // Bucle principal del juego: cada turno el jugador elige que hacer
     private static void jugarPartida(partida partida, Scanner scanner) {
         gestionJugador gestionJugador = new gestionJugador();
         
+        // Se repite hasta que alguien gane
         while (!partida.isFinalizada()) {
             jugador jugadorActual = partida.getJugadores().get(partida.getJugadorActual());
             System.out.println("\n--- Turno de " + jugadorActual.getNombre() + " ---");
             System.out.println("Posición: " + jugadorActual.getPosicion());
             
+            // Muestra el inventario del jugador
             pingino p = (pingino) jugadorActual;
             System.out.println("Inventario: " + p.getInventario().mostrar());
             
+            // Muestra las opciones que tiene
             System.out.println("\nOpciones:");
             System.out.println("1. Tirar dado");
             System.out.println("2. Usar bola de nieve");
@@ -75,6 +84,7 @@ public class mainPingui {
             
             switch (opcion) {
                 case 1:
+                    // Tira el dado y mueve al jugador
                     gestionJugador.jugadorSeleccion(jugadorActual, 1, 0, partida.getTablero());
                     int pasos = p.getDadoActual().tirar();
                     System.out.println("Has sacado un " + pasos);
@@ -83,6 +93,7 @@ public class mainPingui {
                     partida.siguienteTurno();
                     break;
                 case 2:
+                    // Lanza una bola de nieve a otro jugador para hacerlo retroceder
                     if (p.getInventario().getBolasNieve() > 0) {
                         System.out.print("¿A qué jugador quieres atacar? (0-" + (partida.getJugadores().size()-1) + "): ");
                         int idxObjetivo = scanner.nextInt();
@@ -98,17 +109,21 @@ public class mainPingui {
                     }
                     break;
                 case 3:
+                    // Muestra como va la partida
                     mostrarEstadoPartida(partida);
                     break;
                 case 4:
+                    // Guarda y sale
                     System.out.println("Partida guardada. ¡Hasta pronto!");
                     return;
             }
         }
         
+        // Alguien ha ganado
         System.out.println("¡¡¡" + partida.getGanador().getNombre() + " ha ganado la partida!!!");
     }
     
+    // Muestra la posicion y el inventario de todos los jugadores
     private static void mostrarEstadoPartida(partida partida) {
         System.out.println("\n--- ESTADO DE LA PARTIDA ---");
         for (jugador j : partida.getJugadores()) {
@@ -120,6 +135,7 @@ public class mainPingui {
         System.out.println("----------------------------\n");
     }
     
+    // Pide el archivo de la partida guardada y la carga
     private static void cargarPartida(Scanner scanner) {
         System.out.print("Introduce el nombre del archivo de partida: ");
         String archivo = scanner.nextLine();

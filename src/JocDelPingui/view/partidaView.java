@@ -91,6 +91,7 @@ public class partidaView {
     private gestionBBD gestionBD;
     private String usuariActual;
 
+    // Lo que pasa nada más abrir la pantalla: configura los botones y las imágenes
     @FXML
     private void initialize() {
         
@@ -117,6 +118,7 @@ public class partidaView {
         cargarImagenObjeto(iconoNieve, "bola_nieve.png");
     }
     
+    // Carga una imagen desde la carpeta de imágenes
     private void cargarImagen(ImageView imageView, String nombreArchivo) {
         try {
             String ruta = "/JocDelPingui/images/" + nombreArchivo;
@@ -131,6 +133,7 @@ public class partidaView {
         }
     }
     
+    // Carga la imagen de un objeto del inventario (dados, bola de nieve, pez)
     private void cargarImagenObjeto(ImageView imageView, String nombreArchivo) {
         try {
             String ruta = "/JocDelPingui/images/" + nombreArchivo;
@@ -145,6 +148,7 @@ public class partidaView {
         }
     }
 
+    // Recibe la partida desde fuera y prepara toda la pantalla (tablero, fichas, avatares)
     public void setPartida(partida partida) {
         this.partida = partida;
         partida.setVistaActual(this);
@@ -165,6 +169,7 @@ public class partidaView {
         marcarJugadorActual();
     }
 
+    // Guarda la referencia a la aplicación principal y configura el volumen
     public void setMainApp(mainApp mainApp) {
         this.mainApp = mainApp;
         if (volumeSlider != null) {
@@ -175,6 +180,7 @@ public class partidaView {
         }
     }
 
+    // Guarda la partida actual en la base de datos
     @FXML
     private void handleGuardarPartida() {
         if (gestionBD != null && partida != null && usuariActual != null) {
@@ -191,6 +197,7 @@ public class partidaView {
         }
     }
 
+    // Sale de la partida preguntando antes si guardar o no
     @FXML
     private void handleSalir() {
         ButtonType btnGuardar = new ButtonType("Guardar i sortir", ButtonBar.ButtonData.YES);
@@ -222,6 +229,7 @@ public class partidaView {
         }
     }
     
+    // Muestra un mensajito de información en una ventana emergente
     private void mostrarMissatgeInfo(String titol, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.initOwner(tableroGrid.getScene().getWindow());
@@ -232,6 +240,7 @@ public class partidaView {
         if (mainApp != null) mainApp.setPantallaCompleta();
     }
 
+    // Muestra un mensaje de error en una ventana emergente
     private void mostrarMissatgeError(String titol, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.initOwner(tableroGrid.getScene().getWindow());
@@ -242,6 +251,7 @@ public class partidaView {
         if (mainApp != null) mainApp.setPantallaCompleta();
     }
 
+    // Vuelve a la pantalla de selección (menú principal)
     private void volverAlMenu() {
         if (mainApp != null) {
             mainApp.mostrarSeleccion();
@@ -253,6 +263,7 @@ public class partidaView {
         }
     }
 
+    // Crea los avatares de los jugadores que salen en la parte de arriba
     private void crearAvatares() {
         if (avatarContainer != null) {
             avatarContainer.getChildren().clear();
@@ -285,6 +296,7 @@ public class partidaView {
         }
     }
 
+    // Dibuja el tablero con las 50 casillas y sus imágenes especiales
     private void crearTablero() {
         tableroGrid.getChildren().clear();
         casillasGraficas.clear();
@@ -342,6 +354,7 @@ public class partidaView {
         }
     }
 
+    // (Método sin uso) Devuelve la clase CSS según el tipo de casilla
     private String obtenerClaseCasilla(String tipo) {
         switch (tipo) {
             case "casillaOso":
@@ -363,11 +376,13 @@ public class partidaView {
         }
     }
 
+    // (Método sin uso) Comprueba si la descripción contiene un texto
     private boolean descripcionTiene(String texto) {
         
         return false;
     }
 
+    // (Método sin uso) Devuelve un emoji según el tipo de casilla
     private String obtenerIconoCasilla(String tipo) {
         switch (tipo) {
             case "casillaOso":
@@ -387,6 +402,7 @@ public class partidaView {
         }
     }
 
+    // Crea las fichas de los jugadores (los pingüinos que se mueven por el tablero)
     private void crearFichasJugadores() {
         int numJugadores = partida.getJugadores().size();
 
@@ -414,6 +430,7 @@ public class partidaView {
         recolocarFichas();
     }
 
+    // Cambia el tamaño de la ficha del jugador
     private void ajustarTamañoFicha(StackPane ficha, double size) {
         ficha.setPrefSize(size, size);
         ficha.setMaxSize(size, size);
@@ -430,6 +447,7 @@ public class partidaView {
         }
     }
 
+    // Coloca las fichas de todos los jugadores en la casilla que les toca
     private void recolocarFichas() {
         
         for (StackPane ficha : fichasJugadores) {
@@ -447,107 +465,109 @@ public class partidaView {
                 }
             }
 
-            if (jugadoresEnPos.isEmpty()) continue;
+            if (!jugadoresEnPos.isEmpty()) {
+                StackPane casilla = casillasGraficas.get(pos);
+                int count = jugadoresEnPos.size();
 
-            StackPane casilla = casillasGraficas.get(pos);
-            int count = jugadoresEnPos.size();
-
-            
-            double size;
-            double[][] offsets;
-            if (count == 1) {
-                size = 35;
-                offsets = new double[][]{{0, 6}};
-            } else if (count == 2) {
-                size = 24;
-                offsets = new double[][]{{-10, 6}, {10, 6}};
-            } else if (count == 3) {
-                size = 22;
-                offsets = new double[][]{{-10, 2}, {10, 2}, {0, 16}};
-            } else {
-                size = 20;
-                offsets = new double[][]{{-10, 2}, {10, 2}, {-10, 16}, {10, 16}};
-            }
-
-            for (int k = 0; k < jugadoresEnPos.size(); k++) {
-                int idx = jugadoresEnPos.get(k);
-                StackPane ficha = fichasJugadores.get(idx);
-                ajustarTamañoFicha(ficha, size);
-                ficha.setTranslateX(offsets[k][0]);
-                ficha.setTranslateY(offsets[k][1]);
-                StackPane.setAlignment(ficha, Pos.CENTER);
-                casilla.getChildren().add(ficha);
-            }
-        }
-    }
-
-    private void marcarJugadorActual() {
-        if (partida == null || partida.getJugadores().isEmpty()) return;
-
-        
-        for (StackPane casilla : casillasGraficas) {
-            casilla.getStyleClass().remove("turno-activo");
-        }
-
-        
-        int idxActual = partida.getJugadorActual();
-        if (idxActual >= 0 && idxActual < partida.getJugadores().size()) {
-            jugador j = partida.getJugadores().get(idxActual);
-            if (j.getPosicion() < casillasGraficas.size()) {
-                StackPane casillaActual = casillasGraficas.get(j.getPosicion());
-                casillaActual.getStyleClass().add("turno-activo");
-            }
-            
-            if (turnoNombreLabel != null) {
-                turnoNombreLabel.setText(j.getNombre().toUpperCase());
                 
-                turnoNombreLabel.getStyleClass().removeAll("badge-rojo", "badge-azul", "badge-verde", "badge-amarillo");
-                String colorCSS = "badge-" + j.getColor().toLowerCase();
-                turnoNombreLabel.getStyleClass().add(colorCSS);
+                double size;
+                double[][] offsets;
+                if (count == 1) {
+                    size = 35;
+                    offsets = new double[][]{{0, 6}};
+                } else if (count == 2) {
+                    size = 24;
+                    offsets = new double[][]{{-10, 6}, {10, 6}};
+                } else if (count == 3) {
+                    size = 22;
+                    offsets = new double[][]{{-10, 2}, {10, 2}, {0, 16}};
+                } else {
+                    size = 20;
+                    offsets = new double[][]{{-10, 2}, {10, 2}, {-10, 16}, {10, 16}};
+                }
+
+                for (int k = 0; k < jugadoresEnPos.size(); k++) {
+                    int idx = jugadoresEnPos.get(k);
+                    StackPane ficha = fichasJugadores.get(idx);
+                    ajustarTamañoFicha(ficha, size);
+                    ficha.setTranslateX(offsets[k][0]);
+                    ficha.setTranslateY(offsets[k][1]);
+                    StackPane.setAlignment(ficha, Pos.CENTER);
+                    casilla.getChildren().add(ficha);
+                }
             }
         }
     }
 
+    // Resalta la casilla del jugador al que le toca jugar
+    private void marcarJugadorActual() {
+        if (partida != null && !partida.getJugadores().isEmpty()) {
+            
+            for (StackPane casilla : casillasGraficas) {
+                casilla.getStyleClass().remove("turno-activo");
+            }
+
+            
+            int idxActual = partida.getJugadorActual();
+            if (idxActual >= 0 && idxActual < partida.getJugadores().size()) {
+                jugador j = partida.getJugadores().get(idxActual);
+                if (j.getPosicion() < casillasGraficas.size()) {
+                    StackPane casillaActual = casillasGraficas.get(j.getPosicion());
+                    casillaActual.getStyleClass().add("turno-activo");
+                }
+                
+                if (turnoNombreLabel != null) {
+                    turnoNombreLabel.setText(j.getNombre().toUpperCase());
+                    
+                    turnoNombreLabel.getStyleClass().removeAll("badge-rojo", "badge-azul", "badge-verde", "badge-amarillo");
+                    String colorCSS = "badge-" + j.getColor().toLowerCase();
+                    turnoNombreLabel.getStyleClass().add(colorCSS);
+                }
+            }
+        }
+    }
+
+    // Mueve la ficha de un jugador a su nueva posicion
     private void moverFicha(int jugadorIdx, int nuevaPosicion) {
         
         recolocarFichas();
     }
 
+    // Cuando pulsas el boton de tirar dado: tira, mueve y pasa turno
     @FXML
     private void handleTirarDado() {
-        if (partida == null || partida.isFinalizada())
-            return;
+        if (partida != null && !partida.isFinalizada()) {
+            int idxActual = partida.getJugadorActual();
+            jugador jugadorActual = partida.getJugadores().get(idxActual);
+            pingino p = (pingino) jugadorActual;
 
-        int idxActual = partida.getJugadorActual();
-        jugador jugadorActual = partida.getJugadores().get(idxActual);
-        pingino p = (pingino) jugadorActual;
+            int posAnterior = jugadorActual.getPosicion();
+            int resultado = p.getDadoActual().tirar();
+            boolean esRapido = p.getDadoActual().getTipo().equals("rapido");
 
-        int posAnterior = jugadorActual.getPosicion();
-        int resultado = p.getDadoActual().tirar();
-        boolean esRapido = p.getDadoActual().getTipo().equals("rapido");
+            dadoResultado.setText(String.valueOf(resultado));
+            animarDado(resultado, esRapido);
 
-        dadoResultado.setText(String.valueOf(resultado));
-        animarDado(resultado, esRapido);
+            
+            partida.moverJugador(jugadorActual, resultado);
 
-        
-        partida.moverJugador(jugadorActual, resultado);
+            
+            moverFicha(idxActual, jugadorActual.getPosicion());
 
-        
-        moverFicha(idxActual, jugadorActual.getPosicion());
-
-        
-        if (partida.isFinalizada()) {
-            agregarEvento("¡" + jugadorActual.getNombre() + " ha llegado a la meta!");
-            mostrarVictoria(jugadorActual);
-            return;
+            
+            if (partida.isFinalizada()) {
+                agregarEvento("¡" + jugadorActual.getNombre() + " ha llegado a la meta!");
+                mostrarVictoria(jugadorActual);
+            } else {
+                
+                actualizarInventarios();
+                partida.siguienteTurno();
+                marcarJugadorActual();
+            }
         }
-
-        
-        actualizarInventarios();
-        partida.siguienteTurno();
-        marcarJugadorActual();
     }
 
+    // Cuando alguien gana: desactiva botones, guarda estadisticas y muestra el ganador
     private void mostrarVictoria(jugador ganador) {
         
         tirarDadoBtn.setDisable(true);
@@ -576,6 +596,7 @@ public class partidaView {
         volverAlMenu();
     }
 
+    // Hace una animacion cuando se tira el dado
     private void animarDado(int resultado, boolean esRapido) {
         actualizarImagenDado(resultado, esRapido);
 
@@ -598,70 +619,78 @@ public class partidaView {
         }
     }
 
+    // Activa el dado rapido para el jugador actual
     @FXML
     private void handleUsarRapido() {
-        if (partida == null || partida.isFinalizada()) return;
-        int idxActual = partida.getJugadorActual();
-        pingino p = (pingino) partida.getJugadores().get(idxActual);
+        if (partida != null && !partida.isFinalizada()) {
+            int idxActual = partida.getJugadorActual();
+            pingino p = (pingino) partida.getJugadores().get(idxActual);
 
-        if (p.getInventario().getDausRapidos() > 0) {
-            p.setDadoActual(new dado("rapido"));
-            agregarEvento("¡Dado rápido activado! (5-10 casillas)");
-            actualizarInventarios();
+            if (p.getInventario().getDausRapidos() > 0) {
+                p.setDadoActual(new dado("rapido"));
+                agregarEvento("¡Dado rápido activado! (5-10 casillas)");
+                actualizarInventarios();
+            }
         }
     }
 
+    // Activa el dado lento para el jugador actual
     @FXML
     private void handleUsarLento() {
-        if (partida == null || partida.isFinalizada()) return;
-        int idxActual = partida.getJugadorActual();
-        pingino p = (pingino) partida.getJugadores().get(idxActual);
+        if (partida != null && !partida.isFinalizada()) {
+            int idxActual = partida.getJugadorActual();
+            pingino p = (pingino) partida.getJugadores().get(idxActual);
 
-        if (p.getInventario().getDausLentos() > 0) {
-            p.setDadoActual(new dado("lento"));
-            agregarEvento("¡Dado lento activado! (1-3 casillas)");
-            actualizarInventarios();
+            if (p.getInventario().getDausLentos() > 0) {
+                p.setDadoActual(new dado("lento"));
+                agregarEvento("¡Dado lento activado! (1-3 casillas)");
+                actualizarInventarios();
+            }
         }
     }
 
+    // Lanza una bola de nieve al siguiente jugador para hacerlo retroceder
     @FXML
     private void handleUsarNieve() {
-        if (partida == null || partida.isFinalizada()) return;
-        int idxActual = partida.getJugadorActual();
-        pingino p = (pingino) partida.getJugadores().get(idxActual);
+        if (partida != null && !partida.isFinalizada()) {
+            int idxActual = partida.getJugadorActual();
+            pingino p = (pingino) partida.getJugadores().get(idxActual);
 
-        if (p.getInventario().getBolasNieve() > 0) {
-            
-            int objetivo = (idxActual + 1) % partida.getJugadores().size();
-            jugador objetivoJugador = partida.getJugadores().get(objetivo);
+            if (p.getInventario().getBolasNieve() > 0) {
+                
+                int objetivo = (idxActual + 1) % partida.getJugadores().size();
+                jugador objetivoJugador = partida.getJugadores().get(objetivo);
 
-            p.usarBolaNieve(objetivoJugador);
-            agregarEvento(p.getNombre() + " lanzó una bola de nieve a " +
-                    objetivoJugador.getNombre());
+                p.usarBolaNieve(objetivoJugador);
+                agregarEvento(p.getNombre() + " lanzó una bola de nieve a " +
+                        objetivoJugador.getNombre());
 
-            
-            moverFicha(objetivo, objetivoJugador.getPosicion());
+                
+                moverFicha(objetivo, objetivoJugador.getPosicion());
 
-            actualizarInventarios();
-        } else {
-            agregarEvento("No tienes bolas de nieve");
+                actualizarInventarios();
+            } else {
+                agregarEvento("No tienes bolas de nieve");
+            }
         }
     }
 
+    // Actualiza los numeros del inventario en la pantalla
     private void actualizarInventarios() {
-        if (partida == null || partida.getJugadores().isEmpty()) return;
+        if (partida != null && !partida.getJugadores().isEmpty()) {
+            int idxActual = partida.getJugadorActual();
+            if (idxActual >= 0 && idxActual < partida.getJugadores().size()) {
+                pingino p = (pingino) partida.getJugadores().get(idxActual);
 
-        int idxActual = partida.getJugadorActual();
-        if (idxActual < 0 || idxActual >= partida.getJugadores().size()) return;
-
-        pingino p = (pingino) partida.getJugadores().get(idxActual);
-
-        rapidoCantidad.setText(String.valueOf(p.getInventario().getDausRapidos()));
-        lentoCantidad.setText(String.valueOf(p.getInventario().getDausLentos()));
-        pecesCantidad.setText(String.valueOf(p.getInventario().getPeces()));
-        nieveCantidad.setText(String.valueOf(p.getInventario().getBolasNieve()));
+                rapidoCantidad.setText(String.valueOf(p.getInventario().getDausRapidos()));
+                lentoCantidad.setText(String.valueOf(p.getInventario().getDausLentos()));
+                pecesCantidad.setText(String.valueOf(p.getInventario().getPeces()));
+                nieveCantidad.setText(String.valueOf(p.getInventario().getBolasNieve()));
+            }
+        }
     }
 
+    // Añade un mensaje al panel de eventos del juego
     private void agregarEvento(String mensaje) {
         HBox eventoBox = new HBox(8);
         eventoBox.setAlignment(Pos.TOP_LEFT);
@@ -690,20 +719,22 @@ public class partidaView {
         }
     }
     
+    // Carga la imagen que acompaña a un mensaje de evento
     private void cargarImagenEvento(ImageView imageView, String mensaje) {
         String nombreArchivo = obtenerNombreImagenEvento(mensaje);
-        if (nombreArchivo == null) return;
-
-        try {
-            String ruta = "/JocDelPingui/images/" + nombreArchivo;
-            Image img = new Image(getClass().getResourceAsStream(ruta));
-            imageView.setImage(img);
-        } catch (Exception e) {
-            
-            System.out.println("No se pudo cargar imagen evento: " + nombreArchivo);
+        if (nombreArchivo != null) {
+            try {
+                String ruta = "/JocDelPingui/images/" + nombreArchivo;
+                Image img = new Image(getClass().getResourceAsStream(ruta));
+                imageView.setImage(img);
+            } catch (Exception e) {
+                
+                System.out.println("No se pudo cargar imagen evento: " + nombreArchivo);
+            }
         }
     }
     
+    // Decide que imagen poner segun el texto del mensaje
     private String obtenerNombreImagenEvento(String mensaje) {
         if (mensaje.contains("Dado rápido activado") || mensaje.contains("DADO RÁPIDO"))
             return "dado_rapido.png";
@@ -735,10 +766,12 @@ public class partidaView {
         return null;
     }
 
+    // Metodo publico para que otras clases añadan mensajes a los eventos
     public void agregarMensaje(String mensaje) {
         agregarEvento(mensaje);
     }
 
+    // Cambia la imagen del dado para que muestre el numero que ha salido
     private void actualizarImagenDado(int resultado, boolean esRapido) {
         try {
             if (esRapido) {
@@ -771,10 +804,12 @@ public class partidaView {
         }
     }
     
+    // Guarda la conexion a la base de datos
     public void setGestionBD(gestionBBD gestionBD) {
         this.gestionBD = gestionBD;
     }
 
+    // Guarda el nombre del usuario actual
     public void setUsuariActual(String usuariActual) {
         this.usuariActual = usuariActual;
     }

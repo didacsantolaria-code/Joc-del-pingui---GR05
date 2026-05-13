@@ -17,8 +17,10 @@ import javafx.geometry.Insets;
 import JocDelPingui.mainApp;
 import JocDelPingui.controller.gestionBBD;
 
+// Pantalla de login: aqui metes tu usuario y contraseña para entrar al juego
 public class menuView extends VBox {
     
+    // Elementos de la pantalla (campos de texto, botones, etc)
     @FXML private TextField userField;
     @FXML private PasswordField passField;
     @FXML private Button loginButton;
@@ -26,12 +28,13 @@ public class menuView extends VBox {
     @FXML private StackPane stackPane;
     @FXML private Slider volumeSlider;
     
-    private mainApp mainApp;
-    private gestionBBD gestionBD;
+    private mainApp mainApp;       // la app principal
+    private gestionBBD gestionBD;  // conexion a la base de datos
     
     public menuView() {
     }
     
+    // Se ejecuta al cargar la pantalla: pone la imagen de fondo y el estilo
     @FXML
     private void initialize() {
         setAlignment(Pos.CENTER);
@@ -39,6 +42,7 @@ public class menuView extends VBox {
         setPadding(new Insets(50));
         getStyleClass().add("menu-container");
         
+        // Carga la imagen de fondo del login
         try {
             Image imagenFondo = new Image(getClass().getResourceAsStream("/JocDelPingui/view/fondo_login.png"));
             ImageView imageView = new ImageView(imagenFondo);
@@ -51,6 +55,7 @@ public class menuView extends VBox {
         }
     }
     
+    // Conecta este menu con la app principal y configura el control de volumen
     public void setMainApp(mainApp mainApp) {
         this.mainApp = mainApp;
         if (volumeSlider != null) {
@@ -61,16 +66,19 @@ public class menuView extends VBox {
         }
     }
     
+    // Guarda la conexion a la base de datos
     public void setGestionBD(gestionBBD gestionBD) {
         this.gestionBD = gestionBD;
     }
     
+    // Cuando pulsas el boton de salir, cierra toda la app
     @FXML
     private void handleSalirPrograma(ActionEvent event) {
         javafx.application.Platform.exit();
         System.exit(0);
     }
     
+    // Cuando pulsas "Login": comprueba usuario y contraseña y si son correctos entra
     @FXML
     private void handleLogin(ActionEvent event) {
         String username = userField.getText().trim();
@@ -78,27 +86,23 @@ public class menuView extends VBox {
         
         if (username.isEmpty() || password.isEmpty()) {
             mostrarMissatgeError("Error", "Camps buits", "Introdueix usuari i contrasenya.");
-            return;
-        }
-        
-        if (gestionBD == null || !gestionBD.isConnected()) {
-            mostrarMissatgeError("Error de connexió", "No es pot connectar a la base de dades", 
+        } else if (gestionBD == null || !gestionBD.isConnected()) {
+            mostrarMissatgeError("Error de connexió", "No es pot connectar a la base de dades",
                                 "Comprova la connexió i torna a intentar.");
-            return;
-        }
-        
-        if (gestionBD.validarLogin(username, password)) {
+        } else if (gestionBD.validarLogin(username, password)) {
+            // Login correcto: pasa a la pantalla de seleccion
             System.out.println("✅ Login correcte per a: " + username);
             if (mainApp != null) {
                 mainApp.setUsuariActual(username);
                 mainApp.mostrarSeleccion();
             }
         } else {
-            mostrarMissatgeError("Error de login", "Usuari o contrasenya incorrectes", 
+            mostrarMissatgeError("Error de login", "Usuari o contrasenya incorrectes",
                                 "Torna a intentar o registra't si no tens compte.");
         }
     }
     
+    // Cuando pulsas "Registrar": crea una cuenta nueva si todo esta bien
     @FXML
     private void handleRegister() {
         String username = userField.getText().trim();
@@ -106,27 +110,16 @@ public class menuView extends VBox {
         
         if (username.isEmpty() || password.isEmpty()) {
             mostrarMissatgeError("Error", "Camps buits", "Introdueix usuari i contrasenya.");
-            return;
-        }
-        
-        if (password.length() < 3) {
+        } else if (password.length() < 3) {
             mostrarMissatgeError("Error", "Contrasenya massa curta", "La contrasenya ha de tenir almenys 3 caràcters.");
-            return;
-        }
-        
-        if (gestionBD == null || !gestionBD.isConnected()) {
-            mostrarMissatgeError("Error de connexió", "No es pot connectar a la base de dades", 
+        } else if (gestionBD == null || !gestionBD.isConnected()) {
+            mostrarMissatgeError("Error de connexió", "No es pot connectar a la base de dades",
                                 "Comprova la connexió i torna a intentar.");
-            return;
-        }
-        
-        if (gestionBD.existeixJugador(username)) {
-            mostrarMissatgeError("Error de registre", "L'usuari ja existeix", 
+        } else if (gestionBD.existeixJugador(username)) {
+            mostrarMissatgeError("Error de registre", "L'usuari ja existeix",
                                 "El nom d'usuari '" + username + "' ja està registrat.");
-            return;
-        }
-        
-        if (gestionBD.registrarJugador(username, password)) {
+        } else if (gestionBD.registrarJugador(username, password)) {
+            // Registro correcto
             System.out.println("✅ Usuari registrat: " + username);
             mostrarMissatgeInfo("Registre correcte", "Usuari '" + username + "' registrat amb èxit!");
             userField.clear();
@@ -136,6 +129,7 @@ public class menuView extends VBox {
         }
     }
     
+    // Muestra un aviso de informacion al usuario
     private void mostrarMissatgeInfo(String titol, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         if (this.getScene() != null && this.getScene().getWindow() != null) {
@@ -148,6 +142,7 @@ public class menuView extends VBox {
         if (mainApp != null) mainApp.setPantallaCompleta();
     }
     
+    // Muestra un aviso de error al usuario
     private void mostrarMissatgeError(String titol, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         if (this.getScene() != null && this.getScene().getWindow() != null) {
